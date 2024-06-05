@@ -1,0 +1,23 @@
+[
+  {
+    "ID": 1,
+    "Title": "An old silent pond",
+    "Content": "An old silent pond...\\nA frog jumps into the pond,\\nsplash! Silence again.\\n\\n– Matsuo Bashō",
+    "Created": "2024-06-05T00:00:00Z",
+    "Expires": "2024-12-02T00:00:00Z"
+  },
+  {
+    "ID": 2,
+    "Title": "Over the wintry forest",
+    "Content": "Over the wintry\\nforest, winds howl in rage\\nwith no leaves to blow.\\n\\n– Natsume Soseki",
+    "Created": "2024-06-05T00:00:00Z",
+    "Expires": "2024-12-02T00:00:00Z"
+  },
+  {
+    "ID": 3,
+    "Title": "First autumn morning",
+    "Content": "First autumn morning\\nthe mirror I stare into\\nshows my father's face.\\n\\n– Murakami Kijo",
+    "Created": "2024-06-05T00:00:00Z",
+    "Expires": "2024-12-02T00:00:00Z"
+  }
+]
