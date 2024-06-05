@@ -38,3 +38,44 @@ func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
 
 	return &data, nil
 }
+
+func (m *SnippetModel) GetAll() ([]*Snippet, error) {
+	query := `
+		SELECT id, title, content, created, expires
+		FROM snippet
+		WHERE expires > current_date
+		LIMIT 10;`
+
+	rows, err := m.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	snippets, err := extractRows(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return snippets, nil
+}
+
+func extractRows(rows *sql.Rows) ([]*Snippet, error) {
+	data := []*Snippet{}
+
+	for rows.Next() {
+		snp := &Snippet{}
+		err := rows.Scan(&snp.ID, &snp.Title, &snp.Content, &snp.Created, &snp.Expires)
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, snp)
+	}
+
+	return data, nil
+}

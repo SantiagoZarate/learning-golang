@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
-	models "snippetbox.santiagozarate/internal"
+	models "snippetbox.santiagozarate/internal/models"
 )
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +15,18 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Welcome to my first golang API!"))
+	snippets, err := app.Snippets.GetAll()
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err = json.NewEncoder(w).Encode(snippets)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 }
 
 func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
@@ -24,8 +35,6 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-
-	fmt.Printf("Returning snippet with id %d...", id)
 
 	data, err := app.Snippets.GetByID(id)
 	if err != nil {
@@ -36,7 +45,11 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Fprintf(w, "%+v", data)
+	err = json.NewEncoder(w).Encode(data)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 }
 
 func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
