@@ -8,7 +8,7 @@ import (
 	"os"
 
 	_ "github.com/lib/pq"
-	models "snippetbox.santiagozarate/internal"
+	models "snippetbox.santiagozarate/internal/models"
 )
 
 type application struct {
