@@ -8,11 +8,13 @@ import (
 	"os"
 
 	_ "github.com/lib/pq"
+	models "snippetbox.santiagozarate/internal"
 )
 
 type application struct {
 	ErrorLog *log.Logger
 	InfoLog  *log.Logger
+	Snippets *models.SnippetModel
 }
 
 func main() {
@@ -22,11 +24,6 @@ func main() {
 	// Custom loggers
 	infoLog := log.New(os.Stdout, "INFO:\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	app := &application{
-		ErrorLog: errorLog,
-		InfoLog:  infoLog,
-	}
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -38,6 +35,12 @@ func main() {
 		errorLog.Fatal(err)
 	}
 	defer db.Close()
+
+	app := &application{
+		ErrorLog: errorLog,
+		InfoLog:  infoLog,
+		Snippets: &models.SnippetModel{DB: db},
+	}
 
 	srv := &http.Server{
 		Addr:     *addr,

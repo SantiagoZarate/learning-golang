@@ -1,9 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
+
+	models "snippetbox.santiagozarate/internal"
 )
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +24,19 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
+
 	fmt.Printf("Returning snippet with id %d...", id)
+
+	data, err := app.Snippets.GetByID(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+	}
+
+	fmt.Fprintf(w, "%+v", data)
 }
 
 func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {

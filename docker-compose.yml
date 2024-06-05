@@ -6,7 +6,7 @@ services:
       context: ./snippetbox
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: "host=go_db user=root password=rootpass dbname=postgres sslmode=disable"
+      DATABASE_URL: "host=go_db user=root password=rootpass dbname=root sslmode=disable"
     ports:
       - "7000:7000"
     depends_on:
@@ -18,11 +18,12 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpass
-      POSTGRES_DB: postgres
+      POSTGRES_DB: root
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgres/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U root" ]
       interval: 10s
