@@ -21,7 +21,7 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-	fmt.Println("Returning snippet with id %d...", id)
+	fmt.Printf("Returning snippet with id %d...", id)
 }
 
 func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {

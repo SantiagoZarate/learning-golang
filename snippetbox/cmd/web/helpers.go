@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"runtime/debug"
-	"fmt"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
