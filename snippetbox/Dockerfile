@@ -12,4 +12,4 @@ RUN go build -o app ./cmd/web
 
 EXPOSE 7000
 
-CMD ["./app"]
+CMD ["./app", "-addr=:7000"]

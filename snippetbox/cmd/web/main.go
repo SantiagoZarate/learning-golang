@@ -1,10 +1,13 @@
 package main
 
 import (
+	sql "database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 type application struct {
@@ -25,6 +28,17 @@ func main() {
 		InfoLog:  infoLog,
 	}
 
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		errorLog.Fatal("DATABASE_URL must be provided")
+	}
+
+	db, err := openDB(dbURL)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	defer db.Close()
+
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
@@ -32,6 +46,20 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on port %v...", *addr)
-	err := srv.ListenAndServe()
-	errorLog.Fatal(err)
+	svErr := srv.ListenAndServe()
+	errorLog.Fatal(svErr)
+}
+
+func openDB(config string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", config)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
