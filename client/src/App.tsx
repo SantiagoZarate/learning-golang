@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Snippet } from "./types/snippet";
 import { envs } from "./config/envs";
+import { VialIcon } from "./icons/VialIcon";
+import { LightrayIcon } from "./icons/LightrayIcon";
 
 export default function App() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -16,7 +18,22 @@ export default function App() {
 
   return (
     <div className=" bg-stone-900 text-stone-300">
-      <main className="max-w-screen-lg mx-auto flex gap-4 w-full min-h-screen">
+      <main className="relative max-w-screen-lg mx-auto flex gap-4 w-full min-h-screen">
+        <header className="absolute p-4">
+          <p className="capitalize text-xs px-4 py-2 bg-stone-800 text-stone-600 rounded-xl">
+            {
+              import.meta.env.DEV
+                ? <span className="flex gap-2 items-center">
+                  <VialIcon />
+                  Developmnent
+                </span>
+                : <span className="flex gap-2 items-center">
+                  <LightrayIcon />
+                  Production
+                </span>
+            }
+          </p>
+        </header>
         <section className="flex-1 flex items-center justify-center">
           <button className="px-4 py-2 rounded-lg uppercase text-xs hover:-translate-y-1 transition bg-stone-600">Get more snippets</button>
         </section>

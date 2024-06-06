@@ -6,4 +6,6 @@ const envsSchema = z.object({
   API_URL: z.string().trim()
 });
 
+console.log(import.meta.env)
+
 export const envs = envsSchema.parse({ API_URL })
