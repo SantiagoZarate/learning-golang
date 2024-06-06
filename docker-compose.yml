@@ -36,6 +36,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    volumes:
+      - /app/web/node_modules
+  client-dev:
+    container_name: client-dev
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./client:/app/web
+      - /app/web/node_modules
 
 volumes:
   pgdata: {}

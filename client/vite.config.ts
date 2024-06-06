@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    port: 8000, // This is the port which we will use in docker
+    port: 8001, // This is the port which we will use in docker
   },
   preview: {
     port: 8000,
