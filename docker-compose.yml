@@ -48,6 +48,8 @@ services:
     volumes:
       - ./client:/app/web
       - /app/web/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8001/src/data/snippets.json
 
 volumes:
   pgdata: {}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Snippet } from "./types/snippet";
+import { envs } from "./config/envs";
 
 export default function App() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -7,7 +8,7 @@ export default function App() {
 
   useEffect(() => {
     setIsLoading(true)
-    fetch("http://localhost:5173/src/data/snippets.json")
+    fetch(envs.API_URL)
       .then(res => res.json())
       .then(res => setSnippets(res))
       .finally(() => setIsLoading(false))
