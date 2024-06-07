@@ -7,14 +7,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
 	models "snippetbox.santiagozarate/internal/models"
 )
 
 type application struct {
-	ErrorLog *log.Logger
-	InfoLog  *log.Logger
-	Snippets *models.SnippetModel
+	ErrorLog    *log.Logger
+	InfoLog     *log.Logger
+	Snippets    *models.SnippetModel
+	FormDecoder *form.Decoder
 }
 
 func main() {
@@ -36,10 +38,13 @@ func main() {
 	}
 	defer db.Close()
 
+	formDecoder := form.NewDecoder()
+
 	app := &application{
-		ErrorLog: errorLog,
-		InfoLog:  infoLog,
-		Snippets: &models.SnippetModel{DB: db},
+		ErrorLog:    errorLog,
+		InfoLog:     infoLog,
+		Snippets:    &models.SnippetModel{DB: db},
+		FormDecoder: formDecoder,
 	}
 
 	srv := &http.Server{
