@@ -3,17 +3,18 @@ package main
 import (
 	"net/http"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
-	mux := http.NewServeMux()
+	router := httprouter.New()
 
-	mux.HandleFunc("/", app.Home)
-	mux.HandleFunc("/snippet/view", app.SnippetView)
-	mux.HandleFunc("/snippet/create", app.SnippetCreate)
+	router.HandlerFunc(http.MethodGet, "/", app.Home)
+	router.HandlerFunc(http.MethodGet, "/snippet/view", app.SnippetView)
+	router.HandlerFunc(http.MethodPost, "/snippet/create", app.SnippetCreate)
 
 	myChain := alice.New(app.PanicRevocer)
 
-	return myChain.Then(mux)
+	return myChain.Then(router)
 }
