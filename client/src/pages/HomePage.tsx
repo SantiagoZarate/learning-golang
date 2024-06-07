@@ -7,11 +7,14 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const url = envs.DEVELOPMENT ? envs.API_URL + "/src/data/snippets.json" : envs.API_URL
     setIsLoading(true)
-    fetch(envs.API_URL)
-      .then(res => res.json())
-      .then(res => setSnippets(res))
-      .finally(() => setIsLoading(false))
+    setTimeout(() => {
+      fetch(url)
+        .then(res => res.json())
+        .then(res => setSnippets(res))
+        .finally(() => setIsLoading(false))
+    }, 2000)
   }, [])
 
   return (

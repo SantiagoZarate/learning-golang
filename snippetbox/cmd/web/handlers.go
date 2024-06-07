@@ -43,7 +43,7 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := app.Snippets.GetByID(id)
+	snippet, err := app.Snippets.GetByID(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -52,7 +52,7 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(data)
+	err = json.NewEncoder(w).Encode(snippet)
 	if err != nil {
 		app.serverError(w, err)
 	}

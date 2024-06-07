@@ -29,8 +29,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  client:
-    container_name: client
+  client-prod:
+    container_name: client-prod
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -38,6 +38,8 @@ services:
       - "8000:8000"
     volumes:
       - /app/web/node_modules
+    environment:
+      VITE_API_URL: http://localhost:7000
   client-dev:
     container_name: client-dev
     build:
@@ -49,7 +51,7 @@ services:
       - ./client:/app/web
       - /app/web/node_modules
     environment:
-      - VITE_API_URL=http://localhost:8001/src/data/snippets.json
+      VITE_API_URL: http://localhost:8001
 
 volumes:
   pgdata: {}
