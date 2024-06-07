@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 	models "snippetbox.santiagozarate/internal/models"
 )
 
@@ -50,7 +51,7 @@ func main() {
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  app.routes(),
+		Handler:  cors.Default().Handler(app.routes()),
 	}
 
 	infoLog.Printf("Starting server on port %v...", *addr)
