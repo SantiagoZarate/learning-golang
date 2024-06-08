@@ -12,6 +12,9 @@ services:
     depends_on:
       go_db:
         condition: service_healthy
+    networks:
+      - frontend
+      - backend
   go_db:
     container_name: go_db
     image: postgres:12
@@ -24,6 +27,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgres/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U root" ]
       interval: 10s
@@ -38,6 +43,8 @@ services:
       - "8000:8000"
     volumes:
       - /app/web/node_modules
+    networks:
+      - frontend
     environment:
       VITE_API_URL: http://localhost:7000
   client-dev:
@@ -55,3 +62,6 @@ services:
 
 volumes:
   pgdata: {}
+networks:
+  frontend:
+  backend:

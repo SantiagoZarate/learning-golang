@@ -1,15 +1,23 @@
-FROM golang:1.22.4-alpine
+FROM golang:1.22.4-bullseye as build
 
 WORKDIR /app/api
 
-COPY go.mod ./
+COPY go.mod go.sum ./
 
-RUN go mod tidy
+RUN go mod download
 
 COPY . .
 
-RUN go build -o app ./cmd/web
+RUN go build \
+  -ldflags="-linkmode external -extldflags -static" \
+  -tags netgo \
+  -o app ./cmd/web
+
+###
+FROM scratch
+
+COPY --from=build /app/api/app app
 
 EXPOSE 7000
 
-CMD ["./app", "-addr=:7000"]
+CMD ["/app", "-addr=:7000"]
