@@ -10,14 +10,6 @@ RUN --mount=type=cache,target=/app/web/.npm \
 
 COPY . .
 
-### For production enviroment im not able to pass ENVS through docker-compose file
-### therefore i have to use args as a workaround.
-ARG VITE_API_URL
-ARG VITE_APP_VERSION
-
-ENV VITE_API_URL=${VITE_API_URL}
-ENV VITE_APP_VERSION=${VITE_APP_VERSION}
-
 RUN npm run build
 
 ###

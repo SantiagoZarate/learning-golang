@@ -39,15 +39,19 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=http://localhost:7000
-        - VITE_APP_VERSION=v0.0.1
+
     ports:
       - "8000:8000"
     volumes:
       - /app/web/node_modules
     networks:
       - frontend
+    env_file:
+      - path: ./client/.env.production
+        required: true
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_APP_VERSION=${VITE_APP_VERSION}
   client-dev:
     container_name: client-dev
     build:
@@ -58,9 +62,12 @@ services:
     volumes:
       - ./client:/app/web
       - /app/web/node_modules
+    env_file:
+      - path: ./client/.env.development
+        required: true
     environment:
-      VITE_API_URL: http://localhost:8001
-      VITE_APP_VERSION: v0.0.1
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_APP_VERSION=${VITE_APP_VERSION}
 
 volumes:
   pgdata: {}
