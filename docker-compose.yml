@@ -17,7 +17,7 @@ services:
       - backend
   go_db:
     container_name: go_db
-    image: postgres:12
+    image: postgres:12-alpine
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpass
@@ -39,14 +39,15 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:7000
+        - VITE_APP_VERSION=v0.0.1
     ports:
       - "8000:8000"
     volumes:
       - /app/web/node_modules
     networks:
       - frontend
-    environment:
-      VITE_API_URL: http://localhost:7000
   client-dev:
     container_name: client-dev
     build:
@@ -59,6 +60,7 @@ services:
       - /app/web/node_modules
     environment:
       VITE_API_URL: http://localhost:8001
+      VITE_APP_VERSION: v0.0.1
 
 volumes:
   pgdata: {}
