@@ -4,10 +4,12 @@ WORKDIR /app/web
 
 COPY package*.json .
 
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm i
+RUN --mount=type=cache,target=/app/web/.npm \
+  npm set cache /app/web/.npm && \
+  npm install
 
 COPY . .
 
 EXPOSE 8001
 
-CMD [ "pnpm", "dev" ]
+CMD [ "npm", "run", "dev" ]

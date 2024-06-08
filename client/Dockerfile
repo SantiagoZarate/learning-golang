@@ -1,15 +1,17 @@
-FROM node:18-alpine
+FROM node:18-alpine AS base
 
 WORKDIR /app/web
 
 COPY package*.json .
 
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm i
+RUN --mount=type=cache,target=/app/web/.npm \
+  npm set cache /app/web/.npm && \
+  npm install --omit=dev && npm install typescript
 
 COPY . .
 
-RUN pnpm build
+RUN npm run build
 
 EXPOSE 8000
 
-CMD [ "pnpm", "preview" ]
+CMD [ "npm", "run", "preview" ]
