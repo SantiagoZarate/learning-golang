@@ -19,7 +19,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
 import { useAuth } from "@/hooks/useAuth"
 import { Loader } from "@/components/ui/Loader"
-import { redirect, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -34,7 +34,7 @@ type LoginFormType = z.infer<typeof FormSchema>;
 
 export function LoginPage() {
   const redirect = useNavigate()
-  const { isPending, logOn } = useAuth();
+  const { isPending, logOn, storeCredentials } = useAuth();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,6 +47,7 @@ export function LoginPage() {
     logOn(data)
       .then(res => {
         if (res.status === 200) {
+          storeCredentials()
           return redirect("/")
         }
         console.log("Invalid credentials")

@@ -15,8 +15,23 @@ export function useAuth() {
       .finally(() => setIsPending(false))
   }
 
+  const isLogged = () => {
+    return localStorage.getItem("logged") === "true";
+  }
+
+  const storeCredentials = () => {
+    localStorage.setItem("logged", "true")
+  }
+
+  const clearCredentials = () => {
+    localStorage.removeItem("logged")
+  }
+
   return {
     logOn,
     isPending,
+    isLogged,
+    storeCredentials,
+    clearCredentials,
   }
 }

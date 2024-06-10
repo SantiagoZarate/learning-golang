@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { LightrayIcon } from "../icons/LightrayIcon";
 import { VialIcon } from "../icons/VialIcon";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
+  const { isLogged } = useAuth();
+  const userAuthorized = isLogged();
+
   return (
     <header className="z-50 absolute w-full">
       <div className="p-4 max-w-screen-lg flex justify-between items-center mx-auto">
@@ -20,11 +24,20 @@ export function Header() {
               </span>
           }
         </p>
-        <Button>
-          <Link to={"/login"} className="underline">
-            login
-          </Link>
-        </Button>
+        {
+          userAuthorized
+            ? <Button variant={'secondary'}>
+              <Link to={"/account"}>
+                mi cuenta
+              </Link>
+            </Button>
+            :
+            <Button>
+              <Link to={"/login"} className="underline">
+                login
+              </Link>
+            </Button>
+        }
       </div>
     </header>
   )
