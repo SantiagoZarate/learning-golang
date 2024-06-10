@@ -17,6 +17,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
+import { useAuth } from "@/hooks/useAuth"
+import { Loader } from "@/components/ui/Loader"
+import { redirect, useNavigate } from "react-router-dom"
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -30,6 +33,8 @@ const FormSchema = z.object({
 type LoginFormType = z.infer<typeof FormSchema>;
 
 export function LoginPage() {
+  const redirect = useNavigate()
+  const { isPending, logOn } = useAuth();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,14 +44,17 @@ export function LoginPage() {
   })
 
   function onSubmit(data: LoginFormType) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+    logOn(data)
+      .then(res => {
+        if (res.status === 200) {
+          return redirect("/")
+        }
+        console.log("Invalid credentials")
+      })
+      .catch(() => {
+        toast({ title: "Internal error" })
+        form.reset()
+      })
   }
 
   return (
@@ -59,7 +67,7 @@ export function LoginPage() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="LionelMessi2022" {...field} />
+                <Input disabled={isPending} placeholder="LionelMessi2022" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -75,7 +83,7 @@ export function LoginPage() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="******" {...field} />
+                <Input disabled={isPending} placeholder="******" {...field} />
               </FormControl>
               <FormDescription>
                 This is going to be your password.
@@ -85,7 +93,15 @@ export function LoginPage() {
           )}
         />
         <Toaster />
-        <Button type="submit">Submit</Button>
+        <Button
+          disabled={isPending}
+          type="submit">
+          {
+            isPending
+              ? <Loader />
+              : "submit"
+          }
+        </Button>
       </form>
     </Form>
   )
