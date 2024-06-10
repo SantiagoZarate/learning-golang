@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import { setMiddlewares } from '../middlewares/setMiddlewares'
+import envs from '../config/envs'
 
 const server = express()
 
@@ -10,7 +11,7 @@ server.use("/ping", (req: Request, res: Response) => {
 })
 
 export function start() {
-  server.listen(4000, () => {
+  server.listen(envs.PORT, () => {
     console.log(`Server listening on http://localhost:8080`)
   })
 }
