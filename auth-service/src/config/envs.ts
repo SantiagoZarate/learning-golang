@@ -22,6 +22,8 @@ const envs = envsSchema.parse({
   DB_NAME: process.env.DB_NAME,
 })
 
+console.log(envs)
+
 export default {
   port: envs.PORT,
   version: envs.VERSION,

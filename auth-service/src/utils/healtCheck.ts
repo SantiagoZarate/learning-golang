@@ -7,7 +7,7 @@ export function healthCheck(req: Request, res: Response) {
     message: "Api working perftecly fine",
     info: {
       date: new Date(),
-      version: envs.VERSION
+      version: envs.version
     }
   })
 }
