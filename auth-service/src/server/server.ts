@@ -1,17 +1,18 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { setMiddlewares } from '../middlewares/setMiddlewares'
 import envs from '../config/envs'
+import authRouter from '../resources/auth/router'
+import { healthCheck } from '../utils/healtCheck';
 
-const server = express()
+const server = express();
 
-setMiddlewares(server)
+setMiddlewares(server);
 
-server.use("/ping", (req: Request, res: Response) => {
-  res.send("pong!")
-})
+server.get("/api/v1/test", healthCheck);
+server.use("/api/v1/auth", authRouter);
 
 export function start() {
   server.listen(envs.PORT, () => {
-    console.log(`Server listening on http://localhost:8080`)
+    console.log(`Server listening on http://localhost:${envs.PORT}`)
   })
 }
