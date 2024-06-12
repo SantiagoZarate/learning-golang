@@ -1,13 +1,15 @@
-FROM node:18-alpine
+FROM node:18-alpine as build
 
 WORKDIR /src/usr/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --only=production
 
 COPY . .
 
+RUN npm install typescript && npx tsc
+
 EXPOSE 4000
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "node", "./dist/src/index.js" ]

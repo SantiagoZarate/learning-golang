@@ -12,7 +12,7 @@ server.get("/api/v1/test", healthCheck);
 server.use("/api/v1/auth", authRouter);
 
 export function start() {
-  server.listen(envs.port, () => {
-    console.log(`Server listening on http://localhost:${envs.port}`)
+  server.listen(envs.PORT, () => {
+    console.log(`Server listening on http://localhost:${envs.PORT}`)
   })
 }

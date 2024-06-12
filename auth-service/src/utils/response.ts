@@ -13,7 +13,7 @@ export function response({ data, message, res, statusCode = 200 }: ResponseType)
     results: data,
     message,
     info: {
-      version: envs.version
+      version: envs.VERSION
     }
   })
 }

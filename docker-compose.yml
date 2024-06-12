@@ -39,7 +39,6 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-
     ports:
       - "8000:8000"
     volumes:
@@ -52,22 +51,40 @@ services:
     environment:
       - VITE_API_URL=${VITE_API_URL}
       - VITE_APP_VERSION=${VITE_APP_VERSION}
-  client-dev:
-    container_name: client-dev
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    ports:
-      - "8001:8001"
-    volumes:
-      - ./client:/app/web
-      - /app/web/node_modules
-    env_file:
-      - path: ./client/.env.development
-        required: true
+  auth_db:
+    container_name: auth_db
+    image: postgres:12-alpine
     environment:
-      - VITE_API_URL=${VITE_API_URL}
-      - VITE_APP_VERSION=${VITE_APP_VERSION}
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rootpass
+      POSTGRES_DB: root
+    ports:
+      - "5433:5433"
+    volumes:
+      - pgdata:/var/lib/postgres/data
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  auth_api:
+    container_name: auth_api
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./auth-service/.env
+        required: true
+    ports:
+      - "4000:4000"
+    depends_on:
+      auth_db:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
 
 volumes:
   pgdata: {}
