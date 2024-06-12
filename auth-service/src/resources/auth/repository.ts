@@ -1,18 +1,10 @@
-import { InferSelectModel, eq } from "drizzle-orm";
+import { InferSelectModel, eq, or } from "drizzle-orm";
 import { hash, compare } from 'bcrypt'
 import db from "@/utils/db";
 import envs from "@/config/envs";
 import { ValidationError } from "@/utils/errors";
 import user from "./schema";
-
-interface LoginType {
-  username: string,
-  password: string
-}
-
-interface RegisterType extends LoginType {
-  email: string
-}
+import { LoginType, RegisterType } from "@/types/express/auth";
 
 export class UserRepository {
   static async findAll(): Promise<InferSelectModel<typeof user>[]> {
@@ -37,7 +29,7 @@ export class UserRepository {
   }
 
   static async register({ email, password, username }: RegisterType): Promise<number> {
-    const foundUser = await db.select().from(user).where(eq(user.name, username));
+    const foundUser = await db.select().from(user).where(or(eq(user.name, username), eq(user.email, email)));
 
     if (foundUser.length !== 0) {
       throw new ValidationError("Duplicated credentials")
