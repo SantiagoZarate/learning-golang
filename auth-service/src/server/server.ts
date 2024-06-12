@@ -1,8 +1,8 @@
 import express from 'express'
-import { setMiddlewares } from '../middlewares/setMiddlewares'
-import envs from '../config/envs'
-import authRouter from '../resources/auth/router'
-import { healthCheck } from '../utils/healtCheck';
+import { setMiddlewares } from '@/middlewares/setMiddlewares';
+import { healthCheck } from '@/utils/healtCheck';
+import envs from '@/config/envs';
+import authRouter from '@/resources/auth/router'
 
 const server = express();
 

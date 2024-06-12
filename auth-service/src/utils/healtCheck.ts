@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import envs from "../config/envs";
+import envs from "@/config/envs";
 
 export function healthCheck(req: Request, res: Response) {
   res.status(200).json({

@@ -1,7 +1,7 @@
+import { ValidationError, ConnectionError } from "@/utils/errors";
 import { Request, Response } from "express";
-import { response } from "../../utils/response";
 import { UserRepository } from "./repository";
-import { ConnectionError, ValidationError } from "../../utils/errors";
+import { response } from "@/utils/response";
 
 async function login(req: Request, res: Response) {
   const { username, password } = req.body;

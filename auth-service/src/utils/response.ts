@@ -1,5 +1,5 @@
+import envs from "@/config/envs";
 import { Response } from "express";
-import envs from "../config/envs";
 
 interface ResponseType {
   res: Response,

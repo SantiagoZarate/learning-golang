@@ -1,9 +1,9 @@
 import { InferSelectModel, eq } from "drizzle-orm";
-import db from "../../utils/db";
-import user from "./schema";
-import { ValidationError } from "../../utils/errors";
 import { hash, compare } from 'bcrypt'
-import envs from "../../config/envs";
+import db from "@/utils/db";
+import envs from "@/config/envs";
+import { ValidationError } from "@/utils/errors";
+import user from "./schema";
 
 interface LoginType {
   username: string,
