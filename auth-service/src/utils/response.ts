@@ -4,7 +4,7 @@ import envs from "../config/envs";
 interface ResponseType {
   res: Response,
   message: string,
-  data: any[] | any
+  data?: any[] | any
   statusCode?: number,
 }
 
