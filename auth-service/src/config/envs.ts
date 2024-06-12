@@ -8,7 +8,8 @@ const envsSchema = z.object({
   DB_URL: z.string(),
   VERSION: z.string(),
   MODE: z.string(),
-  SALT_ROUNDS: z.coerce.number().min(1).max(14)
+  SALT_ROUNDS: z.coerce.number().min(1).max(14),
+  JWT_SECRET: z.string()
 })
 
 const envs = envsSchema.parse({
@@ -16,7 +17,8 @@ const envs = envsSchema.parse({
   VERSION: process.env.VERSION,
   DB_URL: process.env.DB_URL,
   MODE: process.env.MODE,
-  SALT_ROUNDS: process.env.SALT_ROUNDS
+  SALT_ROUNDS: process.env.SALT_ROUNDS,
+  JWT_SECRET: process.env.JWT_SECRET
 })
 
 console.log(envs)
