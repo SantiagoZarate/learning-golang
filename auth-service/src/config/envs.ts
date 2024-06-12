@@ -6,13 +6,17 @@ dotenv.config()
 const envsSchema = z.object({
   PORT: z.coerce.number(),
   DB_URL: z.string(),
-  VERSION: z.string()
+  VERSION: z.string(),
+  MODE: z.string(),
+  SALT_ROUNDS: z.coerce.number().min(1).max(14)
 })
 
 const envs = envsSchema.parse({
   PORT: process.env.PORT,
   VERSION: process.env.VERSION,
-  DB_URL: process.env.DB_URL
+  DB_URL: process.env.DB_URL,
+  MODE: process.env.MODE,
+  SALT_ROUNDS: process.env.SALT_ROUNDS
 })
 
 console.log(envs)

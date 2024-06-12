@@ -2,6 +2,8 @@ import { InferSelectModel, eq } from "drizzle-orm";
 import db from "../../utils/db";
 import user from "./schema";
 import { ValidationError } from "../../utils/errors";
+import { hash, compare } from 'bcrypt'
+import envs from "../../config/envs";
 
 interface LoginType {
   username: string,
@@ -25,7 +27,9 @@ export class UserRepository {
       throw new ValidationError("User not found")
     }
 
-    if (foundUser[0].password !== password) {
+    const hasSamePassword = await compare(password, foundUser[0].password)
+
+    if (!hasSamePassword) {
       throw new ValidationError("Incorrect password")
     }
 
@@ -34,15 +38,16 @@ export class UserRepository {
 
   static async register({ email, password, username }: RegisterType): Promise<number> {
     const foundUser = await db.select().from(user).where(eq(user.name, username));
-    console.log("Ya busque el usuario")
+
     if (foundUser.length !== 0) {
       throw new ValidationError("Duplicated credentials")
     }
-    console.log("aca no deberia llegar")
+
+    const hashedPass = await hash(password, envs.SALT_ROUNDS)
 
     const result = await db.insert(user).values({
-      password,
       email,
+      password: hashedPass,
       name: username,
       role: 'default'
     }).returning()
