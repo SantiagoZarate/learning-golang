@@ -22,7 +22,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm tsc
+RUN pnpm build
 
 ###
 FROM gcr.io/distroless/nodejs20-debian11
@@ -43,7 +43,5 @@ COPY --from=build /app/package.json /app/package.json
 # COPY . .
 
 # RUN npm install typescript && npx tsc
-
-EXPOSE 4000
 
 CMD [ "dist/src/index.js" ]

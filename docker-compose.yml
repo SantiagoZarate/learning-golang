@@ -58,12 +58,10 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpass
       POSTGRES_DB: root
-      PGPORT: 5433
     expose:
       - "5433"
     ports:
-      - "5433:5433"
-    command: -p 5433
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgres/data
     networks:
@@ -79,10 +77,12 @@ services:
       context: ./auth-service
       dockerfile: Dockerfile
     env_file:
-      - path: ./auth-service/.env
+      - path: ./auth-service/.env.prod
         required: true
+    expose:
+      - 4222
     ports:
-      - "4000:4000"
+      - "4222:4222"
     depends_on:
       auth_db:
         condition: service_healthy

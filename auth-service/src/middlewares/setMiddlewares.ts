@@ -1,9 +1,11 @@
 import envs from "@/config/envs";
-import { Application, json, urlencoded } from "express";
+import express, { Application, json, urlencoded } from "express";
 import morgan from "morgan";
 import cookieParser from 'cookie-parser'
+import path from "path";
 
 export function setMiddlewares(server: Application) {
+  server.use(express.static(path.resolve("public")))
   server.use(json())
   server.use(urlencoded({
     extended: true
