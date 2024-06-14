@@ -9,7 +9,8 @@ const envsSchema = z.object({
   VERSION: z.string(),
   MODE: z.string(),
   SALT_ROUNDS: z.coerce.number().min(1).max(14),
-  JWT_SECRET: z.string()
+  JWT_SECRET: z.string(),
+  SEEDING: z.coerce.boolean().default(false)
 })
 
 const envs = envsSchema.parse({
@@ -18,7 +19,8 @@ const envs = envsSchema.parse({
   DB_URL: process.env.DB_URL,
   MODE: process.env.MODE,
   SALT_ROUNDS: process.env.SALT_ROUNDS,
-  JWT_SECRET: process.env.JWT_SECRET
+  JWT_SECRET: process.env.JWT_SECRET,
+  SEEDING: process.env.SEEDING
 })
 
 console.log(envs)
