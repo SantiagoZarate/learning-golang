@@ -2,12 +2,13 @@ import { Request } from "express"
 
 export interface ExtRequest extends Request {
   session?: {
-    user?: any
+    user: JwtUser | null
   },
   cookies: any
 }
 
 export type JwtUser = {
   username: string,
-  password: string
+  password: string,
+  role: string
 }

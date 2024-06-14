@@ -11,7 +11,7 @@ async function login(req: Request, res: Response) {
 
   try {
     const user = await UserRepository.login({ username, password })
-    const token = jwt.sign({ username, password }, envs.JWT_SECRET)
+    const token = jwt.sign({ username, password: user.password, role: user.role }, envs.JWT_SECRET)
     const data = user.id
     res.cookie("access_token", token, {
       httpOnly: true,
