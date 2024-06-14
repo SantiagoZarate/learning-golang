@@ -5,7 +5,7 @@ const user = pgTable("user", {
   name: text("name").unique().notNull(),
   email: text("email").unique().notNull(),
   password: text("password").notNull(),
-  role: text("role").$type<"admin" | "default">(),
+  role: text("role").$type<"admin" | "user">().$default(() => "user"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

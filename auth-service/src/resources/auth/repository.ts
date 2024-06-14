@@ -41,7 +41,6 @@ export class UserRepository {
       email,
       password: hashedPass,
       name: username,
-      role: 'default'
     }).returning()
 
     return result[0].id;
