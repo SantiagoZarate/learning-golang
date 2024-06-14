@@ -45,4 +45,23 @@ export class UserRepository {
 
     return result[0].id;
   }
+
+  static async promoteRole(id: number): Promise<number> {
+    const foundUser = await db.select().from(user).where(eq(user.id, id));
+
+    if (foundUser.length === 0) {
+      throw new ValidationError("user not found")
+    }
+
+    if (foundUser[0].role === 'admin') {
+      throw new ValidationError("user had already gotten admin priviliges")
+    }
+
+    const result = await db.update(user)
+      .set({ role: 'admin' })
+      .where(eq(user.id, id))
+      .returning();
+
+    return result[0].id
+  }
 }

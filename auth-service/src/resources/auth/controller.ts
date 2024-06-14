@@ -57,8 +57,22 @@ async function register(req: Request, res: Response) {
   }
 }
 
+async function promoteUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params
+    const data = await UserRepository.promoteRole(Number(id));
+    response({ res, data, message: "Registered succesfully" })
+  } catch (error: any) {
+    if (error instanceof ValidationError) {
+      return response({ res, message: error.message, statusCode: 403 })
+    }
+    return response({ res, message: error.message, statusCode: 500 })
+  }
+}
+
 export default {
   login,
   register,
-  getUsers
+  getUsers,
+  promoteUser
 }
