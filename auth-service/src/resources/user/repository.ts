@@ -1,10 +1,10 @@
 import { InferSelectModel, eq, or } from "drizzle-orm";
 import { hash, compare } from 'bcrypt'
-import db from "@/utils/db";
 import envs from "@/config/envs";
 import { ValidationError } from "@/utils/errors";
-import user from "./schema";
 import { LoginType, RegisterType } from "@/types/express/auth";
+import user from "./schema";
+import db from "@/db/db";
 
 export class UserRepository {
   static async findAll(): Promise<InferSelectModel<typeof user>[]> {

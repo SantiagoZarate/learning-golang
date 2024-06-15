@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import envs from '@/config/envs';
-import user from '@/resources/auth/schema';
+import user from '@/resources/user/schema';
 
 function connectDB() {
   try {

@@ -1,9 +1,9 @@
 import usersJson from './users.json'
-import db from '@/utils/db'
 import { InferInsertModel } from 'drizzle-orm'
-import user from '@/resources/auth/schema'
+import user from '@/resources/user/schema'
 import envs from '@/config/envs'
-import { UserRepository } from '@/resources/auth/repository'
+import { UserRepository } from '@/resources/user/repository'
+import db from '../db'
 
 if (!envs.SEEDING) {
   console.log(">>> You're not in seeding mode, terminating process...")
