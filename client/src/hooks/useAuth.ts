@@ -1,13 +1,12 @@
 import { login } from "@/services/auth/login";
 import { register } from "@/services/auth/register";
 import { LoginPayload, RegisterPayload } from "@/types/auth";
-import console from "console";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from 'react-cookie'
+import { useGlobalContext } from "./useGlobalContext";
 
 export function useAuth() {
-  const [_cookies, setCookie] = useCookies(['access_token'])
+  const { loginUser } = useGlobalContext()
   const redirect = useNavigate()
   const [isPending, setIsPending] = useState(false);
 
@@ -17,7 +16,6 @@ export function useAuth() {
       .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
-
           return redirect("/")
         }
         console.log("There was an error")
@@ -27,12 +25,11 @@ export function useAuth() {
   const logOn = (data: LoginPayload): Promise<any> => {
     setIsPending(true)
     return login(data)
-      .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
           res.json()
             .then(res => {
-              setCookie("access_token", res.token)
+              loginUser(res.token)
             })
             .then(() => {
               return redirect("/")
@@ -40,6 +37,7 @@ export function useAuth() {
         }
         console.log("Invalid credentials")
       })
+      .finally(() => setIsPending(false))
   }
 
   const isLogged = () => {

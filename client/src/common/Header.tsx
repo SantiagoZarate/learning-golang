@@ -2,11 +2,10 @@ import { Link } from "react-router-dom";
 import { LightrayIcon } from "../icons/LightrayIcon";
 import { VialIcon } from "../icons/VialIcon";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 
 export function Header() {
-  const { isLogged } = useAuth();
-  const userAuthorized = isLogged();
+  const { userIsLogged } = useGlobalContext()
 
   return (
     <header className="z-50 absolute w-full">
@@ -25,7 +24,7 @@ export function Header() {
           }
         </p>
         {
-          userAuthorized
+          userIsLogged
             ?
             <Link to={"/account"}>
               <Button variant={'secondary'}>
