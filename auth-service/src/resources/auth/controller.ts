@@ -11,12 +11,13 @@ async function login(req: Request, res: Response) {
   try {
     const user = await UserRepository.login({ username, password })
     const token = jwt.sign({ username, password: user.password, role: user.role }, envs.JWT_SECRET)
-    const data = user.id
     res.cookie("access_token", token, {
       httpOnly: true,
       sameSite: true
     })
-    response({ res, data, message: "Log on succesfull" })
+    res.json({
+      token
+    })
   } catch (error: any) {
     if (error instanceof ValidationError) {
       return response({ res, message: error.message, statusCode: 403 })
