@@ -1,10 +1,13 @@
 import { login } from "@/services/auth/login";
 import { register } from "@/services/auth/register";
 import { LoginPayload, RegisterPayload } from "@/types/auth";
+import console from "console";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from 'react-cookie'
 
 export function useAuth() {
+  const [_cookies, setCookie] = useCookies(['access_token'])
   const redirect = useNavigate()
   const [isPending, setIsPending] = useState(false);
 
@@ -14,6 +17,7 @@ export function useAuth() {
       .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
+
           return redirect("/")
         }
         console.log("There was an error")
@@ -26,7 +30,13 @@ export function useAuth() {
       .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
-          return redirect("/")
+          res.json()
+            .then(res => {
+              setCookie("access_token", res.token)
+            })
+            .then(() => {
+              return redirect("/")
+            })
         }
         console.log("Invalid credentials")
       })
@@ -36,8 +46,8 @@ export function useAuth() {
     return localStorage.getItem("logged") === "true";
   }
 
-  const storeCredentials = () => {
-    localStorage.setItem("logged", "true")
+  const storeCredentials = (cookie: string) => {
+    document.cookie = cookie;
   }
 
   const clearCredentials = () => {

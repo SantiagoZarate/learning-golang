@@ -26,17 +26,18 @@ export function Header() {
         </p>
         {
           userAuthorized
-            ? <Button variant={'secondary'}>
-              <Link to={"/account"}>
+            ?
+            <Link to={"/account"}>
+              <Button variant={'secondary'}>
                 mi cuenta
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             :
-            <Button>
-              <Link to={"/login"} className="underline">
+            <Link to={"/login"} className="underline">
+              <Button>
                 login
-              </Link>
-            </Button>
+              </Button>
+            </Link>
         }
       </div>
     </header>
