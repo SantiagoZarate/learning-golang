@@ -21,13 +21,11 @@ export function useAuth() {
   }
 
   const logOn = (data: LoginPayload): Promise<any> => {
-    console.log("sending dat...", data)
     setIsPending(true)
     return login(data)
       .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
-          storeCredentials()
           return redirect("/")
         }
         console.log("Invalid credentials")
