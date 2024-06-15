@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./pages/HomePage";
 import { AppLayout } from "./layouts/AppLayout";
-import { LoginPage } from "./pages/LoginPage";
 import { AuthLayout } from "./layouts/AuthLayout";
+import { HomePage } from "./pages/HomePage";
+import { AuthPage } from "./pages/auth/AuthPage";
 
 export default function App() {
   return (
@@ -10,7 +10,8 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route index element={<HomePage />} />
         <Route element={<AuthLayout />}>
-          <Route path="login" element={<LoginPage />} />
+          <Route path="login" element={<AuthPage />} />
+          <Route path="register" element={<AuthPage />} />
         </Route>
       </Route>
     </Routes>

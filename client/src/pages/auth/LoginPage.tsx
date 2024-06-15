@@ -4,22 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { Loader } from "@/components/ui/Loader"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
 import { useAuth } from "@/hooks/useAuth"
-import { Loader } from "@/components/ui/Loader"
 import { useNavigate } from "react-router-dom"
+import { PasswordField } from "./PasswordField"
+import { UsernameField } from "./UsernameField"
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -30,7 +23,7 @@ const FormSchema = z.object({
     .max(12, { message: "Password must be shorter than 12 characters." })
 })
 
-type LoginFormType = z.infer<typeof FormSchema>;
+export type LoginFormType = z.infer<typeof FormSchema>;
 
 export function LoginPage() {
   const redirect = useNavigate()
@@ -44,6 +37,7 @@ export function LoginPage() {
   })
 
   function onSubmit(data: LoginFormType) {
+    console.log(data)
     logOn(data)
       .then(res => {
         if (res.status === 200) {
@@ -61,38 +55,8 @@ export function LoginPage() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mx-auto">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input disabled={isPending} placeholder="LionelMessi2022" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input disabled={isPending} placeholder="******" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is going to be your password.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <UsernameField control={form.control} description="Choose a name" />
+        <PasswordField control={form.control} description="Type your password" />
         <Toaster />
         <Button
           disabled={isPending}

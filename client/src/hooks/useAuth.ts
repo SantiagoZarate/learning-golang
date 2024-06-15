@@ -1,18 +1,37 @@
+import { login } from "@/services/auth/login";
+import { register } from "@/services/auth/register";
+import { LoginPayload, RegisterPayload } from "@/types/auth";
 import { useState } from "react";
-
-type LogInType = {
-  username: string
-  password: string
-}
+import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
+  const redirect = useNavigate()
   const [isPending, setIsPending] = useState(false);
 
-  const logOn = (data: LogInType): Promise<any> => {
+  const signUp = (data: RegisterPayload) => {
+    setIsPending(true)
+    return register(data)
+      .finally(() => setIsPending(false))
+      .then(res => {
+        if (res.status === 200) {
+          return redirect("/")
+        }
+        console.log("There was an error")
+      })
+  }
+
+  const logOn = (data: LoginPayload): Promise<any> => {
     console.log("sending dat...", data)
     setIsPending(true)
-    return fetch("http://127.0.0.1:7000/")
+    return login(data)
       .finally(() => setIsPending(false))
+      .then(res => {
+        if (res.status === 200) {
+          storeCredentials()
+          return redirect("/")
+        }
+        console.log("Invalid credentials")
+      })
   }
 
   const isLogged = () => {
@@ -28,6 +47,7 @@ export function useAuth() {
   }
 
   return {
+    signUp,
     logOn,
     isPending,
     isLogged,

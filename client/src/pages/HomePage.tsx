@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { envs } from "../config/envs";
+import envs from "../config/envs";
 import { Snippet } from "../types/snippet";
 
 export function HomePage() {
