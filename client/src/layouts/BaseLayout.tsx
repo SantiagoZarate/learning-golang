@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 export function BaseLayout() {
   return (
     <GlobalContextProvider>
-      <div className="font-geist bg-stone-900 text-stone-300">
+      <div className="font-geist bg-background text-primary">
         <Header />
         <Outlet />
         <ModeTooltip />
