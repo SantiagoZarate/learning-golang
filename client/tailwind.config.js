@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        "geist": ["Geist", "helvetica"]
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
