@@ -12,9 +12,20 @@ export function Header() {
   return (
     <header className="z-50 top-0 fixed w-full backdrop:blur-xl">
       <div className="p-4 max-w-screen-lg flex justify-between items-center mx-auto">
-        <p className="bg-stone-800 aspect-square p-4 rounded-xl text-accent font-bold">
-          SB
-        </p>
+        <section className="flex items-center gap-4">
+          <Link to={"/"}>
+            <p className="bg-stone-800 aspect-square p-4 rounded-xl text-accent font-bold">
+              SB
+            </p>
+          </Link>
+          <nav>
+            <Link to={"/home"}>
+              <p className="text-sm hover:opacity-100 opacity-50 uppercase transition hover:-translate-y-1">
+                home
+              </p>
+            </Link>
+          </nav>
+        </section>
         <section className="flex items-center divide-x">
           <Popover>
             <PopoverTrigger className="hover:translate-y-1 transition p-2 mx-2">
