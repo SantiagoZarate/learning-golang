@@ -24,9 +24,9 @@ export function SnippetForm() {
   }
 
   return (
-    <section className="flex-1 flex flex-col items-center justify-center divide-y">
+    <section className="fixed w-1/4 flex flex-col items-center justify-center divide-y">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-2 mx-auto p-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2 mx-auto p-4">
           <FormField
             control={form.control}
             name="title"

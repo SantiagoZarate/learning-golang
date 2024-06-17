@@ -20,9 +20,11 @@ export function HomePage() {
 
   return (
     <>
-      <SnippetForm />
-      <section className="relative flex-1 flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-background" />
+      <section className="relative flex-1">
+        <SnippetForm />
+      </section>
+      <section className="flex-1 flex p-4 max-h-full overflow-y-auto relative  items-center justify-center">
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-background" /> */}
         {
           isLoading
             ? <p>Loading...</p>
@@ -31,10 +33,11 @@ export function HomePage() {
               {
                 snippets.map(s => (
                   <li
-                    className="rounded-lg border border-stone-700 w-72 flex flex-col gap-2 p-4"
+                    className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4"
                     key={s.ID}>
                     <p className="text-2xl uppercase">{s.Title}</p>
                     <p className="text-sm">{s.Content}</p>
+                    <p className="text-xs text-white/20">{new Date().toDateString()}</p>
                   </li>
                 ))
               }

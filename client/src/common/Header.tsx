@@ -10,7 +10,7 @@ export function Header() {
   const { toggleTheme, isDarkTheme } = useGlobalContext()
 
   return (
-    <header className="z-50 absolute w-full">
+    <header className="z-50 top-0 fixed w-full backdrop:blur-xl">
       <div className="p-4 max-w-screen-lg flex justify-between items-center mx-auto">
         <p className="bg-stone-800 aspect-square p-4 rounded-xl text-accent font-bold">
           SB
