@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import envs from "../config/envs";
 import { Snippet } from "../types/snippet";
 import { SnippetForm } from "./SnippetForm";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { WorldwideIcon } from "@/components/icons/WorldwideIcon";
 
 export function HomePage() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -37,7 +39,37 @@ export function HomePage() {
                     key={s.ID}>
                     <p className="text-2xl uppercase">{s.Title}</p>
                     <p className="text-sm">{s.Content}</p>
-                    <p className="text-xs text-white/20">{new Date().toDateString()}</p>
+                    <footer className="flex justify-between items-center">
+                      <p className="text-xs text-white/20">{new Date().toDateString()}</p>
+                      <TooltipProvider delayDuration={50}>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            {
+                              s.ID % 2 == 0
+                                ?
+                                <div className="flex gap-1 items-center text-xs capitalize text-card">
+                                  public
+                                  <WorldwideIcon />
+                                </div>
+                                :
+                                <ul className="flex">
+                                  <li className="w-4 aspect-square rounded-full border border-background bg-card"></li>
+                                  <li className="w-4 aspect-square rounded-full border border-background bg-card -ml-1"></li>
+                                  <li className="w-4 aspect-square rounded-full border border-background bg-card -ml-1"></li>
+                                </ul>
+                            }
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {
+                              s.ID % 2 == 0
+                                ? <p>Everybody can see it</p>
+                                : <p>Shared with you and 2 more people</p>
+                            }
+
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </footer>
                   </li>
                 ))
               }
