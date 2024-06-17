@@ -24,7 +24,7 @@ export function Header() {
               <ul className="flex flex-col divide-y text-sm">
                 <li>
                   <p className="font-bold text-center py-1 text-xs bg-muted">Theme</p>
-                  <button className="w-fit space-x-0 flex gap-2 hover:bg-muted transition px-4 py-2" onClick={toggleTheme}>
+                  <button className="w-fit space-x-0 flex gap-2 hover:bg-muted transition px-8 py-2" onClick={toggleTheme}>
                     {
                       isDarkTheme
                         ? <MoonIcon />

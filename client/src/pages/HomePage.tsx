@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import envs from "../config/envs";
 import { Snippet } from "../types/snippet";
+import { SnippetForm } from "./SnippetForm";
 
 export function HomePage() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -19,15 +20,14 @@ export function HomePage() {
 
   return (
     <>
-      <section className="flex-1 flex items-center justify-center">
-        <button className="px-4 py-2 rounded-lg uppercase text-xs hover:-translate-y-1 transition bg-stone-600">Get more snippets</button>
-      </section>
-      <section className="flex-1 flex items-center justify-center">
+      <SnippetForm />
+      <section className="relative flex-1 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-background" />
         {
           isLoading
             ? <p>Loading...</p>
             :
-            <ul className="flex flex-col gap-4">
+            <ul className="flex flex-col gap-4 overflow-y-auto">
               {
                 snippets.map(s => (
                   <li
