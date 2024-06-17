@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 const snippetSchema = z.object({
@@ -15,6 +17,7 @@ const snippetSchema = z.object({
 type SnippetFormType = z.infer<typeof snippetSchema>
 
 export function SnippetForm() {
+  const { userIsLogged } = useGlobalContext()
   const form = useForm<SnippetFormType>({
     resolver: zodResolver(snippetSchema)
   })
@@ -24,9 +27,20 @@ export function SnippetForm() {
   }
 
   return (
-    <section className="fixed w-1/4 flex flex-col items-center justify-center divide-y">
+    <section className="fixed w-1/4 flex flex-col items-center justify-center divide-y p-4">
+      {
+        !userIsLogged &&
+        <div className="absolute z-20 flex flex-col gap-4 transition duration-300 opacity-0 hover:opacity-100 backdrop-blur-lg inset-0 justify-center items-center">
+          <p>You must log on to create a a new snippet</p>
+          <Link to={"/login"}>
+            <Button>
+              log in
+            </Button>
+          </Link>
+        </div>
+      }
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2 mx-auto p-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="relative w-full space-y-2 mx-auto p-4">
           <FormField
             control={form.control}
             name="title"
@@ -61,7 +75,7 @@ export function SnippetForm() {
             )}
           />
           <Toaster />
-          <Button>post</Button>
+          <Button className="uppercase w-fit rounded-full font-bold bg-card text-secondary">post</Button>
         </form>
       </Form>
       <article className="w-full flex flex-col gap-4 p-4">
