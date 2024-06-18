@@ -1,13 +1,32 @@
-export class ValidationError extends Error {
-  constructor(message: string) {
+export class ApiError extends Error {
+  readonly statusCode: number
+  constructor(message: string, statusCode: number) {
     super(message)
-    this.name = "Validation Error"
+    this.statusCode = statusCode
   }
 }
 
-export class ConnectionError extends Error {
+export class BadRequestError extends ApiError {
   constructor(message: string) {
-    super(message)
+    super(message, 400)
+  }
+}
+
+export class ValidationError extends ApiError {
+  constructor(message: string) {
+    super(message, 401)
+  }
+}
+
+export class NotFoundError extends ApiError {
+  constructor(message: string) {
+    super(message, 404)
+  }
+}
+
+export class ConnectionError extends ApiError {
+  constructor(message: string) {
+    super(message, 504)
     this.name = "Connection Error"
   }
 }

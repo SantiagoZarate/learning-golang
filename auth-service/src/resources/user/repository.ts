@@ -1,7 +1,7 @@
 import { InferSelectModel, eq, or } from "drizzle-orm";
 import { hash, compare } from 'bcrypt'
 import envs from "@/config/envs";
-import { ValidationError } from "@/utils/errors";
+import { BadRequestError, ValidationError } from "@/utils/errors";
 import { LoginType, RegisterType } from "@/types/express/auth";
 import user from "./schema";
 import db from "@/db/db";
@@ -54,7 +54,7 @@ export class UserRepository {
     }
 
     if (foundUser[0].role === 'admin') {
-      throw new ValidationError("user had already gotten admin priviliges")
+      throw new BadRequestError("user had already gotten admin priviliges")
     }
 
     const result = await db.update(user)

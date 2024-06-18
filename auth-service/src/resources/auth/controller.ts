@@ -1,5 +1,4 @@
 import envs from "@/config/envs";
-import { ValidationError } from "@/utils/errors";
 import { response } from "@/utils/response";
 import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
@@ -8,36 +7,21 @@ import { UserRepository } from "../user/repository";
 async function login(req: Request, res: Response) {
   const { username, password } = req.body;
 
-  try {
-    const user = await UserRepository.login({ username, password })
-    const token = jwt.sign({ username, password: user.password, role: user.role }, envs.JWT_SECRET)
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      sameSite: true
-    })
-    res.json({
-      token
-    })
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      return response({ res, message: error.message, statusCode: 403 })
-    }
-    response({ res, message: error.message, statusCode: 500 })
-  }
+  const user = await UserRepository.login({ username, password })
+  const token = jwt.sign({ username, password: user.password, role: user.role }, envs.JWT_SECRET)
+  res.cookie("access_token", token, {
+    httpOnly: true,
+    sameSite: true
+  })
+  res.json({
+    token
+  })
 }
 
 async function register(req: Request, res: Response) {
   const { username, password, email } = req.body;
-  try {
-    const data = await UserRepository.register({ username, password, email })
-
-    response({ res, data, message: "Registered succesfully" })
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      return response({ res, message: error.message, statusCode: 403 })
-    }
-    return response({ res, message: error.message, statusCode: 500 })
-  }
+  const data = await UserRepository.register({ username, password, email })
+  response({ res, data, message: "Registered succesfully" })
 }
 
 export default {
