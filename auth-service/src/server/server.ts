@@ -9,20 +9,21 @@ import { homeView } from '@/utils/homeView';
 import { errorMiddleware } from '@/middlewares/errorMiddleware';
 import db from '@/db/db';
 
-const server = express();
+export const app = express();
 
-setMiddlewares(server);
+setMiddlewares(app);
 
-server.get("/api/v1", homeView);
-server.get("/api/v1/test", healthCheck);
-server.use("/api/v1/auth", authRouter);
-server.use("/api/v1/admin", adminRouter)
+app.get("/api/v1", homeView);
+app.get("/api/v1/test", healthCheck);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/admin", adminRouter)
 
-server.use(errorMiddleware)
+app.use(errorMiddleware)
 
 export function start() {
-  server.listen(envs.PORT, () => {
+  const server = app.listen(envs.PORT, () => {
     console.log(`Server listening on http://localhost:${envs.PORT}`)
   })
   console.log(db._.tableNamesMap)
+  return server
 }
