@@ -4,7 +4,7 @@ import envs from "@/config/envs";
 export function healthCheck(req: Request, res: Response) {
   res.status(200).json({
     ok: true,
-    message: "Api working perftecly fine",
+    message: "Api working perfectly fine",
     info: {
       date: new Date(),
       version: envs.VERSION,

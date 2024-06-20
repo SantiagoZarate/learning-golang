@@ -20,6 +20,12 @@ export class ValidationError extends ApiError {
   }
 }
 
+export class InsuficcientRoleError extends ApiError {
+  constructor(message: string) {
+    super(message, StatusCodes.FORBIDDEN)
+  }
+}
+
 export class NotFoundError extends ApiError {
   constructor(message: string) {
     super(message, StatusCodes.NOT_FOUND)

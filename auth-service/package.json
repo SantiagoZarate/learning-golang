@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "dev": "ts-node-dev -r tsconfig-paths/register ./src/index.ts",
+    "test": "NODE_ENV=test jest",
+    "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register ./src/index.ts",
     "build": "tsc && tsc-alias -p tsconfig.json && cp -r ./public ./dist/",
     "start": "node dist/src/index.js",
     "db:generate": "drizzle-kit generate --config=./drizzle.config.ts",

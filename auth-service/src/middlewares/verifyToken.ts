@@ -8,7 +8,7 @@ export function verifyToken(req: ExtRequest, res: Response, next: NextFunction) 
   const token = req.cookies["access_token"]
 
   if (!token) {
-    throw new ValidationError("Acess denied")
+    throw new ValidationError("Access denied")
   }
 
   req.session = { user: null }
@@ -16,7 +16,10 @@ export function verifyToken(req: ExtRequest, res: Response, next: NextFunction) 
   try {
     const data = jwt.verify(token, envs.JWT_SECRET)
     req.session.user = data as JwtUser
-  } catch { }
+    console.log(data)
+  } catch {
+    throw new ValidationError("Invalid token")
+  }
 
   next()
 }

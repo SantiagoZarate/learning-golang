@@ -6,10 +6,10 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   coverageProvider: "v8",
-  collectCoverage: true,
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   cacheDirectory: ".tmp/jestCache",
+  collectCoverage: true,
   collectCoverageFrom: ["src/**/*.ts"],
 };
 
