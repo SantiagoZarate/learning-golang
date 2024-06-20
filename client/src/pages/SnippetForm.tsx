@@ -1,6 +1,6 @@
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import { Button } from "@/components/ui/button";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Form } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormMessage, Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import users from '@/data/users.json'
 
 const snippetSchema = z.object({
   title: z.string(),
@@ -27,7 +28,7 @@ export function SnippetForm() {
   }
 
   return (
-    <section className="fixed w-1/4 flex flex-col items-center justify-center divide-y p-4">
+    <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center divide-y p-4">
       {
         !userIsLogged &&
         <div className="absolute z-20 flex flex-col gap-4 transition duration-300 opacity-0 hover:opacity-100 backdrop-blur-lg inset-0 justify-center items-center">
@@ -40,18 +41,18 @@ export function SnippetForm() {
         </div>
       }
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="relative w-full space-y-2 mx-auto p-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="relative w-full space-y-2 mx-auto p-2 border border-border bg-card-foreground rounded-xl">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} className="border-none bg-muted rounded-lg" placeholder="howdy!" />
+                  <Input
+                    {...field}
+                    className="border-none bg-input rounded-none rounded-tl-xl rounded-tr-xl "
+                    placeholder="howdy!" />
                 </FormControl>
-                <FormDescription>
-                  Your new snippet
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -64,12 +65,9 @@ export function SnippetForm() {
                 <FormControl>
                   <Input
                     {...field}
-                    className="border-none bg-muted rounded-lg min-h-20"
+                    className="border-none bg-input rounded-none rounded-bl-xl rounded-br-xl min-h-20 text-left"
                     placeholder="it all started when i was 3 years old.." />
                 </FormControl>
-                <FormDescription>
-                  Your new snippet
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -82,9 +80,9 @@ export function SnippetForm() {
         <h2>Choose who you want it to see it</h2>
         <ul className="flex flex-wrap gap-8 justify-center">
           {
-            [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-              <li key={n} className="cursor-pointer aspect-square hover:-translate-y-1 transition w-16 rounded-full overflow-hidden border-border">
-                <img className="w-full h-full bg-muted object-center" src="" alt="" />
+            users.map(n => (
+              <li key={n.pfp} className="cursor-pointer aspect-square hover:-translate-y-1 transition w-16 rounded-full overflow-hidden border-border">
+                <img className="w-full h-full bg-muted object-center" src={n.pfp} alt="" />
               </li>
             ))
           }

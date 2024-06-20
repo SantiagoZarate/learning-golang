@@ -25,13 +25,13 @@ export function HomePage() {
       <section className="relative flex-1">
         <SnippetForm />
       </section>
-      <section className="flex-1 flex p-4 max-h-full overflow-y-auto relative  items-center justify-center">
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-background" /> */}
+      <section className="relative flex-1 flex p-4 max-h-full overflow-y-auto items-center justify-center">
         {
           isLoading
             ? <p>Loading...</p>
             :
-            <ul className="flex flex-col gap-4 overflow-y-auto">
+            <ul className="relative flex flex-col gap-4 overflow-y-auto pb-[70vh]">
+              <div className="fixed w-full h-full pointer-events-none bg-background [mask-image:linear-gradient(0deg,#000_10%,transparent_50%)]" />
               {
                 snippets.map(s => (
                   <li
