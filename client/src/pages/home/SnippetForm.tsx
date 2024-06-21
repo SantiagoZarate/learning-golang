@@ -7,37 +7,22 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
 import users from '@/data/users.json';
+import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { snippetAPI } from "@/services/snippets";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { z } from "zod";
-
-const snippetSchema = z.object({
-  title: z.string(),
-  content: z.string()
-})
-
-type SnippetFormType = z.infer<typeof snippetSchema>
-
-const createSnippet = (snippet: SnippetFormType) => {
-  console.log("creando")
-
-  return fetch('https://dummyjson.com/posts/add', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(snippet)
-  })
-}
+import { HoverFormSaver } from "./HoverFormSaver";
 
 export function SnippetForm() {
   const { userIsLogged } = useGlobalContext()
+  const form = useForm<SnippetFormType>({
+    resolver: zodResolver(createSnippetSchema)
+  })
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
-    mutationFn: createSnippet,
+    mutationFn: snippetAPI.createSnippet,
     onMutate: () => {
       console.log("Enviando peticion")
     },
@@ -48,28 +33,14 @@ export function SnippetForm() {
       console.log("There was an error while creating a snippetbox")
     }
   });
-  const form = useForm<SnippetFormType>({
-    resolver: zodResolver(snippetSchema)
-  })
 
   const onSubmit = (data: SnippetFormType) => {
     mutate(data)
-    console.log(data)
   }
 
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
-      {
-        userIsLogged &&
-        <div className="absolute z-20 flex flex-col gap-4 transition duration-300 opacity-0 hover:opacity-100 backdrop-blur-md inset-0 justify-center items-center">
-          <p>You must log on to create a a new snippet</p>
-          <Link to={"/login"}>
-            <Button>
-              log in
-            </Button>
-          </Link>
-        </div>
-      }
+      {!userIsLogged && <HoverFormSaver />}
       <article className="w-full flex flex-col gap-4">
         <FormSectionHeader
           icon={<SendIcon />}

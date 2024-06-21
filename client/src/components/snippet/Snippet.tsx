@@ -2,8 +2,7 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix
 import { WorldwideIcon } from "../icons/WorldwideIcon";
 import { type Snippet } from "@/types/snippet";
 
-interface Props extends Snippet {
-}
+interface Props extends Snippet { }
 
 export function Snippet({ content, created, expires, title }: Props) {
   return (
@@ -37,7 +36,6 @@ export function Snippet({ content, created, expires, title }: Props) {
                   ? <p>Everybody can see it</p>
                   : <p>Shared with you and 2 more people</p>
               }
-
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

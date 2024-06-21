@@ -1,8 +1,8 @@
 import { Snippet } from "@/components/snippet/Snippet";
 import { SnippetLoaders } from "@/components/snippet/SnippetLoader";
 import { useEffect, useState } from "react";
-import envs from "../config/envs";
-import { Snippet as SnippetType } from "../types/snippet";
+import envs from "../../config/envs";
+import { Snippet as SnippetType } from "../../types/snippet";
 import { SnippetForm } from "./SnippetForm";
 
 export function HomePage() {

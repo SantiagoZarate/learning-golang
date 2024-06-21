@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { AppLayout } from "./layouts/AppLayout";
 import { AuthLayout } from "./layouts/AuthLayout";
-import { HomePage } from "./pages/HomePage";
+import { HomePage } from "./pages/home/HomePage";
 import { AuthPage } from "./pages/auth/AuthPage";
 import { LandingPage } from "./pages/LandingPage";
 import { BaseLayout } from "./layouts/BaseLayout";
