@@ -1,3 +1,4 @@
+import { FormSectionHeader } from "@/components/FormSectionHeader";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import { SendIcon } from "@/components/icons/SendIcon";
 import { UsersMicroIcon } from "@/components/icons/UsersMicroIcon";
@@ -70,15 +71,10 @@ export function SnippetForm() {
         </div>
       }
       <article className="w-full flex flex-col gap-4">
-        <header className="flex items-center border-b border-t divide-x">
-          <span className="p-6">
-            <SendIcon />
-          </span>
-          <span className="p-2 text-sm flex flex-col gap-1">
-            <h2>Create a new snippetbox</h2>
-            <p className="text-xs text-secondary">Up to 140 chars!</p>
-          </span>
-        </header>
+        <FormSectionHeader
+          icon={<SendIcon />}
+          title="Create a new snippetbox."
+          description="Up to 140 chars!" />
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -119,15 +115,10 @@ export function SnippetForm() {
         </Form>
       </article>
       <article className="w-full flex flex-col gap-4">
-        <header className="flex items-center divide-x border-b border-t">
-          <span className="p-6">
-            <UsersMicroIcon />
-          </span>
-          <span className="p-2 text-sm flex flex-col gap-1">
-            <h2>Choose who you want to see it</h2>
-            <p className="text-xs text-secondary">By default everybody it'll be public</p>
-          </span>
-        </header>
+        <FormSectionHeader
+          icon={<UsersMicroIcon />}
+          title="Choose who do you want to see it"
+          description="By defaults it'll be public" />
         <ul className="flex flex-wrap gap-8 justify-center">
           {
             users.map(n => (
