@@ -1,3 +1,5 @@
+import { SnippetListLayout } from "./SnippetListLayout"
+
 export function SnippetLoader() {
   return (
     <li className="w-full rounded-lg border bg-background shadow-xl animate-pulse border-stone-700 h-[150px] flex flex-col gap-4 p-4">
@@ -25,12 +27,12 @@ export function SnippetLoader() {
 
 export function SnippetLoaders() {
   return (
-    <>
+    <SnippetListLayout>
       {
         [1, 2, 3, 4, 5, 6].map(n => (
           <SnippetLoader key={n} />
         ))
       }
-    </>
+    </SnippetListLayout>
   )
 }

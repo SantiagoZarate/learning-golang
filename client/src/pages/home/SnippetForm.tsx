@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import users from '@/data/users.json';
 import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
-import { snippetAPI } from "@/services/snippets";
+import snippetAPI from "@/services/snippets";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from "react-hook-form";

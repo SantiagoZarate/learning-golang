@@ -1,62 +1,67 @@
 import envs from "@/config/envs"
-import { SnippetFormType } from "@/helpers/createSnippetSchema"
 import { Snippet } from "@/types/snippet"
+import { fetcher } from "../fetcher"
+import { SnippetAPI } from "@/types/api"
 
-type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE'
-
-interface ResponseAPI<T> {
-  ok: boolean,
-  message: string,
-  data?: T[]
-}
-
-interface SnippetAPI {
-  createSnippet: (data: SnippetFormType) => Promise<ResponseAPI<Snippet>>
-  deleteSnippetById: (id: number) => Promise<ResponseAPI<null>>
-  getSnippets: () => Promise<ResponseAPI<Snippet[]>>
-  getSnippetById: (id: number) => Promise<ResponseAPI<Snippet>>
-}
-
-export function method<T>(path: string, method: Methods, payload?: any): Promise<ResponseAPI<T>> {
-  const options: RequestInit = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }
-
-  if (method === 'POST') {
-    options.body = JSON.stringify(payload)
-  }
-
-  return fetch(envs.API_URL + path, options)
-    .then((res) => {
-      if (!res.ok) {
-        res.json().then(res => ({
-          message: res.message || "Error",
-          ok: false,
-          data: null
-        }))
-      }
-      return res.json()
-    }).catch(() => ({
-      message: "Error",
-      ok: false,
-      data: null
-    }))
-}
-
-export const snippetAPI: SnippetAPI = {
+const prodSnippetAPI: SnippetAPI = {
   createSnippet(data) {
-    return method("/snippets", "POST", data)
+    return fetcher("/snippets", "POST", data)
   },
   deleteSnippetById(id) {
-    return method(`/snippets/${id}`, "DELETE")
+    return fetcher(`/snippets/${id}`, "DELETE")
   },
   getSnippetById(id) {
-    return method(`/snippets/${id}`, "GET")
+    return fetcher(`/snippets/${id}`, "GET")
   },
   getSnippets() {
-    return method("/snippets", "GET")
+    return fetcher<Snippet[]>("/snippets", "GET").then(res => res.data!)
   },
 }
+
+const devSnippetAPI: SnippetAPI = {
+  createSnippet(data) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        fetch("/src/data/snippets.json")
+          .then(res => res.json())
+          .then(res => {
+            console.log("Agregando data...", data)
+            resolve(res)
+          })
+      }, 2000);
+    });
+  },
+  deleteSnippetById(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        fetch("/src/data/snippets.json")
+          .then(res => res.json())
+          .then((res: any[]) => res.find(r => r.id === id))
+          .then(data => resolve(data));
+      }, 2000);
+    });
+  },
+  getSnippetById(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        fetch("/src/data/snippets.json")
+          .then(res => res.json())
+          .then((res: any[]) => res.find(r => r.id === id))
+          .then(data => resolve(data));
+      }, 2000);
+    });
+  },
+  getSnippets() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        fetch("/src/data/snippets.json")
+          .then(res => res.json())
+          .then(data => resolve(data));
+      }, 2000);
+    });
+  },
+}
+
+export default envs.DEVELOPMENT
+  ? devSnippetAPI
+  : prodSnippetAPI
