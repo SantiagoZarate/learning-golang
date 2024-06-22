@@ -1,18 +1,14 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { Loader } from "@/components/ui/Loader"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
-import { useAuth } from "@/hooks/useAuth"
-import { useLocation } from "react-router-dom"
-import { PasswordField } from "./PasswordField"
-import { UsernameField } from "./UsernameField"
-import { EmailField } from "./EmailField"
 import { RegisterFormType, loginSchema, registerSchema } from "@/helpers/formSchemas"
+import { useAuth } from "@/hooks/useAuth"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { useLocation } from "react-router-dom"
+import { InputField } from "./InputField"
 
 export function AuthPage() {
   const isRegisterPath = useLocation().pathname === "/register"
@@ -38,9 +34,23 @@ export function AuthPage() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mx-auto">
-        <PasswordField control={form.control} description="Type your password" />
-        <UsernameField control={form.control} description="choose a good username" />
-        {isRegisterPath && <EmailField control={form.control} description="it must be a valid emial" />}
+        <InputField
+          description="Type your password"
+          label="Password"
+          name="password"
+          control={form.control} />
+        <InputField
+          description="choose a good username"
+          label="Username"
+          name="username"
+          type="password"
+          control={form.control} />
+        {isRegisterPath &&
+          <InputField
+            name="email"
+            description="it must be a valid email"
+            label="Email"
+            control={form.control} />}
         <Toaster />
         <Button
           disabled={isPending}

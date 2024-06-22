@@ -1,7 +1,7 @@
 import envs from "@/config/envs"
 import { Methods, ResponseAPI } from "@/types/api"
 
-export function fetcher<T>(path: string, method: Methods, payload?: any): Promise<ResponseAPI<T>> {
+export function fetcher<T>(path: string, method: Methods, payload?: unknown): Promise<ResponseAPI<T>> {
   const options: RequestInit = {
     method: method,
     headers: {

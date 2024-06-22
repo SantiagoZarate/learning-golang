@@ -1,20 +1,24 @@
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RegisterFormType } from "@/helpers/formSchemas";
 import { ComponentProps } from "react";
+import { Control } from "react-hook-form";
 
 interface Props extends ComponentProps<'input'> {
+  label: string,
   description: string,
-  control: any
+  control: Control<RegisterFormType>
+  name: keyof RegisterFormType
 }
 
-export function EmailField(args: Props) {
+export function InputField(args: Props) {
   return (
     <FormField
       control={args.control}
-      name="email"
+      name={args.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Email</FormLabel>
+          <FormLabel>{args.label}</FormLabel>
           <FormControl>
             <Input {...field} {...args} />
           </FormControl>
