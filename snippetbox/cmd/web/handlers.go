@@ -20,6 +20,7 @@ type SnippetForm struct {
 }
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
+
 	snippets, err := app.Snippets.GetAll()
 	if err != nil {
 		app.serverError(w, err)
