@@ -1,3 +1,4 @@
+import { Variants, AnimatePresence, motion } from 'framer-motion'
 import { SnippetListLayout } from "./SnippetListLayout"
 
 export function SnippetLoader() {
@@ -27,12 +28,71 @@ export function SnippetLoader() {
 
 export function SnippetLoaders() {
   return (
-    <SnippetListLayout>
+    <AnimatePresence>
+      <motion.div
+        className="w-full overflow-y-hidden"
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 200 }}
+        exit={{ opacity: 0 }}
+      >
+        <SnippetListLayout>
+          {
+            [1, 2, 3, 4, 5, 6].map(n => (
+              <SnippetLoader key={n} />
+            ))
+          }
+        </SnippetListLayout>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+const demoVariants: Variants = {
+  animate: {
+    transition: {
+      bounce: 0,
+      staggerChildren: 0.05,
+      stiffness: 100
+    },
+  },
+  initial: {
+  }
+};
+
+const itemVariants: Variants = {
+  animate: {
+    zIndex: 0,
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px",
+  },
+  initial: {
+    y: 40,
+    scale: 0.8,
+    opacity: 0,
+    filter: "blur(3px)"
+  }
+}
+
+export function AnimatedSnippetLoaders() {
+  return (
+    <motion.ul
+      variants={demoVariants}
+      animate="animate"
+      initial="initial"
+      className="relative w-full flex flex-col gap-4 overflow-y-auto pb-[70vh]">
+      <motion.div className="fixed z-50 w-full h-full pointer-events-none bg-background [mask-image:linear-gradient(0deg,#000_10%,transparent_50%)]" />
       {
         [1, 2, 3, 4, 5, 6].map(n => (
-          <SnippetLoader key={n} />
+          <motion.div
+            key={n}
+            variants={itemVariants}
+          >
+            <SnippetLoader />
+          </motion.div>
         ))
       }
-    </SnippetListLayout>
+    </motion.ul >
   )
 }
