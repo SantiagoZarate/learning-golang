@@ -1,11 +1,11 @@
 import { NoSnippetsFound } from "@/components/snippet/NoSnippetsFound";
 import { SnippetList } from "@/components/snippet/SnippetList";
+import { AnimatedSnippetLoaders } from "@/components/snippet/SnippetLoader";
 import { SnippetsError } from "@/components/snippet/SnippetsError";
 import snippetAPI from "@/services/snippets";
 import { useQuery } from '@tanstack/react-query';
 import { Snippet as SnippetType } from "../../types/snippet";
 import { SnippetForm } from "./SnippetForm";
-import { AnimatedSnippetLoaders, SnippetLoaders } from "@/components/snippet/SnippetLoader";
 
 export function HomePage() {
   const { data, isLoading, isError } = useQuery<SnippetType[]>({

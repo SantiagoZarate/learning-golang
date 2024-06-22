@@ -4,7 +4,7 @@ import { type Snippet } from "@/types/snippet";
 
 interface Props extends Snippet { }
 
-export function Snippet({ content, created, expires, title }: Props) {
+export function Snippet({ content, title }: Props) {
   return (
     <li
       className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4">

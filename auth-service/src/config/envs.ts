@@ -18,7 +18,7 @@ const envs = envsSchema.parse({
   PORT: process.env.PORT,
   VERSION: process.env.VERSION,
   DB_URL: process.env.DB_URL,
-  MODE: process.env.NODE_ENV,
+  MODE: process.env.MODE,
   SALT_ROUNDS: process.env.SALT_ROUNDS,
   JWT_SECRET: process.env.JWT_SECRET,
   SEEDING: process.env.SEEDING,
