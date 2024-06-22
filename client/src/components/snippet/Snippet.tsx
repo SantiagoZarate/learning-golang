@@ -1,4 +1,4 @@
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { WorldwideIcon } from "../icons/WorldwideIcon";
 import { type Snippet } from "@/types/snippet";
 
@@ -30,7 +30,7 @@ export function Snippet({ content, created, expires, title }: Props) {
                   </ul>
               }
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent className="bg-background">
               {
                 title?.length % 2 == 0
                   ? <p>Everybody can see it</p>

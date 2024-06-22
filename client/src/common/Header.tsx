@@ -10,7 +10,7 @@ export function Header() {
   const { toggleTheme, isDarkTheme } = useGlobalContext()
 
   return (
-    <header className="z-50 top-0 fixed w-full backdrop-blur-sm">
+    <header className="z-50 top-0 fixed w-full backdrop-blur-sm bg-background/20">
       <div className="p-4 max-w-screen-lg flex justify-between items-center mx-auto">
         <section className="flex items-center gap-4">
           <Link to={"/"}>
