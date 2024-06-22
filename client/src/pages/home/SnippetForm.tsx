@@ -18,7 +18,11 @@ import { HoverFormSaver } from "./HoverFormSaver";
 export function SnippetForm() {
   const { userIsLogged } = useGlobalContext()
   const form = useForm<SnippetFormType>({
-    resolver: zodResolver(createSnippetSchema)
+    resolver: zodResolver(createSnippetSchema),
+    defaultValues: {
+      content: "",
+      title: ""
+    }
   })
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
@@ -28,15 +32,12 @@ export function SnippetForm() {
     },
     onSuccess: () => {
       console.log("Snippet added succesfully")
+      form.reset()
     },
     onError: () => {
       console.log("There was an error while creating a snippetbox")
     }
   });
-
-  const onSubmit = (data: SnippetFormType) => {
-    mutate(data)
-  }
 
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
@@ -48,7 +49,7 @@ export function SnippetForm() {
           description="Up to 140 chars!" />
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(data => mutate(data))}
             className="focus-within:scale-[103%] focus-within:shadow-xl hover:shadow-xl hover:scale-[103%] transition-all duration-300 relative w-full space-y-2 mx-auto p-2 border border-border bg-card-foreground rounded-xl">
             <FormField
               control={form.control}
@@ -59,7 +60,7 @@ export function SnippetForm() {
                     <Input
                       {...field}
                       className="border-none bg-input rounded-none rounded-tl-xl rounded-tr-xl "
-                      placeholder="howdy!" />
+                      placeholder="Howdy" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,7 +82,14 @@ export function SnippetForm() {
               )}
             />
             <Toaster />
-            <Button disabled={isPending} className="uppercase w-fit rounded-full font-bold bg-card text-secondary">post</Button>
+            <Button
+              disabled={isPending}
+              className="uppercase w-fit rounded-full font-bold bg-card text-secondary min-w-24">
+              {
+                isPending
+                  ? "sending"
+                  : "post"
+              }</Button>
           </form>
         </Form>
       </article>
