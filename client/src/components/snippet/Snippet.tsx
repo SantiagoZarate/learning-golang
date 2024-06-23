@@ -2,7 +2,7 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/comp
 import { WorldwideIcon } from "../icons/WorldwideIcon";
 import { type Snippet } from "@/types/snippet";
 
-interface Props extends Snippet { }
+interface Props extends Partial<Snippet> { }
 
 export function Snippet({ content, title }: Props) {
   return (
@@ -16,7 +16,7 @@ export function Snippet({ content, title }: Props) {
           <Tooltip>
             <TooltipTrigger>
               {
-                title?.length % 2 == 0
+                title!.length % 2 == 0
                   ?
                   <div className="flex gap-1 items-center text-xs capitalize text-card">
                     public
@@ -32,7 +32,7 @@ export function Snippet({ content, title }: Props) {
             </TooltipTrigger>
             <TooltipContent className="bg-background">
               {
-                title?.length % 2 == 0
+                title!.length % 2 == 0
                   ? <p>Everybody can see it</p>
                   : <p>Shared with you and 2 more people</p>
               }
