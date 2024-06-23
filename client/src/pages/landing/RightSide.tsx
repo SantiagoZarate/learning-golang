@@ -69,13 +69,11 @@ export function RightSide() {
 
   return (
     <article className="relative flex items-center p-8">
-      <div className="shadow-xl w-full border-8 border-border rounded-3xl overflow-hidden">
-        <motion.ul animate={{
-          transition: {
-            staggerChildren: 0.05,
-            delayChildren: 0.04
-          }
-        }} className="w-full h-full overflow-hidden bg-stone-900 p-4 flex flex-col gap-4">
+      <div className="relative shadow-xl w-full border-8 border-border rounded-3xl">
+        <div className="absolute z-50 flex items-center justify-center shadow-xl backdrop-blur-[8px] border-dotted border-4 -bottom-10 -right-10 size-24 rounded-full">
+          <p className="text-xs text-center rotate-[15deg] text-secondary font-bold">it's like <em>x</em> but better!</p>
+        </div>
+        <ul className="relative w-full h-full rounded-3xl overflow-hidden bg-stone-900 p-4 flex flex-col gap-4">
           <AnimatePresence mode="popLayout">
             {
               data.map(d => (
@@ -105,7 +103,7 @@ export function RightSide() {
               ))
             }
           </AnimatePresence>
-        </motion.ul>
+        </ul>
       </div>
     </article>
   )
