@@ -7,7 +7,7 @@ import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { Link } from "react-router-dom";
 
 export function Header() {
-  const { toggleTheme, isDarkTheme } = useGlobalContext()
+  const { toggleTheme, isDarkTheme, userIsLogged, logoutUser } = useGlobalContext()
 
   return (
     <header className="z-50 top-0 fixed w-full backdrop-blur-sm bg-background/20">
@@ -54,18 +54,28 @@ export function Header() {
               </ul>
             </PopoverContent>
           </Popover>
-          <div className="flex gap-2 px-2">
-            <Link to={"/login"}>
-              <Button variant={'ghost'} className="capitalize">
-                log in
-              </Button>
-            </Link>
-            <Link to={"/register"}>
-              <Button className="capitalize">
-                sign up
-              </Button>
-            </Link>
-          </div>
+          {
+            userIsLogged
+              ?
+              <div className="px-2">
+                <Button onClick={() => logoutUser()}>
+                  log out
+                </Button>
+              </div>
+              :
+              <div className="flex gap-2 px-2">
+                <Link to={"/login"}>
+                  <Button variant={'ghost'} className="capitalize">
+                    log in
+                  </Button>
+                </Link>
+                <Link to={"/register"}>
+                  <Button className="capitalize">
+                    sign up
+                  </Button>
+                </Link>
+              </div>
+          }
         </section>
       </div>
     </header>

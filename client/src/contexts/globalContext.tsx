@@ -1,5 +1,6 @@
 import { PropsWithChildren, createContext, useState } from 'react';
 import { useCookies } from 'react-cookie'
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   userIsLogged: boolean,
@@ -14,6 +15,7 @@ export const globalContext = createContext<Props | null>(null);
 export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
   const [cookies, setCookies] = useCookies(["access_token"]);
   const [isDarkTheme, setIsDarkTheme] = useState(localStorage.getItem("theme") === "dark")
+  const redirect = useNavigate()
 
   if (isDarkTheme) {
     document.documentElement.classList.add("dark")
@@ -24,6 +26,7 @@ export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
   }
 
   const logoutUser = () => {
+    redirect("/")
     setCookies("access_token", null)
   }
 
