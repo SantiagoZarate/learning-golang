@@ -12,6 +12,8 @@ import { InputField } from "./InputField"
 import { KeyMicroIcon } from "@/components/icons/KeyMicroIcon"
 import { UserMicroIcon } from "@/components/icons/UserMicroIcon"
 import { LetterMicroIcon } from "@/components/icons/LetterMicroIcon"
+import { AnimatePresence, motion } from "framer-motion"
+import { PropsWithChildren } from "react"
 
 export function AuthPage() {
   const isRegisterPath = useLocation().pathname === "/register"
@@ -45,52 +47,75 @@ export function AuthPage() {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 mx-auto flex flex-col">
-          <InputField
-            disabled={isPending}
-            icon={<UserMicroIcon />}
-            description="choose a good username"
-            label="Username"
-            name="username"
-            control={form.control} />
-          <InputField
-            disabled={isPending}
-            icon={<KeyMicroIcon />}
-            description="Type your password"
-            type="password"
-            label="Password"
-            name="password"
-            control={form.control} />
-          {isRegisterPath &&
-            <InputField
-              disabled={isPending}
-              icon={<LetterMicroIcon />}
-              name="email"
-              description="it must be a valid email"
-              label="Email"
-              control={form.control} />}
-          <Toaster />
-          <Button
-            hoverable
-            variant={"primary"}
-            disabled={isPending}
-            className="overflow-hidden mx-auto">
+      <AnimatePresence mode="popLayout">
+        <article className="rounded-xl w-full bg-gradient-to-t from-transparent to-muted  flex py-10 px-6 flex-col gap-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 mx-auto flex flex-col">
+              <InputField
+                key={"username"}
+                disabled={isPending}
+                icon={<UserMicroIcon />}
+                description="choose a good username"
+                name="username"
+                control={form.control} />
+              <InputField
+                key={"password"}
+                disabled={isPending}
+                icon={<KeyMicroIcon />}
+                description="Type your password"
+                type="password"
+                name="password"
+                control={form.control} />
+              {isRegisterPath &&
+                <InputField
+                  key={"email"}
+                  disabled={isPending}
+                  icon={<LetterMicroIcon />}
+                  name="email"
+                  description="it must be a valid email"
+                  control={form.control} />}
+              <motion.button
+                key={"button"}
+                className="mx-auto"
+                layout>
+                <Button
+                  disabled={isPending}
+                  hoverable
+                  variant={"primary"}
+                  className="overflow-hidden ">
+                  {
+                    isPending
+                      ? <Loader />
+                      :
+                      isRegisterPath
+                        ? <AnimatedBlurry key={"Sign up!"}>Sign up!</AnimatedBlurry>
+                        : <AnimatedBlurry key={"Sign in!"}>Sign in!</AnimatedBlurry>
+                  }
+                </Button>
+              </motion.button>
+            </form>
+          </Form >
+          <motion.footer layout className="flex justify-center text-sm">
             {
-              isPending
-                ? <Loader />
-                : "submit"
+              isRegisterPath
+                ? <AnimatedBlurry key={"login"}>You already have an account?<Link to={"/login"} className="text-secondary"> click here!</Link></AnimatedBlurry>
+                : <AnimatedBlurry key={"register"}>You don't have an account?<Link to={"/register"} className="text-secondary"> sign up!</Link></AnimatedBlurry>
             }
-          </Button>
-        </form>
-      </Form >
-      <footer className="flex justify-center text-sm">
-        {
-          isRegisterPath
-            ? <p>You already have an account? <Link to={"/login"} className="text-secondary">click here!</Link></p>
-            : <p>You don't have an account? <Link to={"/register"} className="text-secondary">sign up!</Link></p>
-        }
-      </footer>
+          </motion.footer>
+        </article>
+      </AnimatePresence >
+      <Toaster />
     </>
+  )
+}
+
+export function AnimatedBlurry({ children }: PropsWithChildren) {
+  return (
+    <motion.p
+      exit={{ filter: "blur(4px)" }}
+      initial={{ filter: "blur(4px)" }}
+      animate={{ filter: "blur(0px)" }}>
+      {children}
+    </motion.p>
   )
 }
