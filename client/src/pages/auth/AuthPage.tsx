@@ -7,7 +7,7 @@ import { RegisterFormType, loginSchema, registerSchema } from "@/helpers/formSch
 import { useAuth } from "@/hooks/useAuth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { InputField } from "./InputField"
 import { KeyMicroIcon } from "@/components/icons/KeyMicroIcon"
 import { UserMicroIcon } from "@/components/icons/UserMicroIcon"
@@ -44,43 +44,53 @@ export function AuthPage() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mx-auto">
-        <InputField
-          disabled={isPending}
-          icon={<UserMicroIcon />}
-          description="choose a good username"
-          label="Username"
-          name="username"
-          control={form.control} />
-        <InputField
-          disabled={isPending}
-          icon={<KeyMicroIcon />}
-          description="Type your password"
-          type="password"
-          label="Password"
-          name="password"
-          control={form.control} />
-        {isRegisterPath &&
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 mx-auto flex flex-col">
           <InputField
             disabled={isPending}
-            icon={<LetterMicroIcon />}
-            name="email"
-            description="it must be a valid email"
-            label="Email"
-            control={form.control} />}
-        <Toaster />
-        <Button
-          disabled={isPending}
-          className="overflow-hidden"
-          type="submit">
-          {
-            isPending
-              ? <Loader />
-              : "submit"
-          }
-        </Button>
-      </form>
-    </Form >
+            icon={<UserMicroIcon />}
+            description="choose a good username"
+            label="Username"
+            name="username"
+            control={form.control} />
+          <InputField
+            disabled={isPending}
+            icon={<KeyMicroIcon />}
+            description="Type your password"
+            type="password"
+            label="Password"
+            name="password"
+            control={form.control} />
+          {isRegisterPath &&
+            <InputField
+              disabled={isPending}
+              icon={<LetterMicroIcon />}
+              name="email"
+              description="it must be a valid email"
+              label="Email"
+              control={form.control} />}
+          <Toaster />
+          <Button
+            hoverable
+            variant={"primary"}
+            disabled={isPending}
+            className="overflow-hidden mx-auto">
+            {
+              isPending
+                ? <Loader />
+                : "submit"
+            }
+          </Button>
+        </form>
+      </Form >
+      <footer className="flex justify-center text-sm">
+        {
+          isRegisterPath
+            ? <p>You already have an account? <Link to={"/login"} className="text-secondary">click here!</Link></p>
+            : <p>You don't have an account? <Link to={"/register"} className="text-secondary">sign up!</Link></p>
+        }
+      </footer>
+    </>
   )
 }

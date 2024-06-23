@@ -42,12 +42,12 @@ export function LeftSide() {
       <motion.p variants={itemVariants}>Share what are you thinking at any time and check other people's snippets out!</motion.p>
       <motion.footer variants={itemVariants} className="flex gap-4">
         <Link to={"/home"}>
-          <Button variant={'secondary'} className="uppercase w-fit rounded-full font-bold bg-card text-secondary">
+          <Button variant={"primary"}>
             Try it now!
           </Button>
         </Link>
         <Link to={"/login"}>
-          <Button className="uppercase w-fit rounded-full font-bold bg-card text-secondary">
+          <Button variant={"primary"}>
             Create an account
           </Button>
         </Link>
