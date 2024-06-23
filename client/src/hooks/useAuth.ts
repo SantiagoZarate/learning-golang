@@ -22,7 +22,7 @@ export function useAuth() {
       })
   }
 
-  const logOn = (data: LoginPayload): Promise<any> => {
+  const logOn = (data: LoginPayload, fn: (msg: string) => any): Promise<any> => {
     setIsPending(true)
     return login(data)
       .then(res => {
@@ -35,7 +35,12 @@ export function useAuth() {
               return redirect("/")
             })
         }
-        console.log("Invalid credentials")
+        if (res.status === 401) {
+          fn("Invalid credentials")
+        }
+        if (res.status >= 500) {
+          fn("We're having some issues, try again later")
+        }
       })
       .finally(() => setIsPending(false))
   }

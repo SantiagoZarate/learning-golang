@@ -55,12 +55,12 @@ export function Header() {
             </PopoverContent>
           </Popover>
           <div className="flex gap-2 px-2">
-            <Link to={"/register"}>
+            <Link to={"/login"}>
               <Button variant={'ghost'} className="capitalize">
                 log in
               </Button>
             </Link>
-            <Link to={"/login"}>
+            <Link to={"/register"}>
               <Button className="capitalize">
                 sign up
               </Button>

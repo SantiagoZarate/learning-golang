@@ -9,6 +9,7 @@ interface Props extends ComponentProps<'input'> {
   description: string,
   control: Control<RegisterFormType>
   name: keyof RegisterFormType
+  icon: JSX.Element
 }
 
 export function InputField(args: Props) {
@@ -18,9 +19,12 @@ export function InputField(args: Props) {
       name={args.name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{args.label}</FormLabel>
+          <FormLabel className="flex items-center gap-2">
+            {args.icon}
+            {args.label}
+          </FormLabel>
           <FormControl>
-            <Input {...field} {...args} />
+            <Input {...field} {...args} className="bg-input" />
           </FormControl>
           <FormDescription>
             {args.description}
