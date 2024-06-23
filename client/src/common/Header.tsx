@@ -5,12 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { Link } from "react-router-dom";
+import { motion } from 'framer-motion'
 
 export function Header() {
   const { toggleTheme, isDarkTheme, userIsLogged, logoutUser } = useGlobalContext()
 
   return (
-    <header className="z-50 top-0 fixed w-full backdrop-blur-sm bg-background/20">
+    <motion.header
+      initial={{ y: -150 }}
+      animate={{ y: 0 }}
+      className="z-50 top-0 fixed w-full backdrop-blur-sm">
       <div className="p-4 max-w-screen-lg flex justify-between items-center mx-auto">
         <section className="flex items-center gap-4">
           <Link to={"/"}>
@@ -78,6 +82,6 @@ export function Header() {
           }
         </section>
       </div>
-    </header>
+    </motion.header>
   )
 }
