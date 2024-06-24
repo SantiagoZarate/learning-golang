@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,22 +27,29 @@ func (app *application) notFound(w http.ResponseWriter) {
 }
 
 func (app *application) FormDecoderHelper(r *http.Request, dst any) error {
-	err := r.ParseForm()
-	if err != nil {
-		return err
-	}
-
-	err = app.FormDecoder.Decode(&dst, r.PostForm)
-	if err != nil {
-		var invalidDecodedError *form.InvalidDecoderError
-
-		if errors.As(err, &invalidDecodedError) {
-			panic(err)
+	// Check if the content type is application/json
+	if r.Header.Get("Content-Type") == "application/json" {
+		err := json.NewDecoder(r.Body).Decode(&dst)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := r.ParseForm()
+		if err != nil {
+			return err
 		}
 
-		return err
-	}
+		err = app.FormDecoder.Decode(&dst, r.PostForm)
+		if err != nil {
+			var invalidDecodedError *form.InvalidDecoderError
 
+			if errors.As(err, &invalidDecodedError) {
+				panic(err)
+			}
+
+			return err
+		}
+	}
 	return nil
 }
 
