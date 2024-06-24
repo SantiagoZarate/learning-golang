@@ -49,11 +49,11 @@ export function SnippetForm() {
 
   const decrementExpireDay = () => {
     const currentValue = form.getValues("expires")
-    if (currentValue <= 0) {
-      return
-    }
     if (currentValue === undefined) {
       form.setValue("expires", 1)
+      return
+    }
+    if (currentValue <= 0) {
       return
     }
     form.setValue("expires", Number(currentValue) - 1)
@@ -61,7 +61,7 @@ export function SnippetForm() {
 
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
-      {/* {!userIsLogged && <HoverFormSaver />} */}
+      {!userIsLogged && <HoverFormSaver />}
       <article className="w-full flex flex-col gap-4">
         <FormSectionHeader
           icon={<SendIcon />}

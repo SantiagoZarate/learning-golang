@@ -28,3 +28,19 @@ INSERT INTO snippet (title, content, created, expires) VALUES (
     current_date,
     current_date + 180
 );
+
+CREATE OR REPLACE FUNCTION createSnippet(_title VARCHAR(100), _content TEXT, _expires INT) RETURNS INT AS $$
+DECLARE
+  snippet_id INT;
+BEGIN
+  IF _expires <= 0 THEN
+    RAISE 'Invalid expires value';
+    RETURN 0;
+  END IF;
+
+  INSERT INTO snippet (title, content, created, expires)
+  VALUES (_title, _content, current_date, current_date + _expires * interval '1 day')
+  RETURNING id INTO snippet_id;
+
+  RETURN snippet_id;
+END; $$ language plpgsql;
