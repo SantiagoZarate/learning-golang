@@ -60,9 +60,15 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
+	err := VerifyToken(r)
+	if err != nil {
+		app.clientError(w, http.StatusUnauthorized)
+		return
+	}
+
 	var form SnippetForm
 
-	err := app.FormDecoderHelper(r, &form)
+	err = app.FormDecoderHelper(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return

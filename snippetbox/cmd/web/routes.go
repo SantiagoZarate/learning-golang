@@ -14,7 +14,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.SnippetView)
 	router.HandlerFunc(http.MethodPost, "/snippet/create", app.SnippetCreate)
 
-	myChain := alice.New(app.PanicRevocer, app.VerifyToken)
+	myChain := alice.New(app.EnableCors, app.PanicRevocer)
 
 	return myChain.Then(router)
 }

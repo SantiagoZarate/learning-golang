@@ -7,6 +7,7 @@ import (
 	"runtime/debug"
 
 	"github.com/go-playground/form/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -41,5 +42,28 @@ func (app *application) FormDecoderHelper(r *http.Request, dst any) error {
 		return err
 	}
 
+	return nil
+}
+
+func VerifyToken(r *http.Request) error {
+	tokenString := r.Header.Get("access_token")
+	if len(tokenString) == 0 {
+		return errors.New("there is no token")
+	}
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+	if err != nil {
+		fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
+		// app.clientError(w, http.StatusBadRequest)
+		// return
+	}
+
+	if !token.Valid {
+		fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
+		// app.clientError(w, http.StatusUnauthorized)
+		// return
+	}
 	return nil
 }

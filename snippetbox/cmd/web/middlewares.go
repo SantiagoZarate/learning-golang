@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func (app *application) PanicRevocer(next http.Handler) http.Handler {
@@ -21,28 +19,9 @@ func (app *application) PanicRevocer(next http.Handler) http.Handler {
 	})
 }
 
-func (app *application) VerifyToken(next http.Handler) http.Handler {
+func (app *application) EnableCors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("access_token")
-		if len(tokenString) == 0 {
-			app.clientError(w, http.StatusUnauthorized)
-			return
-		}
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return secretKey, nil
-		})
-		if err != nil {
-			fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
-			// app.clientError(w, http.StatusBadRequest)
-			// return
-		}
-
-		if !token.Valid {
-			fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
-			// app.clientError(w, http.StatusUnauthorized)
-			// return
-		}
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		next.ServeHTTP(w, r)
 	})
 }
