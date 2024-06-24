@@ -48,10 +48,17 @@ func main() {
 		FormDecoder: formDecoder,
 	}
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8000"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Origin", "Content-Type", "Accept", "access_token"},
+	})
+
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  cors.Default().Handler(app.routes()),
+		Handler:  c.Handler(app.routes()),
 	}
 
 	infoLog.Printf("Starting server on port %v...", *addr)
