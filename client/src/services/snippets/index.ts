@@ -1,7 +1,8 @@
 import envs from "@/config/envs"
-import { Snippet } from "@/types/snippet"
+import { RawSnippet } from "@/types/snippet"
 import { fetcher } from "../fetcher"
 import { SnippetAPI } from "@/types/api"
+import { mapSnippetsArr } from "@/helpers/mapSnippetsFromApi"
 
 const prodSnippetAPI: SnippetAPI = {
   createSnippet(data) {
@@ -14,7 +15,7 @@ const prodSnippetAPI: SnippetAPI = {
     return fetcher(`/snippet/view/${id}`, "GET")
   },
   getSnippets() {
-    return fetcher<Snippet[]>("/", "GET").then(res => res)
+    return fetcher<RawSnippet[]>("/", "GET").then(res => mapSnippetsArr(res))
   },
 }
 
