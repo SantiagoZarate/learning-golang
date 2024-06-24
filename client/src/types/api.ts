@@ -10,7 +10,7 @@ export interface ResponseAPI<T> {
 }
 
 export interface SnippetAPI {
-  createSnippet: (data: SnippetFormType) => Promise<ResponseAPI<Snippet>>
+  createSnippet: (data: SnippetFormType, token: any) => Promise<ResponseAPI<Snippet>>
   deleteSnippetById: (id: number) => Promise<ResponseAPI<null>>
   getSnippets: () => Promise<Snippet[]>
   getSnippetById: (id: number) => Promise<ResponseAPI<Snippet>>

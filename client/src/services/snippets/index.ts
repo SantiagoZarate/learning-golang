@@ -5,8 +5,8 @@ import { SnippetAPI } from "@/types/api"
 import { mapSnippetsArr } from "@/helpers/mapSnippetsFromApi"
 
 const prodSnippetAPI: SnippetAPI = {
-  createSnippet(data) {
-    return fetcher("/snippet/create", "POST", data)
+  createSnippet(data, token) {
+    return fetcher("/snippet/create", "POST", data, token)
   },
   deleteSnippetById(id) {
     return fetcher(`/snippets/${id}`, "DELETE")

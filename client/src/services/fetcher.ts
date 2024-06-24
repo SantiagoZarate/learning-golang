@@ -1,20 +1,13 @@
 import envs from "@/config/envs"
 import { Methods } from "@/types/api"
 
-// const [cookies] = useCookies(["access_token"])
-export function fetcher<T>(path: string, method: Methods, payload?: unknown): Promise<T> {
-  // console.log(cookies["access_token"])
-
+export function fetcher<T>(path: string, method: Methods, payload?: unknown, token?: any): Promise<T> {
   const options: RequestInit = {
     method: method,
   }
 
   if (method === 'POST') {
-    options.body = JSON.stringify(payload)
-    options.headers = {
-      // "access_token": cookies["access_token"],
-      "Content-Type": "application/json",
-    }
+    tokenizeRequest(options, payload, token)
   }
 
   console.log("Deberia estars fetcheando data")
@@ -26,4 +19,13 @@ export function fetcher<T>(path: string, method: Methods, payload?: unknown): Pr
       }
       return res.json()
     }).catch((err: Error) => (err))
+}
+
+function tokenizeRequest(options: RequestInit, payload: any, token: any) {
+  options.body = JSON.stringify(payload)
+  options.headers = {
+    ...options.headers,
+    "access_token": token,
+    "Content-Type": "application/json",
+  }
 }

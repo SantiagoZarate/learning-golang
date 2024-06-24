@@ -7,7 +7,8 @@ interface Props {
   logoutUser: () => void,
   loginUser: (token: string) => void,
   isDarkTheme: boolean,
-  toggleTheme: () => void
+  toggleTheme: () => void,
+  getToken: () => any
 }
 
 export const globalContext = createContext<Props | null>(null);
@@ -30,6 +31,10 @@ export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
     setCookies("access_token", null)
   }
 
+  const getToken = () => {
+    return cookies["access_token"]
+  }
+
   const toggleTheme = () => {
     document.documentElement.classList.toggle("dark")
 
@@ -48,7 +53,8 @@ export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
       toggleTheme,
       userIsLogged: cookies.access_token?.length > 0 ?? false,
       loginUser,
-      logoutUser
+      logoutUser,
+      getToken
     }}>
       {children}
     </globalContext.Provider>

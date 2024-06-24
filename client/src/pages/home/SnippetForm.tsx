@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { HoverFormSaver } from "./HoverFormSaver";
 
 export function SnippetForm() {
-  const { userIsLogged } = useGlobalContext()
+  const { userIsLogged, getToken } = useGlobalContext()
   const form = useForm<SnippetFormType>({
     resolver: zodResolver(createSnippetSchema),
     defaultValues: {
@@ -26,7 +26,7 @@ export function SnippetForm() {
   })
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
-    mutationFn: snippetAPI.createSnippet,
+    mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
     onMutate: () => {
       console.log("Enviando peticion")
     },
