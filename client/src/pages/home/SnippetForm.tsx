@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from "react-hook-form";
 import { HoverFormSaver } from "./HoverFormSaver";
+import { PublicTag } from "@/components/snippet/PublicTag";
+import { ExpireDayButton } from "./ExpireDayButton";
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -21,7 +23,8 @@ export function SnippetForm() {
     resolver: zodResolver(createSnippetSchema),
     defaultValues: {
       content: "",
-      title: ""
+      title: "",
+      expires: 1
     }
   })
   const { isPending, mutate } = useMutation({
@@ -39,9 +42,26 @@ export function SnippetForm() {
     }
   });
 
+  const incrementExpireDay = () => {
+    const currentValue = form.getValues("expires")
+    form.setValue("expires", Number(currentValue) + 1)
+  }
+
+  const decrementExpireDay = () => {
+    const currentValue = form.getValues("expires")
+    if (currentValue <= 0) {
+      return
+    }
+    if (currentValue === undefined) {
+      form.setValue("expires", 1)
+      return
+    }
+    form.setValue("expires", Number(currentValue) - 1)
+  }
+
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
-      {!userIsLogged && <HoverFormSaver />}
+      {/* {!userIsLogged && <HoverFormSaver />} */}
       <article className="w-full flex flex-col gap-4">
         <FormSectionHeader
           icon={<SendIcon />}
@@ -81,7 +101,22 @@ export function SnippetForm() {
                 </FormItem>
               )}
             />
-            <Toaster />
+            <footer className="flex justify-between items-center ">
+              <PublicTag />
+              <label htmlFor="expires" className="flex flex-col items-center gap-1">
+                <p className="text-xs text-secondary">expires in:</p>
+                <div className="flex bg-muted rounded-xl overflow-hidden">
+                  <ExpireDayButton onClick={decrementExpireDay}>-</ExpireDayButton>
+                  <input
+                    value={form.watch("expires")}
+                    className="max-w-10 bg-input p-0 m-0 w-full text-center"
+                    type="number"
+                    defaultValue={1}
+                    {...form.register("expires")} />
+                  <ExpireDayButton onClick={incrementExpireDay}>+</ExpireDayButton>
+                </div>
+              </label>
+            </footer>
             <Button
               disabled={isPending}
               className="uppercase w-fit rounded-full font-bold bg-card text-secondary min-w-24">
@@ -92,6 +127,7 @@ export function SnippetForm() {
               }</Button>
           </form>
         </Form>
+        <Toaster />
       </article>
       <article className="w-full flex flex-col gap-4">
         <FormSectionHeader

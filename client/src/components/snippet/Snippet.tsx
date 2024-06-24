@@ -1,6 +1,6 @@
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { WorldwideIcon } from "../icons/WorldwideIcon";
 import { type Snippet } from "@/types/snippet";
+import { PublicTag } from "./PublicTag";
 
 interface Props extends Partial<Snippet> {
   likes?: number
@@ -21,11 +21,7 @@ export function Snippet({ content, title, likes = 0 }: Props) {
             <TooltipTrigger>
               {
                 isPublic
-                  ?
-                  <div className="flex gap-1 items-center text-xs capitalize text-card">
-                    public
-                    <WorldwideIcon />
-                  </div>
+                  ? <PublicTag />
                   :
                   <ul className="flex">
                     <li className="w-4 aspect-square rounded-full border border-background bg-card"></li>
