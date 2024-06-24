@@ -86,6 +86,11 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := fmt.Sprintf("title: %v, content: %v", form.Title, form.Content)
+	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires)
+	if err != nil || id == 0 {
+		app.serverError(w, err)
+		return
+	}
+	response := fmt.Sprintf("title: %s, content: %s, expires: %d", form.Title, form.Content, form.Expires)
 	w.Write([]byte(response))
 }
