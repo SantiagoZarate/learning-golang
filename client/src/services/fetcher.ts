@@ -1,31 +1,29 @@
 import envs from "@/config/envs"
-import { Methods, ResponseAPI } from "@/types/api"
+import { Methods } from "@/types/api"
 
-export function fetcher<T>(path: string, method: Methods, payload?: unknown): Promise<ResponseAPI<T>> {
+// const [cookies] = useCookies(["access_token"])
+export function fetcher<T>(path: string, method: Methods, payload?: unknown): Promise<T> {
+  // console.log(cookies["access_token"])
+
   const options: RequestInit = {
     method: method,
-    headers: {
-      "Content-Type": "application/json",
-    }
   }
 
   if (method === 'POST') {
     options.body = JSON.stringify(payload)
+    options.headers = {
+      // "access_token": cookies["access_token"],
+      "Content-Type": "application/json",
+    }
   }
+
+  console.log("Deberia estars fetcheando data")
 
   return fetch(envs.API_URL + path, options)
     .then((res) => {
       if (!res.ok) {
-        res.json().then(res => ({
-          message: res.message || "Error",
-          ok: false,
-          data: null
-        }))
+        throw new Error("Intenal server error")
       }
       return res.json()
-    }).catch(() => ({
-      message: "Error",
-      ok: false,
-      data: null
-    }))
+    }).catch((err: Error) => (err))
 }

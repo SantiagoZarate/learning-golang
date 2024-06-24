@@ -2,9 +2,13 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/comp
 import { WorldwideIcon } from "../icons/WorldwideIcon";
 import { type Snippet } from "@/types/snippet";
 
-interface Props extends Partial<Snippet> { }
+interface Props extends Partial<Snippet> {
+  likes?: number
+}
 
-export function Snippet({ content, title }: Props) {
+export function Snippet({ content, title, likes = 0 }: Props) {
+  const isPublic = likes > 0
+
   return (
     <li
       className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4">
@@ -16,7 +20,7 @@ export function Snippet({ content, title }: Props) {
           <Tooltip>
             <TooltipTrigger>
               {
-                title!.length % 2 == 0
+                isPublic
                   ?
                   <div className="flex gap-1 items-center text-xs capitalize text-card">
                     public
@@ -32,7 +36,7 @@ export function Snippet({ content, title }: Props) {
             </TooltipTrigger>
             <TooltipContent className="bg-background">
               {
-                title!.length % 2 == 0
+                isPublic
                   ? <p>Everybody can see it</p>
                   : <p>Shared with you and 2 more people</p>
               }
