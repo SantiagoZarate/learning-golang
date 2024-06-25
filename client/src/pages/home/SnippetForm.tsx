@@ -18,6 +18,8 @@ import { PeopleList } from "./createSnippetForm/peopleList";
 import { User } from "@/types/user";
 import { useState } from "react";
 import data from '@/data/users.json'
+import { AnimatePresence } from "framer-motion";
+import { motion } from 'framer-motion'
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -89,7 +91,7 @@ export function SnippetForm() {
     form.setValue("expires", Number(currentValue) - 1)
   }
 
-  const addInvitedUser = (id: number) => {
+  const addSharedUser = (id: number) => {
     const user = users.available.find(u => u.id === id)
     if (user === undefined) {
       return
@@ -101,14 +103,21 @@ export function SnippetForm() {
         selected: [...prevState.selected, user]
       }
     })
+  }
 
-    // const prevState = form.getValues("sharedWith")
-    // if (prevState === undefined) {
-    //   form.setValue("sharedWith", [{ id: user.id }])
-    //   return
-    // }
+  const removeSharedUser = (id: number) => {
+    const user = users.selected.find(user => user.id === id)
+    if (user === undefined) {
+      return
+    }
 
-    // form.setValue("sharedWith", [...prevState, { id: user.id }])
+    setUsers((prevState) => {
+      return {
+        available: [...prevState.available, user],
+        selected: prevState.selected.filter(user => user.id !== id)
+      }
+    })
+
   }
 
   return (
@@ -158,14 +167,35 @@ export function SnippetForm() {
                 users.selected.length < 1
                   ? <PublicTag />
                   :
-                  <ul className="flex">
-                    {
-                      users.selected.map(user => (
-                        <li key={user.id} className="w-6 aspect-square overflow-hidden rounded-full border border-background bg-card">
-                          <img src={user.pfp} alt="" />
-                        </li>
-                      ))
-                    }
+                  <ul className="flex items-center">
+                    <AnimatePresence mode="popLayout">
+                      {
+                        users.selected.map((user, index) => (
+                          index < 5 &&
+                          <motion.li
+                            layout
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0, transition: { duration: 0.1 } }}
+                            whileHover={{ y: -4 }}
+                            onClick={() => removeSharedUser(user.id)}
+                            key={user.id}
+                            className={`w-8 aspect-square overflow-hidden rounded-full border border-background bg-card cursor-pointer ${index === 0 ? "" : "-ml-2 "}`}
+                            style={{ zIndex: index }}
+                          >
+                            <img src={user.pfp} alt="" />
+                          </motion.li>
+                        ))
+                      }
+                      {users.selected.length > 5 &&
+                        <motion.p
+                          animate={{ x: 0, opacity: 1 }}
+                          exit={{ x: -100, opacity: 0 }}
+                          initial={{ x: -100, opacity: 0 }}
+                          className="20 px-2 text-xs text-secondary min-w-24 block">
+                          and {users.selected.length - 5} more...
+                        </motion.p>}
+                    </AnimatePresence>
                   </ul>
               }
               <label htmlFor="expires" className="flex flex-col items-center gap-1">
@@ -194,7 +224,7 @@ export function SnippetForm() {
         <Toaster />
       </article>
       <PeopleList
-        onSelectUser={addInvitedUser}
+        onSelectUser={addSharedUser}
         users={users.available} />
     </section>
   )
