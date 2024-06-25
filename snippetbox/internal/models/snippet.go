@@ -53,6 +53,7 @@ func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 		SELECT id, title, content, created, expires
 		FROM snippet
 		WHERE expires > current_date
+		ORDER BY created DESC, id DESC
 		LIMIT 10;`
 
 	rows, err := m.DB.Query(query)
