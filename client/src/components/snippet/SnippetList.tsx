@@ -11,7 +11,7 @@ export function SnippetList({ snippets }: Props) {
     <SnippetListLayout>
       {
         snippets.map(s => (
-          <Snippet key={s.id} {...s} />
+          <Snippet key={s.title} {...s} />
         ))
       }
     </SnippetListLayout>

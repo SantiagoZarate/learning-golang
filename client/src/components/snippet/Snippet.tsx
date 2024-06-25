@@ -1,16 +1,33 @@
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { type Snippet } from "@/types/snippet";
 import { PublicTag } from "./PublicTag";
+import { motion } from 'framer-motion'
 
 interface Props extends Partial<Snippet> {
   likes?: number
+  isRecentlyAdded?: boolean
 }
 
-export function Snippet({ content, title, likes = 0 }: Props) {
+export function Snippet({ content, title, likes = 0, isRecentlyAdded = false }: Props) {
   const isPublic = likes > 0
 
   return (
-    <li
+    <motion.li
+      layout
+      initial={isRecentlyAdded && {
+        filter: "blur(5px) saturate(150%)",
+        opacity: 0.6,
+        y: -200,
+      }}
+      animate={{
+        filter: "blur(0px) saturate(100%)",
+        opacity: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 100
+        }
+      }}
       className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4">
       <p className="text-2xl uppercase">{title}</p>
       <p className="text-sm">{content}</p>
@@ -40,6 +57,6 @@ export function Snippet({ content, title, likes = 0 }: Props) {
           </Tooltip>
         </TooltipProvider>
       </footer>
-    </li>
+    </motion.li>
   )
 }

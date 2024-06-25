@@ -15,6 +15,8 @@ export function HomePage() {
 
   const isEmpty = data?.length === 0
 
+  const snippetsOrderedByID = data?.sort((a, b) => b.id - a.id)
+
   return (
     <>
       <section className="relative flex-1">
@@ -24,7 +26,7 @@ export function HomePage() {
         {isLoading && <AnimatedSnippetLoaders />}
         {isError && <SnippetsError />}
         {!isLoading && isEmpty && <NoSnippetsFound />}
-        {!isError && !isEmpty && !isLoading && <SnippetList snippets={data!} />}
+        {!isError && !isEmpty && !isLoading && <SnippetList snippets={snippetsOrderedByID!} />}
       </section>
     </>
   )

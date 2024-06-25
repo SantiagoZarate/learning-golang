@@ -32,7 +32,7 @@ export function SnippetForm() {
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
     mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
-    onMutate: async (newSnippet) => {
+    onMutate: async (newSnippet: SnippetFormType) => {
       await queryClient.cancelQueries({ queryKey: ["snippets"] })
       const previousSnippets = queryClient.getQueryData(["snippets"])
 
@@ -40,7 +40,14 @@ export function SnippetForm() {
         if (oldData === null) {
           return [newSnippet]
         }
-        return [...oldData, newSnippet]
+        return [
+          {
+            ...newSnippet,
+            id: oldData.length + 1,
+            isRecentlyAdded: true
+          },
+          ...oldData,
+        ]
       })
       return { previousSnippets }
     },
