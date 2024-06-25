@@ -14,7 +14,9 @@ async function login(req: Request, res: Response) {
     sameSite: true
   })
   res.json({
-    token
+    token,
+    username: user.name,
+    role: user.role
   })
 }
 
