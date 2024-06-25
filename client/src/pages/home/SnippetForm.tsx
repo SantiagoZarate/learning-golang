@@ -11,11 +11,12 @@ import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSch
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import snippetAPI from "@/services/snippets";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from "react-hook-form";
 import { HoverFormSaver } from "./HoverFormSaver";
 import { PublicTag } from "@/components/snippet/PublicTag";
 import { ExpireDayButton } from "./ExpireDayButton";
+import { type Snippet as SnippetType } from "@/types/snippet";
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -27,19 +28,37 @@ export function SnippetForm() {
       expires: 1
     }
   })
+  const queryClient = useQueryClient()
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
     mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
-    onMutate: () => {
-      console.log("Enviando peticion")
+    onMutate: async (newSnippet) => {
+      await queryClient.cancelQueries({ queryKey: ["snippets"] })
+      const previousSnippets = queryClient.getQueryData(["snippets"])
+
+      queryClient.setQueryData(["snippets"], (oldData: SnippetType[]) => {
+        if (oldData === null) {
+          return [newSnippet]
+        }
+        return [...oldData, newSnippet]
+      })
+      return { previousSnippets }
+    },
+    onError: (error, _, context) => {
+      console.log(error)
+      if (context?.previousSnippets !== undefined) {
+        queryClient.setQueryData(["snippets"], context.previousSnippets)
+      }
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["snippets"]
+      })
     },
     onSuccess: () => {
       console.log("Snippet added succesfully")
       form.reset()
     },
-    onError: () => {
-      console.log("There was an error while creating a snippetbox")
-    }
   });
 
   const incrementExpireDay = () => {
@@ -53,7 +72,7 @@ export function SnippetForm() {
       form.setValue("expires", 1)
       return
     }
-    if (currentValue <= 0) {
+    if (currentValue <= 1) {
       return
     }
     form.setValue("expires", Number(currentValue) - 1)
