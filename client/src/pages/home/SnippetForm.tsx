@@ -1,12 +1,9 @@
 import { FormSectionHeader } from "@/components/FormSectionHeader";
-import { PlusIcon } from "@/components/icons/PlusIcon";
 import { SendIcon } from "@/components/icons/SendIcon";
-import { UsersMicroIcon } from "@/components/icons/UsersMicroIcon";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
-import users from '@/data/users.json';
 import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import snippetAPI from "@/services/snippets";
@@ -17,6 +14,7 @@ import { HoverFormSaver } from "./HoverFormSaver";
 import { PublicTag } from "@/components/snippet/PublicTag";
 import { ExpireDayButton } from "./ExpireDayButton";
 import { type Snippet as SnippetType } from "@/types/snippet";
+import { PeopleList } from "./createSnippetForm/peopleList";
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -154,24 +152,7 @@ export function SnippetForm() {
         </Form>
         <Toaster />
       </article>
-      <article className="w-full flex flex-col gap-4">
-        <FormSectionHeader
-          icon={<UsersMicroIcon />}
-          title="Choose who do you want to see it"
-          description="By defaults it'll be public" />
-        <ul className="flex flex-wrap gap-8 justify-center">
-          {
-            users.map(n => (
-              <li key={n.pfp} className="cursor-pointer aspect-square hover:-translate-y-1 transition w-16 rounded-full overflow-hidden border-border">
-                <img className="w-full h-full bg-muted object-center" src={n.pfp} alt="" />
-              </li>
-            ))
-          }
-          <li className="cursor-pointer aspect-square w-16 rounded-full flex items-center hover:-translate-y-1 transition justify-center overflow-hidden border-border bg-border object-center">
-            <PlusIcon />
-          </li>
-        </ul>
-      </article>
+      <PeopleList />
     </section>
   )
 }
