@@ -1,5 +1,4 @@
 import { Loader } from "@/components/ui/Loader"
-import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
@@ -76,22 +75,17 @@ export function AuthPage() {
                   control={form.control} />}
               <motion.button
                 key={"button"}
-                className="mx-auto"
+                className="mx-auto uppercase text-sm px-4 py-2 w-fit rounded-full font-bold bg-card text-secondary hover:bg-secondary/80"
+                disabled={isPending}
                 layout>
-                <Button
-                  disabled={isPending}
-                  hoverable
-                  variant={"primary"}
-                  className="overflow-hidden ">
-                  {
-                    isPending
-                      ? <Loader />
-                      :
-                      isRegisterPath
-                        ? <AnimatedBlurry key={"Sign up!"}>Sign up!</AnimatedBlurry>
-                        : <AnimatedBlurry key={"Sign in!"}>Sign in!</AnimatedBlurry>
-                  }
-                </Button>
+                {
+                  isPending
+                    ? <Loader />
+                    :
+                    isRegisterPath
+                      ? <AnimatedBlurry key={"Sign up!"}>Sign up!</AnimatedBlurry>
+                      : <AnimatedBlurry key={"Sign in!"}>Sign in!</AnimatedBlurry>
+                }
               </motion.button>
             </form>
           </Form >

@@ -137,7 +137,6 @@ export function SnippetForm() {
                     value={form.watch("expires")}
                     className="max-w-10 bg-input p-0 m-0 w-full text-center"
                     type="number"
-                    defaultValue={1}
                     {...form.register("expires")} />
                   <ExpireDayButton onClick={incrementExpireDay}>+</ExpireDayButton>
                 </div>

@@ -17,15 +17,19 @@ export function Snippet({ content, title, likes = 0, isRecentlyAdded = false }: 
       initial={isRecentlyAdded && {
         filter: "blur(5px) saturate(150%)",
         opacity: 0.6,
-        y: -200,
+        backgroundColor: "hsl(50deg, 97%, 63%)"
+      }}
+      exit={{
+        filter: "blur(5px) saturate(150%)",
+        opacity: 0,
       }}
       animate={{
         filter: "blur(0px) saturate(100%)",
         opacity: 1,
-        y: 0,
+        backgroundColor: "hsl(24deg, 9%, 10%)",
         transition: {
           type: "spring",
-          stiffness: 100
+          stiffness: 100,
         }
       }}
       className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4">
