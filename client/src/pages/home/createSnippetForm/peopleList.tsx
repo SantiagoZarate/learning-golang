@@ -1,18 +1,15 @@
 import { FormSectionHeader } from "@/components/FormSectionHeader";
 import { UsersMicroIcon } from "@/components/icons/UsersMicroIcon";
 import { PlusIcon } from "lucide-react";
-import data from '@/data/users.json'
-import { useState } from "react";
 import { User } from "@/types/user";
 import { AnimatePresence, motion } from 'framer-motion'
 
-export function PeopleList() {
-  const [users, setUsers] = useState<User[]>(data)
+interface Props {
+  users: User[]
+  onSelectUser: (id: number) => void
+}
 
-  const removeUser = (id: number) => {
-    setUsers((prevState) => prevState.filter(user => user.id !== id))
-  }
-
+export function PeopleList({ onSelectUser, users }: Props) {
   return (
     <article className="w-full flex flex-col gap-4">
       <FormSectionHeader
@@ -29,7 +26,7 @@ export function PeopleList() {
                 animate={{ filter: "saturate(80%)" }}
                 exit={{ opacity: 0, scale: 0.1 }}
                 whileHover={{ scale: 1.1, filter: "saturate(120%)" }}
-                onClick={() => removeUser(n.id)}
+                onClick={() => onSelectUser(n.id)}
                 className="cursor-pointer border aspect-square w-16 rounded-full overflow-hidden border-border">
                 <img
                   className="w-full h-full bg-muted object-center"

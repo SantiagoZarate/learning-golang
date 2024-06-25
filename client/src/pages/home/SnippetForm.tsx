@@ -15,6 +15,9 @@ import { PublicTag } from "@/components/snippet/PublicTag";
 import { ExpireDayButton } from "./ExpireDayButton";
 import { type Snippet as SnippetType } from "@/types/snippet";
 import { PeopleList } from "./createSnippetForm/peopleList";
+import { User } from "@/types/user";
+import { useState } from "react";
+import data from '@/data/users.json'
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -23,10 +26,13 @@ export function SnippetForm() {
     defaultValues: {
       content: "",
       title: "",
-      expires: 1
+      expires: 1,
+      sharedWith: []
     }
   })
   const queryClient = useQueryClient()
+  const [users, setUsers] = useState<{ available: User[], selected: User[] }>({ available: data, selected: [] })
+
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
     mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
@@ -83,6 +89,28 @@ export function SnippetForm() {
     form.setValue("expires", Number(currentValue) - 1)
   }
 
+  const addInvitedUser = (id: number) => {
+    const user = users.available.find(u => u.id === id)
+    if (user === undefined) {
+      return
+    }
+
+    setUsers((prevState) => {
+      return {
+        available: prevState.available.filter(user => user.id !== id),
+        selected: [...prevState.selected, user]
+      }
+    })
+
+    // const prevState = form.getValues("sharedWith")
+    // if (prevState === undefined) {
+    //   form.setValue("sharedWith", [{ id: user.id }])
+    //   return
+    // }
+
+    // form.setValue("sharedWith", [...prevState, { id: user.id }])
+  }
+
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
       {!userIsLogged && <HoverFormSaver />}
@@ -126,7 +154,20 @@ export function SnippetForm() {
               )}
             />
             <footer className="flex justify-between items-center ">
-              <PublicTag />
+              {
+                users.selected.length < 1
+                  ? <PublicTag />
+                  :
+                  <ul className="flex">
+                    {
+                      users.selected.map(user => (
+                        <li key={user.id} className="w-6 aspect-square overflow-hidden rounded-full border border-background bg-card">
+                          <img src={user.pfp} alt="" />
+                        </li>
+                      ))
+                    }
+                  </ul>
+              }
               <label htmlFor="expires" className="flex flex-col items-center gap-1">
                 <p className="text-xs text-secondary">expires in:</p>
                 <div className="flex bg-muted rounded-xl overflow-hidden">
@@ -152,7 +193,9 @@ export function SnippetForm() {
         </Form>
         <Toaster />
       </article>
-      <PeopleList />
+      <PeopleList
+        onSelectUser={addInvitedUser}
+        users={users.available} />
     </section>
   )
 }
