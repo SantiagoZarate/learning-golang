@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { motion } from 'framer-motion'
 
 export function Header() {
-  const { toggleTheme, isDarkTheme, userIsLogged, logoutUser } = useGlobalContext()
+  const { toggleTheme, isDarkTheme, userIsLogged, logoutUser, userCredentials } = useGlobalContext()
 
   return (
     <motion.header
@@ -61,7 +61,8 @@ export function Header() {
           {
             userIsLogged
               ?
-              <div className="px-2">
+              <div className="px-2 flex gap-2 items-center">
+                <p className="text-xs text-card capitalize">{userCredentials.username}</p>
                 <Button onClick={() => logoutUser()}>
                   log out
                 </Button>

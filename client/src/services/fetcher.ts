@@ -10,8 +10,6 @@ export function fetcher<T>(path: string, method: Methods, payload?: unknown, tok
     tokenizeRequest(options, payload, token)
   }
 
-  console.log("Deberia estars fetcheando data")
-
   return fetch(envs.API_URL + path, options)
     .then((res) => {
       if (!res.ok) {
@@ -22,10 +20,13 @@ export function fetcher<T>(path: string, method: Methods, payload?: unknown, tok
 }
 
 function tokenizeRequest(options: RequestInit, payload: any, token: any) {
-  options.body = JSON.stringify(payload)
-  options.headers = {
-    ...options.headers,
-    "access_token": token,
-    "Content-Type": "application/json",
+  options = {
+    body: JSON.stringify(payload),
+    headers: {
+      ...options.headers,
+      "Content-Type": "application/json",
+      "access_token": token,
+    },
+    credentials: "include",
   }
 }

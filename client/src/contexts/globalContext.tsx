@@ -1,60 +1,60 @@
-import { PropsWithChildren, createContext, useState } from 'react';
+import { clearUserCredentials, retrieveUserCredentials, storeUserCredentials } from '@/helpers/localStorage';
+import { LoginResponseApi, UserCredentials } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
+import { PropsWithChildren, createContext } from 'react';
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
   userIsLogged: boolean,
   logoutUser: () => void,
-  loginUser: (token: string) => void,
+  loginUser: (token: LoginResponseApi) => void,
   isDarkTheme: boolean,
   toggleTheme: () => void,
   getToken: () => any
+  userCredentials: UserCredentials
 }
 
 export const globalContext = createContext<Props | null>(null);
 
 export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
   const [cookies, setCookies] = useCookies(["access_token"]);
-  const [isDarkTheme, setIsDarkTheme] = useState(localStorage.getItem("theme") === "dark")
+  const { isDarkTheme, toggleTheme } = useTheme()
   const redirect = useNavigate()
 
-  if (isDarkTheme) {
-    document.documentElement.classList.add("dark")
-  }
-
-  const loginUser = (token: string) => {
+  const loginUser = ({ role, token, username }: LoginResponseApi) => {
     setCookies("access_token", token)
+    clearUserCredentials()
+    storeUserCredentials({ username, role })
   }
 
   const logoutUser = () => {
-    redirect("/")
+    clearUserCredentials()
     setCookies("access_token", null)
+    redirect("/")
   }
+
+  const userCredentials = retrieveUserCredentials()
 
   const getToken = () => {
     return cookies["access_token"]
   }
 
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle("dark")
-
-    if (isDarkTheme) {
-      localStorage.removeItem("theme")
-      setIsDarkTheme(false)
-    } else {
-      localStorage.setItem("theme", "dark")
-      setIsDarkTheme(true)
-    }
+  const userIsLogged = () => {
+    const { role, username } = userCredentials
+    const userCredentialsStored = role?.length > 0 && username?.length > 0
+    return userCredentialsStored
   }
 
   return (
     <globalContext.Provider value={{
       isDarkTheme: isDarkTheme,
       toggleTheme,
-      userIsLogged: cookies.access_token?.length > 0 ?? false,
+      userIsLogged: userIsLogged(),
       loginUser,
       logoutUser,
-      getToken
+      getToken,
+      userCredentials
     }}>
       {children}
     </globalContext.Provider>

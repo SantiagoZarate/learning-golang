@@ -5,6 +5,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "./useGlobalContext";
 
+export type UserCredentials = {
+  username: string,
+  role: string
+}
+
+export type LoginResponseApi = {
+  token: string
+} & UserCredentials
+
 export function useAuth() {
   const { loginUser } = useGlobalContext()
   const redirect = useNavigate()
@@ -29,7 +38,7 @@ export function useAuth() {
         if (res.status === 200) {
           res.json()
             .then(res => {
-              loginUser(res.token)
+              loginUser(res)
             })
             .then(() => {
               return redirect("/")
@@ -45,24 +54,9 @@ export function useAuth() {
       .finally(() => setIsPending(false))
   }
 
-  const isLogged = () => {
-    return localStorage.getItem("logged") === "true";
-  }
-
-  const storeCredentials = (cookie: string) => {
-    document.cookie = cookie;
-  }
-
-  const clearCredentials = () => {
-    localStorage.removeItem("logged")
-  }
-
   return {
     signUp,
     logOn,
     isPending,
-    isLogged,
-    storeCredentials,
-    clearCredentials,
   }
 }
