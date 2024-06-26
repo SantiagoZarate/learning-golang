@@ -7,7 +7,12 @@ export function fetcher<T>(path: string, method: Methods, payload?: unknown, tok
   }
 
   if (method === 'POST') {
-    tokenizeRequest(options, payload, token)
+    options.body = JSON.stringify(payload)
+    options.credentials = "include"
+    options.headers = {
+      "Content-Type": "application/json",
+      "access_token": token,
+    }
   }
 
   return fetch(envs.API_URL + path, options)
@@ -17,16 +22,4 @@ export function fetcher<T>(path: string, method: Methods, payload?: unknown, tok
       }
       return res.json()
     }).catch((err: Error) => (err))
-}
-
-function tokenizeRequest(options: RequestInit, payload: any, token: any) {
-  options = {
-    body: JSON.stringify(payload),
-    headers: {
-      ...options.headers,
-      "Content-Type": "application/json",
-      "access_token": token,
-    },
-    credentials: "include",
-  }
 }

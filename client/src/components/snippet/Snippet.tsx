@@ -8,7 +8,14 @@ interface Props extends Partial<Snippet> {
   isRecentlyAdded?: boolean
 }
 
-export function Snippet({ content, title, likes = 0, isRecentlyAdded = false }: Props) {
+import { formatDistanceToNow } from 'date-fns';
+
+function getTimeUntilExpiration(expirationDate: Date) {
+  const expires = new Date(expirationDate);
+  return formatDistanceToNow(expires, { addSuffix: true });
+}
+
+export function Snippet({ content, title, likes = 0, isRecentlyAdded = false, expires }: Props) {
   const isPublic = likes > 0
 
   return (
@@ -36,7 +43,7 @@ export function Snippet({ content, title, likes = 0, isRecentlyAdded = false }: 
       <p className="text-2xl uppercase">{title}</p>
       <p className="text-sm">{content}</p>
       <footer className="flex justify-between items-center">
-        <p className="text-xs text-white/20">{new Date().toDateString()}</p>
+        <p className="text-xs text-white/20">Expires in {getTimeUntilExpiration(expires!)}</p>
         <TooltipProvider delayDuration={50}>
           <Tooltip>
             <TooltipTrigger>
