@@ -29,7 +29,6 @@ export function useCreateSnippetForm() {
     onMutate: async (newSnippet: SnippetFormType) => {
       await queryClient.cancelQueries({ queryKey: ["snippets"] })
       const previousSnippets = queryClient.getQueryData(["snippets"])
-
       queryClient.setQueryData(["snippets"], (oldData: SnippetType[]) => {
         if (oldData === null) {
           return [newSnippet]
@@ -55,9 +54,6 @@ export function useCreateSnippetForm() {
       await queryClient.invalidateQueries({
         queryKey: ["snippets"]
       })
-    },
-    onSuccess: () => {
-      console.log("Snippet added succesfully")
       form.reset()
       setUsers((prevState) => {
         return {
@@ -65,7 +61,7 @@ export function useCreateSnippetForm() {
           selected: []
         }
       })
-    },
+    }
   });
 
   const incrementExpireDay = () => {

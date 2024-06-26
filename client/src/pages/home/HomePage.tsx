@@ -6,6 +6,7 @@ import snippetAPI from "@/services/snippets";
 import { useQuery } from '@tanstack/react-query';
 import { Snippet as SnippetType } from "../../types/snippet";
 import { SnippetForm } from "./SnippetForm";
+import { Toaster } from "@/components/ui/toaster";
 
 export function HomePage() {
   const { data, isLoading, isError } = useQuery<SnippetType[]>({
@@ -27,6 +28,7 @@ export function HomePage() {
         {isError && <SnippetsError />}
         {!isLoading && isEmpty && <NoSnippetsFound />}
         {!isError && !isEmpty && !isLoading && <SnippetList snippets={snippetsOrderedByID!} />}
+        <Toaster />
       </section>
     </>
   )

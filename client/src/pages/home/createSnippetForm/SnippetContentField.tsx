@@ -1,7 +1,7 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { useFormContext } from "react-hook-form"
 
-export function ContentField() {
+export function SnippetContentField() {
   const form = useFormContext()
 
   return (

@@ -2,6 +2,7 @@ import { User } from "@/types/user";
 import { AnimatePresence } from "framer-motion";
 import { MoreUsersMessage } from "./MoreUsersSharedWithMessage";
 import { UserSelectedAvatar } from "./UserSelectedAvatar";
+import { useGlobalContext } from "@/hooks/useGlobalContext";
 
 interface Props {
   usersSelected: User[],
@@ -9,8 +10,14 @@ interface Props {
 }
 
 export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
+  const { userCredentials: { role } } = useGlobalContext()
+
+  const isPremium = role === 'premium'
+
   const items: JSX.Element[] = [];
-  for (let i = 0; i < 5; i++) {
+  const usersLimit = isPremium ? 100 : 5
+
+  for (let i = 0; i < usersLimit; i++) {
     const user = usersSelected[i]
 
     const element = user === undefined
@@ -30,7 +37,7 @@ export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
     <ul className="flex items-center">
       <AnimatePresence mode="popLayout">
         {items}
-        {usersSelected.length > 5 && <MoreUsersMessage totalUsers={usersSelected.length} />}
+        {usersSelected.length > 5 && isPremium && <MoreUsersMessage totalUsers={usersSelected.length} />}
       </AnimatePresence>
     </ul>
   )

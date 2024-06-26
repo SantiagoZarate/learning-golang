@@ -2,7 +2,7 @@ import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/f
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 
-export function TitleField() {
+export function SnippetTitleField() {
   const form = useFormContext()
 
   return (

@@ -3,13 +3,22 @@ import { UsersMicroIcon } from "@/components/icons/UsersMicroIcon";
 import { PlusIcon } from "lucide-react";
 import { User } from "@/types/user";
 import { AnimatePresence, motion } from 'framer-motion'
+import { toast } from "@/components/ui/use-toast"
 
 interface Props {
-  users: User[]
-  onSelectUser: (id: number) => void
+  users: User[],
+  onSelectUser: (id: number) => void,
+  amountUsersSelected: number
 }
 
-export function PeopleList({ onSelectUser, users }: Props) {
+export function PeopleList({ onSelectUser, users, amountUsersSelected }: Props) {
+  const triggerToast = () => {
+    toast({
+      title: "Max users reached",
+      description: "upgrade to premium to share your snippetboxs with more people",
+    })
+  }
+
   return (
     <article className="w-full flex flex-col gap-4">
       <FormSectionHeader
@@ -26,7 +35,7 @@ export function PeopleList({ onSelectUser, users }: Props) {
                 animate={{ filter: "saturate(80%)" }}
                 exit={{ opacity: 0, scale: 0.1 }}
                 whileHover={{ scale: 1.1, filter: "saturate(120%)" }}
-                onClick={() => onSelectUser(n.id)}
+                onClick={amountUsersSelected < 5 ? () => onSelectUser(n.id) : () => triggerToast()}
                 className="cursor-pointer border aspect-square w-16 rounded-full overflow-hidden border-border">
                 <img
                   className="w-full h-full bg-muted object-center"
