@@ -16,6 +16,7 @@ type SnippetForm struct {
 	Title               string `form:"title"`
 	Content             string `form:"content"`
 	Expires             int    `form:"expires"`
+	SharedWith          []int  `form:"sharedWith"`
 	validator.Validator `form:"-"`
 }
 
@@ -86,7 +87,7 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires)
+	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires, form.SharedWith)
 	if err != nil || id == 0 {
 		app.serverError(w, err)
 		return

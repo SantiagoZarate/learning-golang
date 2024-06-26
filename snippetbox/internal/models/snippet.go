@@ -7,26 +7,51 @@ import (
 )
 
 type Snippet struct {
-	ID      int
-	Title   string
-	Content string
-	Created time.Time
-	Expires time.Time
+	ID         int
+	Title      string
+	Content    string
+	Created    time.Time
+	Expires    time.Time
+	SharedWith []int
 }
 
 type SnippetModel struct {
 	DB *sql.DB
 }
 
-func (m *SnippetModel) Insert(title string, content string, expires int) (int, error) {
-	var id int
-	query := `
-		SELECT createSnippet($1, $2, $3);`
-
-	err := m.DB.QueryRow(query, title, content, expires).Scan(&id)
+func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int) (int, error) {
+	tx, err := m.DB.Begin()
 	if err != nil {
 		return 0, err
 	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+	var id int
+
+	query := `SELECT createSnippet($1, $2, $3);`
+	err = tx.QueryRow(query, title, content, expires).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	if len(sharedWith) > 1 {
+		for _, v := range sharedWith {
+			_, err = tx.Exec("SELECT addUsersSharedWithSnippet($1, $2)", v, id)
+			if err != nil {
+				return 0, err
+			}
+		}
+	}
+	m.DB.Exec("COMMIT;")
 
 	return id, nil
 }
