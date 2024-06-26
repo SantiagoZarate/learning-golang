@@ -26,6 +26,11 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* Disable resizable textareas */
+textarea {
+  resize: none;
+}
+
 @font-face {
   font-family: "Geist";
   src: url('/fonts/GeistVF.woff');
