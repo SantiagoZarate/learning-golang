@@ -1,25 +1,24 @@
 import { FormSectionHeader } from "@/components/FormSectionHeader";
 import { SendIcon } from "@/components/icons/SendIcon";
+import { PublicTag } from "@/components/snippet/PublicTag";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
+import data from '@/data/users.json';
 import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
 import snippetAPI from "@/services/snippets";
+import { type Snippet as SnippetType } from "@/types/snippet";
+import { User } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from "react-hook-form";
-import { HoverFormSaver } from "./HoverFormSaver";
-import { PublicTag } from "@/components/snippet/PublicTag";
-import { ExpireDayButton } from "./ExpireDayButton";
-import { type Snippet as SnippetType } from "@/types/snippet";
-import { PeopleList } from "./createSnippetForm/peopleList";
-import { User } from "@/types/user";
 import { useState } from "react";
-import data from '@/data/users.json'
-import { AnimatePresence } from "framer-motion";
-import { motion } from 'framer-motion'
+import { useForm } from "react-hook-form";
+import { ExpireDayButton } from "./ExpireDayButton";
+import { HoverFormSaver } from "./HoverFormSaver";
+import { PeopleSelectedList } from "./createSnippetForm/PeopleSelectedList";
+import { PeopleList } from "./createSnippetForm/peopleList";
 
 export function SnippetForm() {
   const { userIsLogged, getToken } = useGlobalContext()
@@ -71,6 +70,12 @@ export function SnippetForm() {
     onSuccess: () => {
       console.log("Snippet added succesfully")
       form.reset()
+      setUsers((prevState) => {
+        return {
+          available: prevState.available.concat(prevState.selected),
+          selected: []
+        }
+      })
     },
   });
 
@@ -117,8 +122,17 @@ export function SnippetForm() {
         selected: prevState.selected.filter(user => user.id !== id)
       }
     })
-
   }
+
+  const handleSubmit = (data: SnippetFormType) => {
+    if (users.selected.length > 1) {
+      data.sharedWith = users.selected.map(user => { return { id: user.id } })
+    }
+    console.log(data)
+    mutate(data)
+  }
+
+
 
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
@@ -130,7 +144,7 @@ export function SnippetForm() {
           description="Up to 140 chars!" />
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(data => mutate(data))}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className="focus-within:scale-[103%] focus-within:shadow-xl hover:shadow-xl hover:scale-[103%] transition-all duration-300 relative w-full space-y-2 mx-auto p-2 border border-border bg-card-foreground rounded-xl">
             <FormField
               control={form.control}
@@ -166,37 +180,9 @@ export function SnippetForm() {
               {
                 users.selected.length < 1
                   ? <PublicTag />
-                  :
-                  <ul className="flex items-center">
-                    <AnimatePresence mode="popLayout">
-                      {
-                        users.selected.map((user, index) => (
-                          index < 5 &&
-                          <motion.li
-                            layout
-                            initial={{ opacity: 0, scale: 0 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0, transition: { duration: 0.1 } }}
-                            whileHover={{ y: -4 }}
-                            onClick={() => removeSharedUser(user.id)}
-                            key={user.id}
-                            className={`w-8 aspect-square overflow-hidden rounded-full border border-background bg-card cursor-pointer ${index === 0 ? "" : "-ml-2 "}`}
-                            style={{ zIndex: index }}
-                          >
-                            <img src={user.pfp} alt="" />
-                          </motion.li>
-                        ))
-                      }
-                      {users.selected.length > 5 &&
-                        <motion.p
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: -100, opacity: 0 }}
-                          initial={{ x: -100, opacity: 0 }}
-                          className="20 px-2 text-xs text-secondary min-w-24 block">
-                          and {users.selected.length - 5} more...
-                        </motion.p>}
-                    </AnimatePresence>
-                  </ul>
+                  : <PeopleSelectedList
+                    onRemoveUser={removeSharedUser}
+                    usersSelected={users.selected} />
               }
               <label htmlFor="expires" className="flex flex-col items-center gap-1">
                 <p className="text-xs text-secondary">expires in:</p>
