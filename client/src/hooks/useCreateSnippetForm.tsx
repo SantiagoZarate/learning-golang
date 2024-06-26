@@ -54,6 +54,8 @@ export function useCreateSnippetForm() {
       await queryClient.invalidateQueries({
         queryKey: ["snippets"]
       })
+    },
+    onSuccess: () => {
       form.reset()
       setUsers((prevState) => {
         return {
@@ -111,7 +113,7 @@ export function useCreateSnippetForm() {
 
   const handleSubmit = (data: SnippetFormType) => {
     if (users.selected.length > 1) {
-      data.sharedWith = users.selected.map(user => { return { id: user.id } })
+      data.sharedWith = users.selected.map(user => { return user.id })
     }
     console.log(data)
     mutate(data)
