@@ -4,6 +4,7 @@ import { PlusIcon } from "lucide-react";
 import { User } from "@/types/user";
 import { AnimatePresence, motion } from 'framer-motion'
 import { toast } from "@/components/ui/use-toast"
+import { FREE_TIER_SHARE_USERS_AMOUNT } from "@/data/constants";
 
 interface Props {
   users: User[],
@@ -35,7 +36,7 @@ export function PeopleList({ onSelectUser, users, amountUsersSelected }: Props) 
                 animate={{ filter: "saturate(80%)" }}
                 exit={{ opacity: 0, scale: 0.1 }}
                 whileHover={{ scale: 1.1, filter: "saturate(120%)" }}
-                onClick={amountUsersSelected < 5 ? () => onSelectUser(n.id) : () => triggerToast()}
+                onClick={amountUsersSelected < FREE_TIER_SHARE_USERS_AMOUNT ? () => onSelectUser(n.id) : () => triggerToast()}
                 className="cursor-pointer border aspect-square w-16 rounded-full overflow-hidden border-border">
                 <img
                   className="w-full h-full bg-muted object-center"

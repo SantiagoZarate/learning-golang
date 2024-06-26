@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { MoreUsersMessage } from "./MoreUsersSharedWithMessage";
 import { UserSelectedAvatar } from "./UserSelectedAvatar";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { FREE_TIER_SHARE_USERS_AMOUNT } from "@/data/constants";
 
 interface Props {
   usersSelected: User[],
@@ -15,7 +16,7 @@ export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
   const isPremium = role === 'premium'
 
   const items: JSX.Element[] = [];
-  const usersLimit = isPremium ? 100 : 5
+  const usersLimit = isPremium ? 100 : FREE_TIER_SHARE_USERS_AMOUNT
 
   for (let i = 0; i < usersLimit; i++) {
     const user = usersSelected[i]
@@ -37,7 +38,7 @@ export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
     <ul className="flex items-center">
       <AnimatePresence mode="popLayout">
         {items}
-        {usersSelected.length > 5 && isPremium && <MoreUsersMessage totalUsers={usersSelected.length} />}
+        {usersSelected.length > FREE_TIER_SHARE_USERS_AMOUNT && isPremium && <MoreUsersMessage totalUsers={usersSelected.length} />}
       </AnimatePresence>
     </ul>
   )
