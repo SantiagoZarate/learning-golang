@@ -59,7 +59,7 @@ func (m *SnippetModel) Insert(title string, content string, expires int, sharedW
 		return 0, err
 	}
 
-	if len(sharedWith) > 1 {
+	if len(sharedWith) > 0 {
 		for _, v := range sharedWith {
 			_, err = tx.Exec("SELECT addUsersSharedWithSnippet($1, $2);", v, id)
 			if err != nil {
@@ -131,6 +131,7 @@ func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 		FROM snippet s, account a
 		WHERE s.expires > current_date
 		AND s.author = a.id
+		AND s.isPrivate = false
 		ORDER BY s.created DESC, s.id DESC
 		LIMIT 10;`
 
