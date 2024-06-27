@@ -54,7 +54,15 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(snippet)
+	// Pretty-print the JSON response
+	w.Header().Set("Content-Type", "application/json")
+	jsonData, err := json.MarshalIndent(snippet, "", "  ")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
 	if err != nil {
 		app.serverError(w, err)
 		return

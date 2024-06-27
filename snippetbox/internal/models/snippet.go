@@ -7,13 +7,13 @@ import (
 )
 
 type Snippet struct {
-	ID         int
-	Title      string
-	Content    string
-	Created    time.Time
-	Expires    time.Time
-	IsPrivate  bool
-	SharedWith []UserDTO
+	ID         int       `json:"ID"`
+	Title      string    `json:"Title"`
+	Content    string    `json:"Content"`
+	Created    time.Time `json:"Created"`
+	Expires    time.Time `json:"Expires"`
+	IsPrivate  bool      `json:"IsPrivate"`
+	SharedWith []UserDTO `json:"SharedWith"`
 }
 
 type SnippetModel struct {
@@ -21,9 +21,9 @@ type SnippetModel struct {
 }
 
 type UserDTO struct {
-	ID       int
-	Username string
-	pfp      string
+	ID       int    `json:"ID"`
+	Username string `json:"Username"`
+	Pfp      string `json:"Pfp"`
 }
 
 func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int) (int, error) {
@@ -96,7 +96,7 @@ func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
 
 		for rows.Next() {
 			user := UserDTO{}
-			err := rows.Scan(&user.ID, &user.Username, &user.pfp)
+			err := rows.Scan(&user.ID, &user.Username, &user.Pfp)
 			if err != nil {
 				return nil, err
 			}
