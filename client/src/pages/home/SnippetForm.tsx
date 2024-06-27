@@ -12,7 +12,7 @@ import { SnippetTitleField } from "./createSnippetForm/SnippetTitleField";
 import { PeopleList } from "./createSnippetForm/peopleList";
 
 export function SnippetForm() {
-  const { form, users, addSharedUser, decrementExpireDay, handleSubmit, incrementExpireDay, isPending, removeSharedUser, userIsLogged } = useCreateSnippetForm()
+  const { form, users, addSharedUser, usersIsLoading, decrementExpireDay, handleSubmit, incrementExpireDay, isPending, removeSharedUser, userIsLogged } = useCreateSnippetForm()
 
   return (
     <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
@@ -44,10 +44,15 @@ export function SnippetForm() {
           </form>
         </FormProvider>
       </article>
-      <PeopleList
-        amountUsersSelected={users.selected.length}
-        onSelectUser={addSharedUser}
-        users={users.available} />
+      {
+        usersIsLoading
+          ? <p className="animate-pulse p-4">Loading users...</p>
+          :
+          <PeopleList
+            amountUsersSelected={users.selected.length}
+            onSelectUser={addSharedUser}
+            users={users.available} />
+      }
     </section>
   )
 }

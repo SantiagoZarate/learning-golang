@@ -8,6 +8,7 @@ interface Props extends Partial<Snippet> {
 }
 
 import { formatDistanceToNow } from 'date-fns';
+import { DEFAULT_USER_PFP } from "@/data/constants";
 
 function getTimeUntilExpiration(expirationDate: Date) {
   const expires = new Date(expirationDate);
@@ -18,6 +19,8 @@ export function Snippet({ content, title, author, sharedWith, isPrivate, isRecen
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
+
+  const profilePicture = author?.pfp ? author.pfp : DEFAULT_USER_PFP
 
   return (
     <motion.li
@@ -47,7 +50,7 @@ export function Snippet({ content, title, author, sharedWith, isPrivate, isRecen
         <div className="flex divide-x items-center">
           <div className="flex gap-2 items-center pr-2">
             <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden`}>
-              <img className="object-cover" src={author?.pfp} alt="" />
+              <img className="object-cover" src={profilePicture} alt="" />
             </li>
             <p className="text-xs text-white/40">{author?.username}</p>
           </div>
@@ -64,7 +67,7 @@ export function Snippet({ content, title, author, sharedWith, isPrivate, isRecen
                     {
                       sharedWith?.map((u, index) => (
                         <li key={u.id} className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden ${index === 0 ? "" : "-ml-1"}`}>
-                          <img className="object-cover" src={u.pfp} alt="" />
+                          <img className="object-cover" src={profilePicture} alt="" />
                         </li>
                       ))
                     }

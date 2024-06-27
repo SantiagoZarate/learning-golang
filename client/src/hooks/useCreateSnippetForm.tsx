@@ -1,13 +1,17 @@
 import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useGlobalContext } from "./useGlobalContext";
-import { User } from "@/types/user";
 import snippetAPI from '@/services/snippets'
-import { type Snippet as SnippetType } from "@/types/snippet";
-import data from '@/data/users.json'
+import { UserDTO, type Snippet as SnippetType } from "@/types/snippet";
+import userAPI from '@/services/users'
+
+interface UsersState {
+  selected: UserDTO[],
+  available: UserDTO[]
+}
 
 export function useCreateSnippetForm() {
   const { userIsLogged, getToken, userCredentials } = useGlobalContext()
@@ -21,7 +25,14 @@ export function useCreateSnippetForm() {
     }
   })
   const queryClient = useQueryClient()
-  const [users, setUsers] = useState<{ available: User[], selected: User[] }>({ available: data, selected: [] })
+  const usersData = useQuery<UserDTO[]>({ queryKey: ["users"], queryFn: userAPI.getAll })
+  const [users, setUsers] = useState<UsersState>({ available: [], selected: [] })
+
+  useEffect(() => {
+    if (usersData) {
+      setUsers((prevState) => ({ ...prevState, available: usersData.data! }));
+    }
+  }, [usersData.data]);
 
   const { isPending, mutate } = useMutation({
     mutationKey: ["snippets"],
@@ -129,6 +140,7 @@ export function useCreateSnippetForm() {
     incrementExpireDay,
     isPending,
     form,
-    users
+    users,
+    usersIsLoading: usersData.isLoading
   }
 }

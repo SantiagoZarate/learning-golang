@@ -4,7 +4,7 @@ import { PlusIcon } from "lucide-react";
 import { User } from "@/types/user";
 import { AnimatePresence, motion } from 'framer-motion'
 import { toast } from "@/components/ui/use-toast"
-import { FREE_TIER_SHARE_USERS_AMOUNT } from "@/data/constants";
+import { DEFAULT_USER_PFP, FREE_TIER_SHARE_USERS_AMOUNT } from "@/data/constants";
 
 interface Props {
   users: User[],
@@ -29,7 +29,7 @@ export function PeopleList({ onSelectUser, users, amountUsersSelected }: Props) 
       <ul className="flex flex-wrap gap-8 place-content-center">
         <AnimatePresence mode="popLayout">
           {
-            users.map(n => (
+            users?.map(n => (
               <motion.li
                 layout
                 key={n.id}
@@ -40,7 +40,7 @@ export function PeopleList({ onSelectUser, users, amountUsersSelected }: Props) 
                 className="cursor-pointer border aspect-square w-16 rounded-full overflow-hidden border-border">
                 <img
                   className="w-full h-full bg-muted object-center"
-                  src={n.pfp}
+                  src={n.pfp ? n.pfp : DEFAULT_USER_PFP}
                   alt="user profile picture" />
               </motion.li>
             ))

@@ -10,7 +10,7 @@ export function SnippetList({ snippets }: Props) {
   return (
     <SnippetListLayout>
       {
-        snippets.map(s => (
+        snippets?.map(s => (
           <Snippet key={s.id} {...s} />
         ))
       }
