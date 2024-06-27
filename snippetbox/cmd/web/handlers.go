@@ -17,6 +17,7 @@ type SnippetForm struct {
 	Content             string `form:"content"`
 	Expires             int    `form:"expires"`
 	SharedWith          []int  `form:"sharedWith"`
+	Author              string `form:"author"`
 	validator.Validator `form:"-"`
 }
 
@@ -93,6 +94,7 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.MaxChar(form.Title, 100), "title", "Title too large, 100 characters max")
 	form.CheckField(validator.NotBlank(form.Title), "title", "Title can not be empty")
 	form.CheckField(validator.NotBlank(form.Content), "content", "Content can not be empty")
+	form.CheckField(validator.NotBlank(form.Author), "author", "Author can not be empty")
 	form.CheckField(validator.MaxChar(form.Content, 200), "content", "Content too large")
 	form.CheckField(validator.PermittedInt(form.Expires, 1, 2, 3), "expires", "expires must match 1, 2 or 3")
 
@@ -102,7 +104,7 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires, form.SharedWith)
+	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires, form.SharedWith, form.Author)
 	if err != nil || id == 0 {
 		app.serverError(w, err)
 		return

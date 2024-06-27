@@ -14,6 +14,7 @@ type Snippet struct {
 	Expires    time.Time `json:"Expires"`
 	IsPrivate  bool      `json:"IsPrivate"`
 	SharedWith []UserDTO `json:"SharedWith"`
+	Author     UserDTO   `json:"Author"`
 }
 
 type SnippetModel struct {
@@ -26,7 +27,7 @@ type UserDTO struct {
 	Pfp      string `json:"Pfp"`
 }
 
-func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int) (int, error) {
+func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int, author string) (int, error) {
 	tx, err := m.DB.Begin()
 	if err != nil {
 		return 0, err
@@ -42,10 +43,18 @@ func (m *SnippetModel) Insert(title string, content string, expires int, sharedW
 			tx.Commit()
 		}
 	}()
+	var authorID int
+
+	query := `SELECT id FROM account WHERE username = $1;`
+	err = tx.QueryRow(query, author).Scan(&authorID)
+	if err != nil {
+		return 0, err
+	}
+
 	var id int
 
-	query := `SELECT createSnippet($1, $2, $3);`
-	err = tx.QueryRow(query, title, content, expires).Scan(&id)
+	query = `SELECT createSnippet($1, $2, $3, $4);`
+	err = tx.QueryRow(query, title, content, expires, authorID).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
@@ -67,11 +76,18 @@ func (m *SnippetModel) Insert(title string, content string, expires int, sharedW
 }
 
 func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
-	row := m.DB.QueryRow(`SELECT id, title, content, created, expires, isPrivate FROM snippet WHERE id = $1;`, id)
+	query := `
+	SELECT s.id, s.title, s.content, s.created, s.expires, s.isPrivate, a.id, a.username, a.pfp
+	FROM snippet s, account a
+	WHERE s.id = $1
+	AND a.id = s.author;
+	`
+
+	row := m.DB.QueryRow(query, id)
 
 	var data Snippet
 
-	err := row.Scan(&data.ID, &data.Title, &data.Content, &data.Created, &data.Expires, &data.IsPrivate)
+	err := row.Scan(&data.ID, &data.Title, &data.Content, &data.Created, &data.Expires, &data.IsPrivate, &data.Author.ID, &data.Author.Username, &data.Author.Pfp)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
@@ -111,10 +127,11 @@ func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
 
 func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 	query := `
-		SELECT id, title, content, created, expires, isPrivate
-		FROM snippet
-		WHERE expires > current_date
-		ORDER BY created DESC, id DESC
+		SELECT s.id, s.title, s.content, s.created, s.expires, s.isPrivate, a.id, a.username, a.pfp
+		FROM snippet s, account a
+		WHERE s.expires > current_date
+		AND s.author = a.id
+		ORDER BY s.created DESC, s.id DESC
 		LIMIT 10;`
 
 	rows, err := m.DB.Query(query)
@@ -141,7 +158,7 @@ func extractRows(rows *sql.Rows, db *sql.DB) ([]*Snippet, error) {
 
 	for rows.Next() {
 		snp := &Snippet{}
-		err := rows.Scan(&snp.ID, &snp.Title, &snp.Content, &snp.Created, &snp.Expires, &snp.IsPrivate)
+		err := rows.Scan(&snp.ID, &snp.Title, &snp.Content, &snp.Created, &snp.Expires, &snp.IsPrivate, &snp.Author.ID, &snp.Author.Username, &snp.Author.Pfp)
 		if err != nil {
 			return nil, err
 		}
