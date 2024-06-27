@@ -25,8 +25,8 @@ const prodSnippetAPI: SnippetAPI = {
   getSnippets() {
     return fetcher<RawSnippet[]>({ path: "/snippet" }).then(res => mapSnippetsArr(res))
   },
-  getPrivateSnippets() {
-    return fetcher<RawSnippet[]>({ path: "/snippet/private" }).then(res => mapSnippetsArr(res))
+  getPrivateSnippets(token) {
+    return fetcher<RawSnippet[]>({ path: "/snippet/private", token }).then(res => mapSnippetsArr(res))
   }
 }
 

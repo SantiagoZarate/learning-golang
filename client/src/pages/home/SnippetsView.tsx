@@ -19,7 +19,7 @@ export function SnippetsView({ data, isError, isLoading }: Props) {
     <>
       {isLoading && <AnimatedSnippetLoaders />}
       {isError && <SnippetsError />}
-      {!isLoading && isEmpty && <NoSnippetsFound />}
+      {!isError && !isLoading && isEmpty && <NoSnippetsFound />}
       {!isError && !isEmpty && !isLoading && <SnippetList snippets={snippetsOrderedByID!} />}
     </>
   )

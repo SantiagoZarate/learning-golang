@@ -14,5 +14,5 @@ export interface SnippetAPI {
   deleteSnippetById: (id: number) => Promise<ResponseAPI<null>>
   getSnippets: () => Promise<Snippet[]>
   getSnippetById: (id: number) => Promise<ResponseAPI<Snippet>>
-  getPrivateSnippets: () => Promise<Snippet[]>
+  getPrivateSnippets: (token: any) => Promise<Snippet[]>
 }

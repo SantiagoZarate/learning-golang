@@ -13,12 +13,18 @@ export function fetcher<T>({ method = "GET", path, token, payload }: Options): P
     method: method,
   }
 
+  if (token) {
+    options.headers = {
+      "access_token": token,
+    }
+  }
+
   if (method === 'POST') {
     options.body = JSON.stringify(payload)
     options.credentials = "include"
     options.headers = {
+      ...options.headers,
       "Content-Type": "application/json",
-      "access_token": token,
     }
   }
 
