@@ -14,7 +14,7 @@ function getTimeUntilExpiration(expirationDate: Date) {
   return formatDistanceToNow(expires, { addSuffix: true });
 }
 
-export function Snippet({ content, title, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
+export function Snippet({ content, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
@@ -44,7 +44,15 @@ export function Snippet({ content, title, sharedWith, isPrivate, isRecentlyAdded
       <p className="text-2xl uppercase">{title}</p>
       <p className="text-sm">{content}</p>
       <footer className="flex justify-between items-center">
-        <p className="text-xs text-white/20">Expires in {getTimeUntilExpiration(expires!)}</p>
+        <div className="flex divide-x items-center">
+          <div className="flex gap-2 items-center pr-2">
+            <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden`}>
+              <img className="object-cover" src={author?.pfp} alt="" />
+            </li>
+            <p className="text-xs text-white/40">{author?.username}</p>
+          </div>
+          <p className="text-xs text-white/20 pl-2">Expires in {getTimeUntilExpiration(expires!)}</p>
+        </div>
         <TooltipProvider delayDuration={50}>
           <Tooltip>
             <TooltipTrigger>

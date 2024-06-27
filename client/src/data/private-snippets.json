@@ -17,7 +17,12 @@
         "username": "juan",
         "pfp": "https://cdn.personalitylist.com/avatars/543031.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 11,
@@ -32,7 +37,12 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 12,
@@ -47,7 +57,12 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 13,
@@ -62,7 +77,12 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 14,
@@ -77,7 +97,12 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 15,
@@ -92,7 +117,12 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   },
   {
     "id": 16,
@@ -107,6 +137,11 @@
         "username": "juan",
         "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
       }
-    ]
+    ],
+    "author": {
+      "id": 1,
+      "username": "juan",
+      "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+    }
   }
 ]
