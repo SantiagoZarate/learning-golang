@@ -4,7 +4,6 @@ import { PublicTag } from "./PublicTag";
 import { motion } from 'framer-motion'
 
 interface Props extends Partial<Snippet> {
-  likes?: number
   isRecentlyAdded?: boolean
 }
 
@@ -15,8 +14,10 @@ function getTimeUntilExpiration(expirationDate: Date) {
   return formatDistanceToNow(expires, { addSuffix: true });
 }
 
-export function Snippet({ content, title, likes = 0, isRecentlyAdded = false, expires }: Props) {
-  const isPublic = likes > 0
+export function Snippet({ content, title, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
+  const popoverMessage = sharedWith?.length! - 1 === 0
+    ? <p>Shared only with you</p>
+    : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
 
   return (
     <motion.li
@@ -48,21 +49,25 @@ export function Snippet({ content, title, likes = 0, isRecentlyAdded = false, ex
           <Tooltip>
             <TooltipTrigger>
               {
-                isPublic
+                !isPrivate
                   ? <PublicTag />
                   :
                   <ul className="flex">
-                    <li className="w-4 aspect-square rounded-full border border-background bg-card"></li>
-                    <li className="w-4 aspect-square rounded-full border border-background bg-card -ml-1"></li>
-                    <li className="w-4 aspect-square rounded-full border border-background bg-card -ml-1"></li>
+                    {
+                      sharedWith?.map((u, index) => (
+                        <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden ${index === 0 ? "" : "-ml-1"}`}>
+                          <img className="object-cover" src={u.pfp} alt="" />
+                        </li>
+                      ))
+                    }
                   </ul>
               }
             </TooltipTrigger>
             <TooltipContent className="bg-background">
               {
-                isPublic
-                  ? <p>Everybody can see it</p>
-                  : <p>Shared with you and 2 more people</p>
+                isPrivate
+                  ? popoverMessage
+                  : <p>Everybody can see it</p>
               }
             </TooltipContent>
           </Tooltip>

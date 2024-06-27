@@ -4,48 +4,103 @@
     "title": "an old silent pond",
     "content": "an old silent pond...\\na frog jumps into the pond,\\nsplash! silence again.\\n\\n– matsuo bashō",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      },
+      {
+        "id": 2,
+        "username": "juan",
+        "pfp": "https://cdn.personalitylist.com/avatars/543031.png"
+      }
+    ]
   },
   {
     "id": 2,
     "title": "over the wintry forest",
     "content": "over the wintry\\nforest, winds howl in rage\\nwith no leaves to blow.\\n\\n– natsume soseki",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      }
+    ]
   },
   {
     "id": 3,
     "title": "first autumn morning",
     "content": "first autumn morning\\nthe mirror i stare into\\nshows my father's face.\\n\\n– murakami kijo",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": false,
+    "sharedWith": []
   },
   {
     "id": 4,
     "title": "over the wintry forest",
     "content": "over the wintry\\nforest, winds howl in rage\\nwith no leaves to blow.\\n\\n– natsume soseki",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      }
+    ]
   },
   {
     "id": 5,
     "title": "first autumn morning",
     "content": "first autumn morning\\nthe mirror i stare into\\nshows my father's face.\\n\\n– murakami kijo",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      }
+    ]
   },
   {
     "id": 6,
     "title": "first autumn morning",
     "content": "first autumn morning\\nthe mirror i stare into\\nshows my father's face.\\n\\n– murakami kijo",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      }
+    ]
   },
   {
     "id": 7,
     "title": "first autumn morning",
     "content": "first autumn morning\\nthe mirror i stare into\\nshows my father's face.\\n\\n– murakami kijo",
     "created": "2024-06-05t00:00:00z",
-    "expires": "2024-12-02t00:00:00z"
+    "expires": "2024-12-02t00:00:00z",
+    "isPrivate": true,
+    "sharedWith": [
+      {
+        "id": 1,
+        "username": "juan",
+        "pfp": "https://tiermaker.com/images/templates/smiling-friends-minor-characters-1460821/14608211641854346.png"
+      }
+    ]
   }
 ]

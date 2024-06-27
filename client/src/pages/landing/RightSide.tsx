@@ -9,35 +9,45 @@ const snippets: SnippetType[] = [
     created: new Date(),
     expires: new Date(),
     id: 1,
-    title: "First snippet"
+    title: "First snippet",
+    isPrivate: false,
+    sharedWith: []
   },
   {
     content: "Second frame",
     created: new Date(),
     expires: new Date(),
     id: 2,
-    title: "Second frame"
+    title: "Second frame",
+    isPrivate: false,
+    sharedWith: []
   },
   {
     content: "Thrid snippet",
     created: new Date(),
     expires: new Date(),
     id: 3,
-    title: "Thrid snippet"
+    title: "Thrid snippet",
+    isPrivate: false,
+    sharedWith: []
   },
   {
     content: "Fourth snippet",
     created: new Date(),
     expires: new Date(),
     id: 4,
-    title: "Thrid snippet"
+    title: "Thrid snippet",
+    isPrivate: false,
+    sharedWith: []
   },
   {
     content: "Fith snippet",
     created: new Date(),
     expires: new Date(),
     id: 5,
-    title: "Thrid snippet"
+    title: "Thrid snippet",
+    isPrivate: false,
+    sharedWith: []
   }
 ]
 
