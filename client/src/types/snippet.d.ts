@@ -6,6 +6,7 @@ export interface Snippet {
   expires: Date;
   isPrivate: boolean,
   sharedWith: UserDTO[] | undefined
+  author: UserDTO
 }
 
 export interface RawSnippet {
@@ -16,6 +17,7 @@ export interface RawSnippet {
   Expires: Date;
   IsPrivate: boolean
   SharedWith: RawUserDTO[] | undefined
+  Author: RawUserDTO
 }
 
 export interface RawUserDTO {

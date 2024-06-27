@@ -3,7 +3,9 @@ import { Snippet as SnippetType } from "@/types/snippet";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-const snippets: SnippetType[] = [
+type SnippetWithouthAuthor = Omit<SnippetType, "author">
+
+const snippets: SnippetWithouthAuthor[] = [
   {
     content: "First snippet",
     created: new Date(),
@@ -52,7 +54,7 @@ const snippets: SnippetType[] = [
 ]
 
 export function RightSide() {
-  const [data, setData] = useState<SnippetType[]>(snippets.slice(0, 3))
+  const [data, setData] = useState<SnippetWithouthAuthor[]>(snippets.slice(0, 3))
   const [index, setIndex] = useState(0)
 
   useEffect(() => {

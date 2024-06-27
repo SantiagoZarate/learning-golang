@@ -14,7 +14,7 @@ function getTimeUntilExpiration(expirationDate: Date) {
   return formatDistanceToNow(expires, { addSuffix: true });
 }
 
-export function Snippet({ content, title, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
+export function Snippet({ content, title, sharedWith, isPrivate, author, isRecentlyAdded = false, expires }: Props) {
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>

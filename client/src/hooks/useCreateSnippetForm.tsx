@@ -10,7 +10,7 @@ import { type Snippet as SnippetType } from "@/types/snippet";
 import data from '@/data/users.json'
 
 export function useCreateSnippetForm() {
-  const { userIsLogged, getToken } = useGlobalContext()
+  const { userIsLogged, getToken, userCredentials } = useGlobalContext()
   const form = useForm<SnippetFormType>({
     resolver: zodResolver(createSnippetSchema),
     defaultValues: {
@@ -115,6 +115,7 @@ export function useCreateSnippetForm() {
     if (users.selected.length > 1) {
       data.sharedWith = users.selected.map(user => { return user.id })
     }
+    data.author = userCredentials.username
     console.log(data)
     mutate(data)
   }

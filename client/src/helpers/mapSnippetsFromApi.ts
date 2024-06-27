@@ -12,7 +12,8 @@ export function mapSnippet(data: RawSnippet): Snippet {
     id: data.ID,
     title: data.Title,
     isPrivate: data.IsPrivate,
-    sharedWith: data.SharedWith ? [] : mapUserDTOArr(data.SharedWith!)
+    sharedWith: data.SharedWith ? [] : mapUserDTOArr(data.SharedWith!),
+    author: mapUserDTO(data.Author)
   }
 }
 
