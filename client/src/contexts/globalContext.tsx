@@ -18,19 +18,19 @@ interface Props {
 export const globalContext = createContext<Props | null>(null);
 
 export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
-  const [cookies, setCookies] = useCookies(["access_token"]);
+  const [cookies, _setCookies, removeCookie] = useCookies(["access_token"]);
   const { isDarkTheme, toggleTheme } = useTheme()
   const redirect = useNavigate()
 
-  const loginUser = ({ role, token, username }: LoginResponseApi) => {
-    setCookies("access_token", token)
+  const loginUser = ({ role, username }: LoginResponseApi) => {
+    // setCookies("access_token", token)
     clearUserCredentials()
     storeUserCredentials({ username, role })
   }
 
   const logoutUser = () => {
     clearUserCredentials()
-    setCookies("access_token", null)
+    removeCookie("access_token")
     redirect("/")
   }
 

@@ -11,7 +11,6 @@ interface Props {
 }
 
 export function SnippetsView({ data, isError, isLoading }: Props) {
-  console.log(data)
   const isEmpty = data?.length === 0
   const snippetsOrderedByID = data?.sort((a, b) => b.id - a.id)
 

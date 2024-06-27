@@ -3,18 +3,32 @@ import { WorldwideMicroIcon } from "@/components/icons/WorldwideMicroIcon";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { SnippetForm } from "./SnippetForm";
 import { useGlobalContext } from "@/hooks/useGlobalContext";
+import { useState } from "react";
+import { SnippetForm } from "./SnippetForm";
+import { SnippetsView } from "./SnippetsView";
+import { useQuery } from "@tanstack/react-query";
+import snippetAPI from '@/services/snippets'
+import { redirect } from "react-router-dom";
 
 type ViewMode = 'public' | 'private'
 
 export function HomePage() {
-  const redirect = useNavigate()
-  const { pathname } = useLocation()
-  const { userIsLogged } = useGlobalContext()
-  const [viewMode, setViewMode] = useState<ViewMode>(pathname.includes("/private") ? "private" : "public")
+  const { userIsLogged, getToken } = useGlobalContext()
+  const [viewMode, setViewMode] = useState<ViewMode>("public")
+
+  const publicSnp = useQuery({
+    queryKey: ["snippets"],
+    queryFn: snippetAPI.getSnippets
+  })
+
+  const privateSnp = useQuery({
+    queryKey: ["snippets-private"],
+    queryFn: () => snippetAPI.getPrivateSnippets(getToken()),
+    enabled: userIsLogged
+  })
+
+  const { data, isError, isLoading } = viewMode === 'public' ? publicSnp : privateSnp
 
   return (
     <>
@@ -26,10 +40,7 @@ export function HomePage() {
           <Button
             className="flex-1 flex gap-2"
             disabled={viewMode === "public"}
-            onClick={() => {
-              setViewMode("public")
-              redirect("/home")
-            }}>
+            onClick={() => { setViewMode("public") }}>
             <WorldwideMicroIcon />
             Public
           </Button>
@@ -47,7 +58,7 @@ export function HomePage() {
           </Button>
         </header>
         <article className="flex w-full p-2">
-          <Outlet />
+          <SnippetsView data={data ?? []} isError={isError} isLoading={isLoading} />
         </article>
         <Toaster />
       </section >

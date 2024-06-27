@@ -2,17 +2,11 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/comp
 import { type Snippet } from "@/types/snippet";
 import { PublicTag } from "./PublicTag";
 import { motion } from 'framer-motion'
+import { DEFAULT_USER_PFP } from "@/data/constants";
+import { getTimeUntilExpiration } from "@/helpers/getTimeUntilExpires";
 
 interface Props extends Partial<Snippet> {
   isRecentlyAdded?: boolean
-}
-
-import { formatDistanceToNow } from 'date-fns';
-import { DEFAULT_USER_PFP } from "@/data/constants";
-
-function getTimeUntilExpiration(expirationDate: Date) {
-  const expires = new Date(expirationDate);
-  return formatDistanceToNow(expires, { addSuffix: true });
 }
 
 export function Snippet({ content, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
@@ -74,7 +68,7 @@ export function Snippet({ content, title, author, sharedWith, isPrivate, isRecen
                   </ul>
               }
             </TooltipTrigger>
-            <TooltipContent className="bg-background">
+            <TooltipContent className="bg-background absolute -left-14 w-36">
               {
                 isPrivate
                   ? popoverMessage
