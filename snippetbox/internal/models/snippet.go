@@ -94,6 +94,8 @@ func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
 			return nil, err
 		}
 
+		defer rows.Close()
+
 		for rows.Next() {
 			user := UserDTO{}
 			err := rows.Scan(&user.ID, &user.Username, &user.Pfp)
@@ -109,7 +111,7 @@ func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
 
 func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 	query := `
-		SELECT id, title, content, created, expires
+		SELECT id, title, content, created, expires, isPrivate
 		FROM snippet
 		WHERE expires > current_date
 		ORDER BY created DESC, id DESC
@@ -122,7 +124,7 @@ func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 
 	defer rows.Close()
 
-	snippets, err := extractRows(rows)
+	snippets, err := extractRows(rows, m.DB)
 	if err != nil {
 		return nil, err
 	}
@@ -134,15 +136,44 @@ func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 	return snippets, nil
 }
 
-func extractRows(rows *sql.Rows) ([]*Snippet, error) {
+func extractRows(rows *sql.Rows, db *sql.DB) ([]*Snippet, error) {
 	data := []*Snippet{}
 
 	for rows.Next() {
 		snp := &Snippet{}
-		err := rows.Scan(&snp.ID, &snp.Title, &snp.Content, &snp.Created, &snp.Expires)
+		err := rows.Scan(&snp.ID, &snp.Title, &snp.Content, &snp.Created, &snp.Expires, &snp.IsPrivate)
 		if err != nil {
 			return nil, err
 		}
+		if snp.IsPrivate {
+			sharedRows, err := db.Query(`
+				SELECT a.id, a.username, a.pfp
+				FROM account a
+				WHERE a.id IN (
+					SELECT user_id 
+					FROM snippet_shared_with
+					WHERE snippet_id = $1
+				);`, snp.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			defer sharedRows.Close()
+
+			for sharedRows.Next() {
+				user := UserDTO{}
+				err := sharedRows.Scan(&user.ID, &user.Username, &user.Pfp)
+				if err != nil {
+					return nil, err
+				}
+				snp.SharedWith = append(snp.SharedWith, user)
+			}
+
+			if err := sharedRows.Err(); err != nil {
+				return nil, err
+			}
+		}
+
 		data = append(data, snp)
 	}
 

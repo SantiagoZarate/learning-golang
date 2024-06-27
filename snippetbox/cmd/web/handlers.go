@@ -29,7 +29,13 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	err = json.NewEncoder(w).Encode(snippets)
+	jsonData, err := json.MarshalIndent(snippets, "", "  ")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
 	if err != nil {
 		app.serverError(w, err)
 		return
