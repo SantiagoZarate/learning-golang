@@ -119,3 +119,30 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 	response := fmt.Sprintf("title: %s, content: %s, expires: %d", form.Title, form.Content, form.Expires)
 	w.Write([]byte(response))
 }
+
+func (app *application) SnippetsSharedWithUser(w http.ResponseWriter, r *http.Request) {
+	author, ok := getUsernameFromContext(r.Context())
+	if !ok {
+		app.clientError(w, http.StatusUnauthorized)
+		return
+	}
+
+	snippets, err := app.Snippets.GetAllSharedWithUser(author)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonData, err := json.MarshalIndent(snippets, "", "  ")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+}

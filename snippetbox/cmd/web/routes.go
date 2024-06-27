@@ -13,11 +13,11 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/", app.Home)
 	router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.SnippetView)
 
-	// Create a chain for the protected route
-	protected := alice.New(app.PanicRevocer, app.AuthMiddleware).ThenFunc(app.SnippetCreate)
+	protectedChain := alice.New(app.PanicRevocer, app.AuthMiddleware)
 
-	// Apply the chain to the protected route
-	router.Handler(http.MethodPost, "/snippet/create", protected)
+	// Create a chain for the protected route
+	router.Handler(http.MethodPost, "/snippet/create", protectedChain.ThenFunc(app.SnippetCreate))
+	router.Handler(http.MethodGet, "/snippet/private", protectedChain.ThenFunc(app.SnippetsSharedWithUser))
 
 	myChain := alice.New(app.PanicRevocer)
 

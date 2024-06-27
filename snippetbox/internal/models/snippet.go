@@ -196,3 +196,37 @@ func extractRows(rows *sql.Rows, db *sql.DB) ([]*Snippet, error) {
 
 	return data, nil
 }
+
+func (m *SnippetModel) GetAllSharedWithUser(username string) ([]*Snippet, error) {
+	var user_id int
+
+	err := m.DB.QueryRow("SELECT id FROM account WHERE username = $1", username).Scan(&user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+		SELECT s.id, s.title, s.content, s.created, s.expires, s.isPrivate, a.id, a.username, a.pfp
+		FROM snippet s
+		JOIN snippet_shared_with sw ON s.id = sw.snippet_id
+		JOIN account a ON s.author = a.id
+		WHERE sw.user_id = $1;
+	`
+	rows, err := m.DB.Query(query, user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	snippets, err := extractRows(rows, m.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	return snippets, nil
+}
