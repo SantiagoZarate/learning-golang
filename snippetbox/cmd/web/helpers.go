@@ -53,25 +53,24 @@ func (app *application) FormDecoderHelper(r *http.Request, dst any) error {
 	return nil
 }
 
-func VerifyToken(r *http.Request) error {
-	tokenString := r.Header.Get("access_token")
-	if len(tokenString) == 0 {
-		return errors.New("there is no token")
-	}
+var jwtSecret = []byte("super-duper-secret-key")
 
+func VerifyToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return jwtSecret, nil
 	})
+
 	if err != nil {
 		fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
-		// app.clientError(w, http.StatusBadRequest)
-		// return
+		return nil, err
 	}
 
-	if !token.Valid {
-		fmt.Print("El token es invalido, pero te dejo pasar porque soy copado")
-		// app.clientError(w, http.StatusUnauthorized)
-		// return
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, errors.New("failed to decode token")
 	}
-	return nil
 }

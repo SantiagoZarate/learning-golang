@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,7 +18,6 @@ type SnippetForm struct {
 	Content             string `form:"content"`
 	Expires             int    `form:"expires"`
 	SharedWith          []int  `form:"sharedWith"`
-	Author              string `form:"author"`
 	validator.Validator `form:"-"`
 }
 
@@ -76,25 +76,32 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
-	err := VerifyToken(r)
-	if err != nil {
-		app.clientError(w, http.StatusUnauthorized)
-		return
-	}
+func getUsernameFromContext(ctx context.Context) (string, bool) {
+	username, ok := ctx.Value(contextKeyUser).(string)
+	return username, ok
+}
 
+func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 	var form SnippetForm
 
-	err = app.FormDecoderHelper(r, &form)
+	err := app.FormDecoderHelper(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
+	author, ok := getUsernameFromContext(r.Context())
+	if !ok {
+		app.clientError(w, http.StatusUnauthorized)
+		return
+	}
+
+	fmt.Printf("Author: %s\n", author)
+
 	form.CheckField(validator.MaxChar(form.Title, 100), "title", "Title too large, 100 characters max")
 	form.CheckField(validator.NotBlank(form.Title), "title", "Title can not be empty")
 	form.CheckField(validator.NotBlank(form.Content), "content", "Content can not be empty")
-	form.CheckField(validator.NotBlank(form.Author), "author", "Author can not be empty")
+	form.CheckField(validator.NotBlank(author), "author", "Author can not be empty")
 	form.CheckField(validator.MaxChar(form.Content, 200), "content", "Content too large")
 	form.CheckField(validator.PermittedInt(form.Expires, 1, 2, 3), "expires", "expires must match 1, 2 or 3")
 
@@ -104,7 +111,7 @@ func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires, form.SharedWith, form.Author)
+	id, err := app.Snippets.Insert(form.Title, form.Content, form.Expires, form.SharedWith, author)
 	if err != nil || id == 0 {
 		app.serverError(w, err)
 		return
