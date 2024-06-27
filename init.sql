@@ -5,7 +5,8 @@ CREATE TABLE account (
   password TEXT NOT NULL,
   role VARCHAR(12),
   created_at DATE NOT NULL DEFAULT current_date,
-  pfp TEXT
+  updated_at DATE NOT NULL DEFAULT current_date,
+  pfp TEXT DEFAULT ''
 );
 
 CREATE TABLE snippet (
