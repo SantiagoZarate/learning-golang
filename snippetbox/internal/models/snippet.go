@@ -12,11 +12,18 @@ type Snippet struct {
 	Content    string
 	Created    time.Time
 	Expires    time.Time
-	SharedWith []int
+	IsPrivate  bool
+	SharedWith []UserDTO
 }
 
 type SnippetModel struct {
 	DB *sql.DB
+}
+
+type UserDTO struct {
+	ID       int
+	Username string
+	pfp      string
 }
 
 func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int) (int, error) {
@@ -45,28 +52,55 @@ func (m *SnippetModel) Insert(title string, content string, expires int, sharedW
 
 	if len(sharedWith) > 1 {
 		for _, v := range sharedWith {
-			_, err = tx.Exec("SELECT addUsersSharedWithSnippet($1, $2)", v, id)
+			_, err = tx.Exec("SELECT addUsersSharedWithSnippet($1, $2);", v, id)
 			if err != nil {
 				return 0, err
 			}
 		}
+		_, err = tx.Exec("UPDATE snippet SET isPrivate = true WHERE id = $1;", id)
+		if err != nil {
+			return 0, err
+		}
 	}
-	m.DB.Exec("COMMIT;")
 
 	return id, nil
 }
 
 func (m *SnippetModel) GetByID(id int) (*Snippet, error) {
-	row := m.DB.QueryRow(`SELECT id, title, content, created, expires FROM snippet WHERE id = $1;`, id)
+	row := m.DB.QueryRow(`SELECT id, title, content, created, expires, isPrivate FROM snippet WHERE id = $1;`, id)
 
 	var data Snippet
 
-	err := row.Scan(&data.ID, &data.Title, &data.Content, &data.Created, &data.Expires)
+	err := row.Scan(&data.ID, &data.Title, &data.Content, &data.Created, &data.Expires, &data.IsPrivate)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
 		} else {
 			return nil, err
+		}
+	}
+
+	if data.IsPrivate {
+		rows, err := m.DB.Query(`
+		SELECT a.id, a.username, a.pfp
+		FROM account a
+		WHERE a.id IN
+			(
+				SELECT user_id 
+				FROM snippet_shared_with
+				WHERE snippet_id = $1
+			);`, id)
+		if err != nil {
+			return nil, err
+		}
+
+		for rows.Next() {
+			user := UserDTO{}
+			err := rows.Scan(&user.ID, &user.Username, &user.pfp)
+			if err != nil {
+				return nil, err
+			}
+			data.SharedWith = append(data.SharedWith, user)
 		}
 	}
 

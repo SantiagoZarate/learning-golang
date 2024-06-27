@@ -57,6 +57,7 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(snippet)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 }
 
