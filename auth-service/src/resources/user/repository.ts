@@ -13,7 +13,7 @@ export class UserRepository {
   }
 
   static async login({ password, username }: LoginType): Promise<InferSelectModel<typeof user>> {
-    const foundUser = await db.select().from(user).where(eq(user.name, username));
+    const foundUser = await db.select().from(user).where(eq(user.username, username));
 
     if (foundUser.length === 0) {
       throw new ValidationError("User not found")
@@ -29,7 +29,7 @@ export class UserRepository {
   }
 
   static async register({ email, password, username }: RegisterType): Promise<number> {
-    const foundUser = await db.select().from(user).where(or(eq(user.name, username), eq(user.email, email)));
+    const foundUser = await db.select().from(user).where(or(eq(user.username, username), eq(user.email, email)));
 
     if (foundUser.length !== 0) {
       throw new ValidationError("Duplicated credentials")
@@ -39,8 +39,8 @@ export class UserRepository {
 
     const result = await db.insert(user).values({
       email,
-      password: hashedPass,
-      name: username,
+      username,
+      password: hashedPass
     }).returning()
 
     return result[0].id;

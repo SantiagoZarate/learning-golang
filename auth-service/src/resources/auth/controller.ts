@@ -15,7 +15,7 @@ async function login(req: Request, res: Response) {
   })
   res.json({
     token,
-    username: user.name,
+    username: user.username,
     role: user.role
   })
 }

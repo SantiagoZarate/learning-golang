@@ -18,7 +18,7 @@ db.delete(user).then(() => {
     UserRepository.register({
       email: u.email,
       password: u.password,
-      username: u.name
+      username: u.username
     }).then(() => console.log(`seed user: ${u.id}`))
   })
 });
