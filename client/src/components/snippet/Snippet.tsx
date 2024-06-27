@@ -14,7 +14,7 @@ function getTimeUntilExpiration(expirationDate: Date) {
   return formatDistanceToNow(expires, { addSuffix: true });
 }
 
-export function Snippet({ content, title, sharedWith, isPrivate, author, isRecentlyAdded = false, expires }: Props) {
+export function Snippet({ content, title, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
@@ -55,7 +55,7 @@ export function Snippet({ content, title, sharedWith, isPrivate, author, isRecen
                   <ul className="flex">
                     {
                       sharedWith?.map((u, index) => (
-                        <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden ${index === 0 ? "" : "-ml-1"}`}>
+                        <li key={u.id} className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden ${index === 0 ? "" : "-ml-1"}`}>
                           <img className="object-cover" src={u.pfp} alt="" />
                         </li>
                       ))
