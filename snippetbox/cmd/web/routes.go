@@ -10,8 +10,9 @@ import (
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
 
-	router.HandlerFunc(http.MethodGet, "/", app.Home)
+	router.HandlerFunc(http.MethodGet, "/snippet", app.Home)
 	router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.SnippetView)
+	router.HandlerFunc(http.MethodGet, "/user", app.GetUsers)
 
 	protectedChain := alice.New(app.PanicRevocer, app.AuthMiddleware)
 

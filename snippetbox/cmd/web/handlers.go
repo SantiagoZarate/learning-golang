@@ -145,3 +145,24 @@ func (app *application) SnippetsSharedWithUser(w http.ResponseWriter, r *http.Re
 		return
 	}
 }
+
+func (app *application) GetUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := app.Users.GetAll()
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	jsonData, err := json.MarshalIndent(users, "", "  ")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+}

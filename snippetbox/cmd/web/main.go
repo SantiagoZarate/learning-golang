@@ -17,6 +17,7 @@ type application struct {
 	ErrorLog    *log.Logger
 	InfoLog     *log.Logger
 	Snippets    *models.SnippetModel
+	Users       *models.UserModel
 	FormDecoder *form.Decoder
 }
 
@@ -45,6 +46,7 @@ func main() {
 		ErrorLog:    errorLog,
 		InfoLog:     infoLog,
 		Snippets:    &models.SnippetModel{DB: db},
+		Users:       &models.UserModel{DB: db},
 		FormDecoder: formDecoder,
 	}
 

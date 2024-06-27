@@ -21,12 +21,6 @@ type SnippetModel struct {
 	DB *sql.DB
 }
 
-type UserDTO struct {
-	ID       int    `json:"ID"`
-	Username string `json:"Username"`
-	Pfp      string `json:"Pfp"`
-}
-
 func (m *SnippetModel) Insert(title string, content string, expires int, sharedWith []int, author string) (int, error) {
 	tx, err := m.DB.Begin()
 	if err != nil {
