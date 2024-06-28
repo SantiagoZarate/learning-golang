@@ -1,23 +1,24 @@
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { type Snippet } from "@/types/snippet";
+import { type Snippet as SnippetType } from "@/types/snippet";
 import { PublicTag } from "./PublicTag";
 import { motion } from 'framer-motion'
 import { DEFAULT_USER_PFP } from "@/data/constants";
 import { getTimeUntilExpiration } from "@/helpers/getTimeUntilExpires";
+import React from "react";
 
-interface Props extends Partial<Snippet> {
+interface Props extends Partial<SnippetType> {
   isRecentlyAdded?: boolean
 }
 
-export function Snippet({ content, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }: Props) {
+export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }, ref) => {
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
 
   const profilePicture = author?.pfp ? author.pfp : DEFAULT_USER_PFP
-
   return (
     <motion.li
+      ref={ref}
       layout
       initial={isRecentlyAdded && {
         filter: "blur(5px) saturate(150%)",
@@ -80,4 +81,5 @@ export function Snippet({ content, title, author, sharedWith, isPrivate, isRecen
       </footer>
     </motion.li>
   )
-}
+})
+
