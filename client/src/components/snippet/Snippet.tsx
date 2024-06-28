@@ -3,8 +3,9 @@ import { type Snippet as SnippetType } from "@/types/snippet";
 import { PublicTag } from "./PublicTag";
 import { motion } from 'framer-motion'
 import { DEFAULT_USER_PFP } from "@/data/constants";
-import { getTimeUntilExpiration } from "@/helpers/getTimeUntilExpires";
 import React from "react";
+import { SnippetAuthorInfo } from "./SnippetAuthorInfo";
+import { SnippetPeopleSharedWith } from "./SnippetPeopleSharedWith";
 
 interface Props extends Partial<SnippetType> {
   isRecentlyAdded?: boolean
@@ -42,34 +43,17 @@ export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, title,
       <p className="text-2xl uppercase">{title}</p>
       <p className="text-sm">{content}</p>
       <footer className="flex justify-between items-center">
-        <div className="flex divide-x items-center">
-          <div className="flex gap-2 items-center pr-2">
-            <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden`}>
-              <img className="object-cover" src={profilePicture} alt="" />
-            </li>
-            <p className="text-xs text-white/40">{author?.username}</p>
-          </div>
-          <p className="text-xs text-white/20 pl-2">Expires in {getTimeUntilExpiration(expires!)}</p>
-        </div>
+        <SnippetAuthorInfo expireTime={expires!} pfp={profilePicture} username={author?.username!} />
         <TooltipProvider delayDuration={50}>
           <Tooltip>
             <TooltipTrigger>
               {
                 !isPrivate
                   ? <PublicTag />
-                  :
-                  <ul className="flex">
-                    {
-                      sharedWith?.map((u, index) => (
-                        <li key={u.id} className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden ${index === 0 ? "" : "-ml-1"}`}>
-                          <img className="object-cover" src={profilePicture} alt="" />
-                        </li>
-                      ))
-                    }
-                  </ul>
+                  : <SnippetPeopleSharedWith sharedWith={sharedWith!} />
               }
             </TooltipTrigger>
-            <TooltipContent className="bg-background absolute -left-14 w-36">
+            <TooltipContent className="bg-background">
               {
                 isPrivate
                   ? popoverMessage
@@ -82,4 +66,3 @@ export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, title,
     </motion.li>
   )
 })
-
