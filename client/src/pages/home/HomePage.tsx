@@ -3,18 +3,18 @@ import { WorldwideMicroIcon } from "@/components/icons/WorldwideMicroIcon";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { useState } from "react";
 import { SnippetForm } from "./SnippetForm";
 import { SnippetsView } from "./SnippetsView";
 import { useQuery } from "@tanstack/react-query";
 import snippetAPI from '@/services/snippets'
 import { redirect } from "react-router-dom";
+import { useSession } from "@/hooks/useSession";
 
 type ViewMode = 'public' | 'private'
 
 export function HomePage() {
-  const { userIsLogged, getToken } = useGlobalContext()
+  const { userIsLogged, getToken } = useSession()
   const [viewMode, setViewMode] = useState<ViewMode>("public")
 
   const publicSnp = useQuery({

@@ -1,7 +1,8 @@
-import { useGlobalContext } from "@/hooks/useGlobalContext"
+import { useSession } from "@/hooks/useSession"
 import { Navigate, Outlet } from "react-router-dom"
 
 export function ProtectedRoute() {
-  const { userIsLogged } = useGlobalContext()
+  const { userIsLogged } = useSession()
+
   return userIsLogged ? <Outlet /> : <Navigate to={"/home"} />
 }

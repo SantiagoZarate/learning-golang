@@ -1,5 +1,5 @@
 import { clearUserCredentials, retrieveUserCredentials, storeUserCredentials } from '@/helpers/localStorage';
-import { LoginResponseApi, UserCredentials } from '@/hooks/useAuth';
+import { LoginResponseApi, UserCredentials } from '@/hooks/useSession';
 import { PropsWithChildren, createContext } from 'react';
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom';

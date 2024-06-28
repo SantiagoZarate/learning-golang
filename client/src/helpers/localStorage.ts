@@ -1,4 +1,4 @@
-import { UserCredentials } from "@/hooks/useAuth"
+import { UserCredentials } from "@/hooks/useSession"
 
 export function clearUserCredentials() {
   localStorage.removeItem("username")

@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useGlobalContext } from "./useGlobalContext";
 import snippetAPI from '@/services/snippets'
 import { UserDTO, type Snippet as SnippetType } from "@/types/snippet";
 import userAPI from '@/services/users'
+import { useSession } from "./useSession";
 
 interface UsersState {
   selected: UserDTO[],
@@ -14,7 +14,7 @@ interface UsersState {
 }
 
 export function useCreateSnippetForm() {
-  const { userIsLogged, getToken, userCredentials } = useGlobalContext()
+  const { userIsLogged, getToken, userCredentials } = useSession()
   const form = useForm<SnippetFormType>({
     resolver: zodResolver(createSnippetSchema),
     defaultValues: {

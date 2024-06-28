@@ -2,8 +2,8 @@ import { User } from "@/types/user";
 import { AnimatePresence } from "framer-motion";
 import { MoreUsersMessage } from "./MoreUsersSharedWithMessage";
 import { UserSelectedAvatar } from "./UserSelectedAvatar";
-import { useGlobalContext } from "@/hooks/useGlobalContext";
 import { FREE_TIER_SHARE_USERS_AMOUNT } from "@/data/constants";
+import { useSession } from "@/hooks/useSession";
 
 interface Props {
   usersSelected: User[],
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
-  const { userCredentials: { role } } = useGlobalContext()
+  const { userCredentials: { role } } = useSession()
 
   const isPremium = role === 'premium'
 

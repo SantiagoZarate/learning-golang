@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button"
-import { useGlobalContext } from "@/hooks/useGlobalContext"
+import { useSession } from "@/hooks/useSession"
 import { Link } from "react-router-dom"
 
 export function RightSideButtons() {
-  const { logoutUser, userCredentials, userIsLogged } = useGlobalContext()
+  const { logoutUser, userCredentials, userIsLogged } = useSession()
 
   return userIsLogged
     ?

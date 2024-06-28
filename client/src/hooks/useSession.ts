@@ -1,9 +1,9 @@
 import { login } from "@/services/auth/login";
 import { register } from "@/services/auth/register";
 import { LoginPayload, RegisterPayload } from "@/types/auth";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGlobalContext } from "./useGlobalContext";
+import { sessionContext } from "@/contexts/sessionContext";
 
 export type UserCredentials = {
   username: string,
@@ -14,8 +14,13 @@ export type LoginResponseApi = {
   token: string
 } & UserCredentials
 
-export function useAuth() {
-  const { loginUser } = useGlobalContext()
+export function useSession() {
+  const values = useContext(sessionContext)
+  if (values === null) {
+    throw new Error("useSession must be used within SessionProvider")
+  }
+  const { getToken, loginUser, logoutUser, userCredentials, userIsLogged } = values
+
   const redirect = useNavigate()
   const [isPending, setIsPending] = useState(false);
 
@@ -58,5 +63,9 @@ export function useAuth() {
     signUp,
     logOn,
     isPending,
+    userIsLogged,
+    userCredentials,
+    logoutUser,
+    getToken
   }
 }

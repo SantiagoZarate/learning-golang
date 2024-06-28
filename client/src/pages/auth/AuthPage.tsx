@@ -3,7 +3,6 @@ import { Form } from "@/components/ui/form"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
 import { RegisterFormType, loginSchema, registerSchema } from "@/helpers/formSchemas"
-import { useAuth } from "@/hooks/useAuth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Link, useLocation } from "react-router-dom"
@@ -13,10 +12,11 @@ import { UserMicroIcon } from "@/components/icons/UserMicroIcon"
 import { LetterMicroIcon } from "@/components/icons/LetterMicroIcon"
 import { AnimatePresence, motion } from "framer-motion"
 import { PropsWithChildren } from "react"
+import { useSession } from "@/hooks/useSession"
 
 export function AuthPage() {
   const isRegisterPath = useLocation().pathname === "/register"
-  const { isPending, logOn, signUp } = useAuth();
+  const { isPending, logOn, signUp } = useSession();
   const form = useForm<RegisterFormType>({
     resolver: zodResolver(isRegisterPath ? registerSchema : loginSchema),
     defaultValues: {
