@@ -37,9 +37,14 @@ export function PeopleList({ onSelectUser, users, amountUsersSelected }: Props) 
                 exit={{ opacity: 0, scale: 0.1 }}
                 whileHover={{ scale: 1.1, filter: "saturate(120%)" }}
                 onClick={amountUsersSelected < FREE_TIER_SHARE_USERS_AMOUNT ? () => onSelectUser(n.id) : () => triggerToast()}
-                className="cursor-pointer border aspect-square w-16 rounded-full overflow-hidden border-border">
+                className="cursor-pointer border aspect-square w-16 rounded-full  border-border relative group">
+                <div className="absolute inset-0 bg-black/0 z-50 rounded-full flex items-center justify-center group-hover:bg-black/40 transition">
+                  <p className="text-xs px-2 py-1 bg-muted rounded-lg border-border shadow-md group-hover:opacity-100 opacity-0 transition">
+                    {n.username}
+                  </p>
+                </div>
                 <img
-                  className="w-full h-full bg-muted object-center"
+                  className="w-full h-full bg-muted object-center rounded-full"
                   src={n.pfp ? n.pfp : DEFAULT_USER_PFP}
                   alt="user profile picture" />
               </motion.li>
