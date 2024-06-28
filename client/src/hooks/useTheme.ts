@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { themeContext } from "@/contexts/themeContext";
+import { useContext } from "react";
 
 export function useTheme() {
-  const [isDarkTheme, setIsDarkTheme] = useState(localStorage.getItem("theme") === "dark")
+  const values = useContext(themeContext)
 
-  useEffect(() => {
-    if (isDarkTheme) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkTheme]);
+  if (values === null) {
+    throw new Error("useTheme hook should be used within ThemeProvider component")
+  }
+
+  const { isDarkTheme, setIsDarkTheme } = values
 
   const toggleTheme = () => {
     document.documentElement.classList.toggle("dark")
