@@ -27,19 +27,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
-	jsonData, err := json.MarshalIndent(snippets, "", "  ")
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	_, err = w.Write(jsonData)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	app.SendJson(w, snippets)
 }
 
 func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
@@ -60,19 +48,7 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Pretty-print the JSON response
-	w.Header().Set("Content-Type", "application/json")
-	jsonData, err := json.MarshalIndent(snippet, "", "  ")
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	_, err = w.Write(jsonData)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	app.SendJson(w, snippet)
 }
 
 func getUsernameFromContext(ctx context.Context) (string, bool) {
@@ -132,18 +108,7 @@ func (app *application) SnippetsSharedWithUser(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	jsonData, err := json.MarshalIndent(snippets, "", "  ")
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	_, err = w.Write(jsonData)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	app.SendJson(w, snippets)
 }
 
 func (app *application) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -152,9 +117,12 @@ func (app *application) GetUsers(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	app.SendJson(w, users)
+}
 
-	jsonData, err := json.MarshalIndent(users, "", "  ")
+func (app *application) SendJson(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	jsonData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		app.serverError(w, err)
 		return
