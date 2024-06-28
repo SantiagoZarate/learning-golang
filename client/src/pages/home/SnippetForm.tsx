@@ -15,7 +15,7 @@ export function SnippetForm() {
   const { form, users, addSharedUser, usersIsLoading, decrementExpireDay, handleSubmit, incrementExpireDay, isPending, removeSharedUser, userIsLogged } = useCreateSnippetForm()
 
   return (
-    <section className="fixed w-1/4 flex flex-col gap-4 items-center justify-center">
+    <section className="z-20 flex flex-col gap-4 items-center justify-center">
       {!userIsLogged && <HoverFormSaver />}
       <article className="w-full flex flex-col gap-4">
         <FormSectionHeader

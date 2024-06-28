@@ -29,7 +29,7 @@ export function HomePageRightSide() {
   const { data, isError, isLoading } = viewMode === 'public' ? publicSnp : privateSnp
   return (
     <>
-      <header className="w-full flex gap-2 p-2">
+      <header className="absolute top-0 w-full inset-0 z-50 h-min flex gap-2 p-2">
         <Button
           className="flex-1 flex gap-2"
           disabled={viewMode === "public"}
@@ -50,9 +50,8 @@ export function HomePageRightSide() {
           Private
         </Button>
       </header>
-      <article className="flex w-full p-2">
-        <SnippetsView data={data ?? []} isError={isError} isLoading={isLoading} />
-      </article>
+      <SnippetsView data={data ?? []} isError={isError} isLoading={isLoading} />
+      <div className="absolute z-20 w-full h-full pointer-events-none bg-background [mask-image:linear-gradient(0deg,#000_5%,transparent_30%,transparent_90%,#000_95%)]" />
     </>
   )
 }

@@ -7,7 +7,7 @@ export function HomePage() {
       <section className="relative flex-1">
         <SnippetForm />
       </section>
-      <section className="relative flex-1 flex flex-col max-h-full overflow-y-auto items-center justify-center">
+      <section className="relative flex-1 flex flex-col items-center justify-center">
         <HomePageRightSide />
       </section >
     </>
