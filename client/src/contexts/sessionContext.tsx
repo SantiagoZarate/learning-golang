@@ -1,6 +1,5 @@
 import { clearUserCredentials, retrieveUserCredentials, storeUserCredentials } from '@/helpers/localStorage';
 import { LoginResponseApi, UserCredentials } from '@/hooks/useAuth';
-import { useTheme } from '@/hooks/useTheme';
 import { PropsWithChildren, createContext } from 'react';
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom';
@@ -9,17 +8,14 @@ interface Props {
   userIsLogged: boolean,
   logoutUser: () => void,
   loginUser: (token: LoginResponseApi) => void,
-  isDarkTheme: boolean,
-  toggleTheme: () => void,
   getToken: () => any
   userCredentials: UserCredentials
 }
 
-export const globalContext = createContext<Props | null>(null);
+export const sessionContext = createContext<Props | null>(null);
 
-export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
+export const SessionProvider = ({ children }: PropsWithChildren) => {
   const [cookies, _setCookies, removeCookie] = useCookies(["access_token"]);
-  const { isDarkTheme, toggleTheme } = useTheme()
   const redirect = useNavigate()
 
   const loginUser = ({ role, username }: LoginResponseApi) => {
@@ -47,9 +43,7 @@ export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <globalContext.Provider value={{
-      isDarkTheme: isDarkTheme,
-      toggleTheme,
+    <sessionContext.Provider value={{
       userIsLogged: userIsLogged(),
       loginUser,
       logoutUser,
@@ -57,6 +51,6 @@ export const GlobalContextProvider = ({ children }: PropsWithChildren) => {
       userCredentials
     }}>
       {children}
-    </globalContext.Provider>
+    </sessionContext.Provider>
   )
 } 
