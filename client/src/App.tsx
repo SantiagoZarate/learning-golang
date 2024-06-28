@@ -1,10 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import { AppLayout } from "./layouts/AppLayout";
-import { AuthLayout } from "./layouts/AuthLayout";
-import { BaseLayout } from "./layouts/BaseLayout";
-import { LandingPage } from "./pages/LandingPage";
-import { AuthPage } from "./pages/auth/AuthPage";
-import { HomePage } from "./pages/home/HomePage";
+import { BaseLayout, AppLayout, AuthLayout } from "./layouts";
+import { LandingPage, HomePage, AuthPage } from "./pages";
 
 export default function App() {
   return (

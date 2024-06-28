@@ -1,5 +1,5 @@
-import { LeftSide } from "./landing/LeftSide";
-import { RightSide } from "./landing/RightSide";
+import { LeftSide } from "./LeftSide";
+import { RightSide } from "./RightSide";
 
 export function LandingPage() {
   return (
