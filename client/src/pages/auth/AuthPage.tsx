@@ -1,6 +1,5 @@
 import { Loader } from "@/components/ui/Loader"
 import { Form } from "@/components/ui/form"
-import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
 import { RegisterFormType, loginSchema, registerSchema } from "@/helpers/formSchemas"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -98,7 +97,6 @@ export function AuthPage() {
           </motion.footer>
         </article>
       </AnimatePresence >
-      <Toaster />
     </>
   )
 }
