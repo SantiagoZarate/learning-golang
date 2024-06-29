@@ -9,7 +9,7 @@ interface Props {
   logoutUser: () => void,
   loginUser: (token: LoginResponseApi) => void,
   getToken: () => any
-  userCredentials: UserCredentials
+  userCredentials: UserCredentials | null
 }
 
 export const sessionContext = createContext<Props | null>(null);
@@ -37,9 +37,8 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   }
 
   const userIsLogged = () => {
-    const { role, username } = userCredentials
-    const userCredentialsStored = role?.length > 0 && username?.length > 0
-    return userCredentialsStored
+    const values = userCredentials
+    return values !== null
   }
 
   return (

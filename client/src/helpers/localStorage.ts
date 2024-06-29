@@ -1,26 +1,19 @@
 import { UserCredentials } from "@/hooks/useSession"
 
+const USER_CREDENTIALS_KEY = "userCredentials";
+
 export function clearUserCredentials() {
-  localStorage.removeItem("username")
-  localStorage.removeItem("role")
-  localStorage.removeItem("pfp")
+  localStorage.removeItem(USER_CREDENTIALS_KEY);
 }
 
-export function storeUserCredentials({ role, username, pfp }: UserCredentials) {
-  localStorage.setItem("username", username)
-  localStorage.setItem("role", role)
-  localStorage.setItem("pfp", pfp)
-
+export function storeUserCredentials(credentials: UserCredentials) {
+  localStorage.setItem(USER_CREDENTIALS_KEY, JSON.stringify(credentials));
 }
 
-export function retrieveUserCredentials(): UserCredentials {
-  const username = localStorage.getItem("username")!
-  const role = localStorage.getItem("role")!
-  const pfp = localStorage.getItem("pfp")!
-
-  return {
-    username,
-    role,
-    pfp
+export function retrieveUserCredentials(): UserCredentials | null {
+  const storedCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
+  if (storedCredentials) {
+    return JSON.parse(storedCredentials) as UserCredentials;
   }
+  return null; // Return null if no credentials are stored
 }

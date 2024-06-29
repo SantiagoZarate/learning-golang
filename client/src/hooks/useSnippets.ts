@@ -5,7 +5,7 @@ import { useSession } from "./useSession";
 import { SnippetFormType } from "@/helpers/createSnippetSchema";
 
 export function useSnippets() {
-  const { getToken, userIsLogged, userCredentials: { username } } = useSession()
+  const { getToken, userIsLogged, userCredentials } = useSession()
   const queryClient = useQueryClient()
   const publicSnp = useQuery({
     queryKey: ["snippets"],
@@ -89,7 +89,7 @@ export function useSnippets() {
       return false
     }
 
-    return snippet.author.username === username
+    return snippet.author.username === userCredentials?.username
   }
 
   return {

@@ -11,9 +11,9 @@ interface Props {
 }
 
 export function PeopleSelectedList({ usersSelected, onRemoveUser }: Props) {
-  const { userCredentials: { role } } = useSession()
+  const { userCredentials } = useSession()
 
-  const isPremium = role === 'premium'
+  const isPremium = userCredentials?.role === 'premium'
 
   const items: JSX.Element[] = [];
   const usersLimit = isPremium ? 100 : FREE_TIER_SHARE_USERS_AMOUNT

@@ -20,9 +20,11 @@ const updateProfilePictureSchema = z.object({
 type UpdateProfilePictureForm = z.infer<typeof updateProfilePictureSchema>
 
 export function ProfilePage() {
-  const { userCredentials: { username, role, pfp } } = useSession()
+  const { userCredentials } = useSession()
   const { toggleTheme } = useTheme()
   const { logoutUser, getToken } = useSession()
+
+  const { pfp, role, username } = userCredentials!
 
   const form = useForm<UpdateProfilePictureForm>({
     resolver: zodResolver(updateProfilePictureSchema),
