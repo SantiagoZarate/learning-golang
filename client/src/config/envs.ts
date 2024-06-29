@@ -6,14 +6,18 @@ const envsSchema = z.object({
   API_URL: z.string().trim(),
   DEVELOPMENT: z.boolean(),
   APP_VERSION: z.string(),
-  AUTH_API_URL: z.string()
+  AUTH_API_URL: z.string(),
+  SUPABASE_URL: z.string(),
+  SUPABASE_KEY: z.string()
 });
 
 const envs = envsSchema.parse({
   API_URL: import.meta.env.VITE_API_URL ?? "",
   DEVELOPMENT: import.meta.env.DEV,
   APP_VERSION: import.meta.env.VITE_APP_VERSION,
-  AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL
+  AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL,
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+  SUPABASE_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY
 })
 
 export default envs;
