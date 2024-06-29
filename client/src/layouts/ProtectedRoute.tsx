@@ -4,5 +4,5 @@ import { Navigate, Outlet } from "react-router-dom"
 export function ProtectedRoute() {
   const { userIsLogged } = useSession()
 
-  return userIsLogged ? <Outlet /> : <Navigate to={"/home"} />
+  return userIsLogged ? <Outlet /> : <Navigate to={"/"} />
 }
