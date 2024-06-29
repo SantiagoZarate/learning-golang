@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -54,6 +53,31 @@ func (app *application) SnippetView(w http.ResponseWriter, r *http.Request) {
 func getUsernameFromContext(ctx context.Context) (string, bool) {
 	username, ok := ctx.Value(contextKeyUser).(string)
 	return username, ok
+}
+
+func (app *application) SnippetDelete(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	author, ok := getUsernameFromContext(r.Context())
+	if !ok {
+		app.clientError(w, http.StatusUnauthorized)
+		return
+	}
+
+	result, err := app.Snippets.Delete(id, author)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	response := fmt.Sprintf("Snippet con el id [%d] eliminado correctamente", result)
+	w.Write([]byte(response))
 }
 
 func (app *application) SnippetCreate(w http.ResponseWriter, r *http.Request) {
@@ -118,19 +142,4 @@ func (app *application) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.SendJson(w, users)
-}
-
-func (app *application) SendJson(w http.ResponseWriter, data any) {
-	w.Header().Set("Content-Type", "application/json")
-	jsonData, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	_, err = w.Write(jsonData)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
 }

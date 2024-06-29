@@ -148,6 +148,23 @@ func (m *SnippetModel) GetAll() ([]*Snippet, error) {
 	return snippets, nil
 }
 
+func (m *SnippetModel) Delete(id int, author_username string) (int, error) {
+	query := `
+		DELETE FROM snippet
+		WHERE id = $1
+		AND author = (SELECT id FROM account WHERE username = $2)
+		RETURNING id;
+	`
+	var snippet_id int
+
+	err := m.DB.QueryRow(query, id, author_username).Scan(&snippet_id)
+	if err != nil {
+		return 0, err
+	}
+
+	return snippet_id, nil
+}
+
 func extractRows(rows *sql.Rows, db *sql.DB) ([]*Snippet, error) {
 	data := []*Snippet{}
 

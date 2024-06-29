@@ -53,6 +53,21 @@ func (app *application) FormDecoderHelper(r *http.Request, dst any) error {
 	return nil
 }
 
+func (app *application) SendJson(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	jsonData, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+}
+
 var jwtSecret = []byte("super-duper-secret-key")
 
 func VerifyToken(tokenString string) (jwt.MapClaims, error) {
