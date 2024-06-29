@@ -79,7 +79,17 @@ export function useSnippets() {
   })
 
   const userIsAuthorOfSnippet = ({ id }: Pick<Snippet, "id">) => {
-    return publicSnp.data?.find(snippet => snippet.id === id)?.author.username === username
+    const snippet = publicSnp.data?.find(snippet => snippet.id === id)
+
+    if (!snippet) {
+      return false
+    }
+
+    if (snippet.author === undefined || snippet.author.username === undefined) {
+      return false
+    }
+
+    return snippet.author.username === username
   }
 
   return {

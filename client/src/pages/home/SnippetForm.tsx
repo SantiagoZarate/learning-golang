@@ -10,9 +10,13 @@ import { ExpiresDayField } from "./createSnippetForm/ExpiresDayField";
 import { PeopleSelectedList } from "./createSnippetForm/PeopleSelectedList";
 import { SnippetTitleField } from "./createSnippetForm/SnippetTitleField";
 import { PeopleList } from "./createSnippetForm/peopleList";
+import { useSession } from "@/hooks/useSession";
+import { useUsers } from "@/hooks/useUsers";
 
 export function SnippetForm() {
-  const { form, users, addSharedUser, usersIsLoading, decrementExpireDay, handleSubmit, incrementExpireDay, isPending, removeSharedUser, userIsLogged } = useCreateSnippetForm()
+  const { form, decrementExpireDay, handleSubmit, incrementExpireDay, isPending } = useCreateSnippetForm()
+  const { addSharedUser, removeSharedUser, usersIsLoading, users, resetUsersSelected } = useUsers()
+  const { userIsLogged } = useSession()
 
   return (
     <section className="z-20 flex flex-col gap-4 items-center justify-center">
@@ -24,7 +28,11 @@ export function SnippetForm() {
           description="Up to 140 chars!" />
         <FormProvider {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={form.handleSubmit((data) => handleSubmit(
+              {
+                ...data,
+                sharedWith: users.selected.map(u => { return u.id })
+              }, resetUsersSelected))}
             className="focus-within:scale-[103%] focus-within:shadow-xl hover:shadow-xl hover:scale-[103%] transition-all duration-300 relative w-full space-y-2 mx-auto p-2 border border-border bg-card-foreground rounded-xl">
             <SnippetTitleField />
             <SnippetContentField />
@@ -53,6 +61,6 @@ export function SnippetForm() {
             onSelectUser={addSharedUser}
             users={users.available} />
       }
-    </section>
+    </section >
   )
 }
