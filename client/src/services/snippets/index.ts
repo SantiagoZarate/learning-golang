@@ -13,10 +13,11 @@ const prodSnippetAPI: SnippetAPI = {
       token
     })
   },
-  deleteSnippetById(id) {
+  deleteSnippetById(id, token) {
     return fetcher({
       path: `/snippets/${id}`,
-      method: "DELETE"
+      method: "DELETE",
+      token
     })
   },
   getSnippetById(id) {
@@ -43,7 +44,7 @@ const devSnippetAPI: SnippetAPI = {
       }, 2000)
     })
   },
-  deleteSnippetById(id) {
+  deleteSnippetById(id, _token) {
     return new Promise((resolve) => {
       setTimeout(() => {
         fetch("/src/data/snippets.json")

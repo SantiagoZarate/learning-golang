@@ -4,27 +4,14 @@ import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { redirect } from "react-router-dom"
 import { SnippetsView } from "./SnippetsView"
-import { useSession } from "@/hooks/useSession"
-import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import snippetAPI from '@/services/snippets'
+import { useSnippets } from "@/hooks/useSnippets"
 
 type ViewMode = 'public' | 'private'
 
 export function HomePageRightSide() {
-  const { userIsLogged, getToken } = useSession()
   const [viewMode, setViewMode] = useState<ViewMode>("public")
-
-  const publicSnp = useQuery({
-    queryKey: ["snippets"],
-    queryFn: snippetAPI.getSnippets
-  })
-
-  const privateSnp = useQuery({
-    queryKey: ["snippets-private"],
-    queryFn: () => snippetAPI.getPrivateSnippets(getToken()),
-    enabled: userIsLogged
-  })
+  const { privateSnp, publicSnp } = useSnippets()
 
   const { data, isError, isLoading } = viewMode === 'public' ? publicSnp : privateSnp
   return (
@@ -41,7 +28,7 @@ export function HomePageRightSide() {
           className="flex-1 flex gap-2"
           disabled={viewMode === "private"}
           onClick={() => {
-            userIsLogged
+            privateSnp.isFetched
               ? setViewMode(() => ("private"))
               : toast({ title: "You must be logged in to view private snippets" })
             redirect("/home/private")

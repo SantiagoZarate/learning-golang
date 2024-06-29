@@ -1,5 +1,4 @@
 import { Variants, AnimatePresence, motion } from 'framer-motion'
-import { SnippetListLayout } from "./SnippetListLayout"
 
 export function SnippetLoader() {
   return (
@@ -35,13 +34,15 @@ export function SnippetLoaders() {
         initial={{ opacity: 0, y: 200 }}
         exit={{ opacity: 0 }}
       >
-        <SnippetListLayout>
-          {
-            [1, 2, 3, 4, 5, 6].map(n => (
-              <SnippetLoader key={n} />
-            ))
-          }
-        </SnippetListLayout>
+        <ul className="w-full flex flex-col gap-4 overflow-auto pt-[60px] pb-[65vh]">
+          <AnimatePresence mode="popLayout">
+            {
+              [1, 2, 3, 4, 5, 6].map(n => (
+                <SnippetLoader key={n} />
+              ))
+            }
+          </AnimatePresence>
+        </ul>
       </motion.div>
     </AnimatePresence>
   )

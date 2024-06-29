@@ -6,17 +6,20 @@ import { DEFAULT_USER_PFP } from "@/data/constants";
 import React from "react";
 import { SnippetAuthorInfo } from "./SnippetAuthorInfo";
 import { SnippetPeopleSharedWith } from "./SnippetPeopleSharedWith";
+import { XMarkMiniIcon } from "../icons/XMarkMiniIcon";
+import { useSnippets } from "@/hooks/useSnippets";
 
 interface Props extends Partial<SnippetType> {
-  isRecentlyAdded?: boolean
+  isRecentlyAdded?: boolean,
 }
 
-export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }, ref) => {
+export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, id, title, author, sharedWith, isPrivate, isRecentlyAdded = false, expires }, ref) => {
+  const { deleteSnippet, userIsAuthorOfSnippet } = useSnippets()
   const popoverMessage = sharedWith?.length! - 1 === 0
     ? <p>Shared only with you</p>
     : <p>Shared with you and {sharedWith?.length! - 1} more people</p>
 
-  const profilePicture = author?.pfp ? author.pfp : DEFAULT_USER_PFP
+  const profilePicture = author?.pfp ?? DEFAULT_USER_PFP
   return (
     <motion.li
       ref={ref}
@@ -39,7 +42,15 @@ export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, title,
           stiffness: 100,
         }
       }}
-      className="w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4">
+      className="relative w-full rounded-lg border bg-background shadow-xl border-stone-700 flex flex-col gap-2 p-4 group">
+      {
+        !userIsAuthorOfSnippet({ id: id! }) &&
+        <div className="absolute top-0 right-0 m-2 group-hover:opacity-100 opacity-0 transition">
+          <button onClick={() => deleteSnippet({ id: id! })} className="p-2 rounded-lg bg-muted border border-border">
+            <XMarkMiniIcon />
+          </button>
+        </div>
+      }
       <p className="text-2xl uppercase">{title}</p>
       <p className="text-sm">{content}</p>
       <footer className="flex justify-between items-center">
