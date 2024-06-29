@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from 'zod';
+import userAPI from '@/services/users'
 
 const updateProfilePictureSchema = z.object({
   image: z.instanceof(FileList)
@@ -19,9 +20,9 @@ const updateProfilePictureSchema = z.object({
 type UpdateProfilePictureForm = z.infer<typeof updateProfilePictureSchema>
 
 export function ProfilePage() {
-  const { userCredentials: { username, role } } = useSession()
+  const { userCredentials: { username, role, pfp } } = useSession()
   const { toggleTheme } = useTheme()
-  const { logoutUser } = useSession()
+  const { logoutUser, getToken } = useSession()
 
   const form = useForm<UpdateProfilePictureForm>({
     resolver: zodResolver(updateProfilePictureSchema),
@@ -33,17 +34,24 @@ export function ProfilePage() {
   const handleSubmit = async () => {
     const images = form.getValues("image") as any as FileList
     const image = images.item(0)!
+    const imageName = `avatars/avatar-${new Date()}-${username}`
 
-    await supabase.storage.from("snippetbox-profiles-pictures").upload(`avatars/avatar-${new Date()}-${username}`, image, {
+    await supabase.storage.from("snippetbox-profiles-pictures").upload(imageName, image, {
       cacheControl: '3600',
       upsert: false,
       contentType: image.type
+    }).then(() => {
+      const { data: { publicUrl } } = supabase.storage.from("snippetbox-profiles-pictures").getPublicUrl(imageName)
+      userAPI.updateProfilePicture(getToken(), publicUrl).then(() => {
+        localStorage.setItem("pfp", publicUrl)
+      })
     })
   }
 
   const getImage = () => {
+    const userPicture = pfp.length > 0 ? pfp : DEFAULT_USER_PFP
     const image = form.getValues("image") as any as FileList
-    return image !== null ? URL.createObjectURL(image.item(0)!) : DEFAULT_USER_PFP
+    return image !== null ? URL.createObjectURL(image.item(0)!) : userPicture
   }
 
   return (

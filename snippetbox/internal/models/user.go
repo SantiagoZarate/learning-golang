@@ -35,6 +35,20 @@ func (m *UserModel) GetAll() ([]*UserDTO, error) {
 	return users, nil
 }
 
+func (m *UserModel) UpdateProfilePicture(pfp string, username string) error {
+	query := `
+		UPDATE account
+		SET pfp = $1
+		WHERE username = $2;
+	`
+	_, err := m.DB.Exec(query, pfp, username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func extractUserRows(rows *sql.Rows) ([]*UserDTO, error) {
 	data := []*UserDTO{}
 

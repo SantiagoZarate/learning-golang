@@ -18,10 +18,10 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   const [cookies, _setCookies, removeCookie] = useCookies(["access_token"]);
   const redirect = useNavigate()
 
-  const loginUser = ({ role, username }: LoginResponseApi) => {
+  const loginUser = ({ role, username, pfp }: LoginResponseApi) => {
     // setCookies("access_token", token)
     clearUserCredentials()
-    storeUserCredentials({ username, role })
+    storeUserCredentials({ username, role, pfp })
   }
 
   const logoutUser = () => {

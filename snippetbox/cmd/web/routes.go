@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodPost, "/snippet/create", protectedChain.ThenFunc(app.SnippetCreate))
 	router.Handler(http.MethodDelete, "/snippet/:id", protectedChain.ThenFunc(app.SnippetDelete))
 	router.Handler(http.MethodGet, "/snippet/private", protectedChain.ThenFunc(app.SnippetsSharedWithUser))
+	router.Handler(http.MethodPatch, "/user", protectedChain.ThenFunc(app.UpdateProfilePicture))
 
 	myChain := alice.New(app.PanicRevocer)
 

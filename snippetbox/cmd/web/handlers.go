@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -18,6 +19,10 @@ type SnippetForm struct {
 	Expires             int    `form:"expires"`
 	SharedWith          []int  `form:"sharedWith"`
 	validator.Validator `form:"-"`
+}
+
+type UpdateProfilePictureForm struct {
+	URL string `form:"url"`
 }
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
@@ -142,4 +147,29 @@ func (app *application) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.SendJson(w, users)
+}
+
+func (app *application) UpdateProfilePicture(w http.ResponseWriter, r *http.Request) {
+	author, ok := getUsernameFromContext(r.Context())
+	if !ok {
+		app.clientError(w, http.StatusUnauthorized)
+		return
+	}
+
+	var picture UpdateProfilePictureForm
+
+	json.NewDecoder(r.Body).Decode(&picture)
+
+	if len(picture.URL) == 0 {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	err := app.Users.UpdateProfilePicture(picture.URL, author)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	w.Write([]byte("Profile picture succesully changed!"))
 }

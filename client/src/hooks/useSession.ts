@@ -7,7 +7,8 @@ import { sessionContext } from "@/contexts/sessionContext";
 
 export type UserCredentials = {
   username: string,
-  role: string
+  role: string,
+  pfp: string
 }
 
 export type LoginResponseApi = {
