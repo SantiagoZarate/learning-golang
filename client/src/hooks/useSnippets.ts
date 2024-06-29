@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import snippetAPI from '@/services/snippets'
 import { Snippet } from "@/types/snippet";
 import { useSession } from "./useSession";
+import { SnippetFormType } from "@/helpers/createSnippetSchema";
 
 export function useSnippets() {
   const { getToken, userIsLogged, userCredentials: { username } } = useSession()
@@ -16,6 +17,40 @@ export function useSnippets() {
     queryFn: () => snippetAPI.getPrivateSnippets(getToken()),
     enabled: userIsLogged
   })
+
+  const createSnippet = useMutation({
+    mutationKey: ["snippets"],
+    mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
+    onMutate: async (newSnippet: SnippetFormType) => {
+      await queryClient.cancelQueries({ queryKey: ["snippets"] })
+      const previousSnippets = queryClient.getQueryData(["snippets"])
+      queryClient.setQueryData(["snippets"], (oldData: Snippet[]) => {
+        if (oldData === null) {
+          return [newSnippet]
+        }
+        return [
+          {
+            ...newSnippet,
+            id: oldData.length + 1,
+            isRecentlyAdded: true
+          },
+          ...oldData,
+        ]
+      })
+      return { previousSnippets }
+    },
+    onError: (error, _, context) => {
+      console.log(error)
+      if (context?.previousSnippets !== undefined) {
+        queryClient.setQueryData(["snippets"], context.previousSnippets)
+      }
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["snippets"]
+      })
+    },
+  });
 
   const deleteSnippet = useMutation({
     mutationKey: ["snippet-delete"],
@@ -51,6 +86,7 @@ export function useSnippets() {
     deleteSnippet: deleteSnippet.mutate,
     publicSnp,
     privateSnp,
-    userIsAuthorOfSnippet
+    userIsAuthorOfSnippet,
+    createSnippet
   }
 }

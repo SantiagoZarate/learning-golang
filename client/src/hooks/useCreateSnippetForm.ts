@@ -1,12 +1,12 @@
 import { SnippetFormType, createSnippetSchema } from "@/helpers/createSnippetSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import snippetAPI from '@/services/snippets'
-import { UserDTO, type Snippet as SnippetType } from "@/types/snippet";
+import { UserDTO } from "@/types/snippet";
 import userAPI from '@/services/users'
 import { useSession } from "./useSession";
+import { useSnippets } from "./useSnippets";
 
 interface UsersState {
   selected: UserDTO[],
@@ -14,7 +14,7 @@ interface UsersState {
 }
 
 export function useCreateSnippetForm() {
-  const { userIsLogged, getToken, userCredentials } = useSession()
+  const { userIsLogged, userCredentials } = useSession()
   const form = useForm<SnippetFormType>({
     resolver: zodResolver(createSnippetSchema),
     defaultValues: {
@@ -24,7 +24,7 @@ export function useCreateSnippetForm() {
       sharedWith: []
     }
   })
-  const queryClient = useQueryClient()
+  const { createSnippet } = useSnippets()
   const usersData = useQuery<UserDTO[]>({ queryKey: ["users"], queryFn: userAPI.getAll })
   const [users, setUsers] = useState<UsersState>({ available: [], selected: [] })
 
@@ -33,49 +33,6 @@ export function useCreateSnippetForm() {
       setUsers((prevState) => ({ ...prevState, available: usersData.data! }));
     }
   }, [usersData.data]);
-
-  const { isPending, mutate } = useMutation({
-    mutationKey: ["snippets"],
-    mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
-    onMutate: async (newSnippet: SnippetFormType) => {
-      await queryClient.cancelQueries({ queryKey: ["snippets"] })
-      const previousSnippets = queryClient.getQueryData(["snippets"])
-      queryClient.setQueryData(["snippets"], (oldData: SnippetType[]) => {
-        if (oldData === null) {
-          return [newSnippet]
-        }
-        return [
-          {
-            ...newSnippet,
-            id: oldData.length + 1,
-            isRecentlyAdded: true
-          },
-          ...oldData,
-        ]
-      })
-      return { previousSnippets }
-    },
-    onError: (error, _, context) => {
-      console.log(error)
-      if (context?.previousSnippets !== undefined) {
-        queryClient.setQueryData(["snippets"], context.previousSnippets)
-      }
-    },
-    onSettled: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["snippets"]
-      })
-    },
-    onSuccess: () => {
-      form.reset()
-      setUsers((prevState) => {
-        return {
-          available: prevState.available.concat(prevState.selected),
-          selected: []
-        }
-      })
-    }
-  });
 
   const incrementExpireDay = () => {
     const currentValue = form.getValues("expires")
@@ -128,7 +85,10 @@ export function useCreateSnippetForm() {
     }
     data.author = userCredentials.username
     console.log(data)
-    mutate(data)
+    createSnippet.mutateAsync(data).then(() => {
+      form.reset()
+      setUsers((prevState) => ({ available: prevState.available.concat(prevState.selected), selected: [] }))
+    })
   }
 
   return {
@@ -138,7 +98,7 @@ export function useCreateSnippetForm() {
     addSharedUser,
     decrementExpireDay,
     incrementExpireDay,
-    isPending,
+    isPending: createSnippet.isPending,
     form,
     users,
     usersIsLoading: usersData.isLoading
