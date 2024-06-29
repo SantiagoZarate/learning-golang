@@ -8,7 +8,11 @@ export function RightSideButtons() {
   return userIsLogged
     ?
     <>
-      <p className="text-xs text-card capitalize">{userCredentials.username}</p>
+      <Link to={"/profile"}>
+        <Button variant={"link"}>
+          <p className="text-xs text-card capitalize">{userCredentials.username}</p>
+        </Button>
+      </Link>
       <Button onClick={() => logoutUser()}>
         log out
       </Button>
