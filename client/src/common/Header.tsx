@@ -1,5 +1,3 @@
-import { UpsideArrow } from "@/components/icons/UpsideArrow";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { motion } from 'framer-motion';
 import { Link } from "react-router-dom";
 import { AppMenuPopover } from "./AppMenuPopover";
@@ -27,17 +25,8 @@ export function Header() {
           </nav>
         </section>
         <section className="flex items-center divide-x">
-          <Popover>
-            <PopoverTrigger className="hover:translate-y-1 transition p-2 mx-2">
-              <UpsideArrow />
-            </PopoverTrigger>
-            <PopoverContent className="flex flex-col w-fit p-0 border overflow-hidden bg-background">
-              <AppMenuPopover />
-            </PopoverContent>
-          </Popover>
-          <div className="px-2 flex gap-2 items-center">
-            <RightSideButtons />
-          </div>
+          <AppMenuPopover />
+          <RightSideButtons />
         </section>
       </div >
     </motion.header >

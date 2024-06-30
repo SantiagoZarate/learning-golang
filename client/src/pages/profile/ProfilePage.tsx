@@ -5,19 +5,11 @@ import { useSession } from "@/hooks/useSession";
 import { useTheme } from "@/hooks/useTheme";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from 'zod';
 import userAPI from '@/services/users'
 import { toast } from "@/components/ui/use-toast";
-
-const updateProfilePictureSchema = z.object({
-  image: z.instanceof(FileList)
-    .transform(list => list.item(0)! as File)
-    .refine(file => ["image/png", "image/jpeg", "image/jpg"].some(type => type === file.type), "invalid picture type")
-    .refine(file => file.size <= 5 * 1024 * 1024, "Picture must be less than 5 MB")
-    .nullable()
-})
-
-type UpdateProfilePictureForm = z.infer<typeof updateProfilePictureSchema>
+import { ProfileSettingSection } from "./ProfileSettingSection";
+import { ProfileLeftSide } from "./ProfileLeftSide";
+import { UpdateProfilePictureForm, updateProfilePictureSchema } from "@/helpers/updateProfilePictureSchema";
 
 export function ProfilePage() {
   const { userCredentials } = useSession()
@@ -56,61 +48,38 @@ export function ProfilePage() {
         </h1>
       </header>
       <div className="grid grid-cols-5 divide-x">
-        <section className="items-center flex flex-col gap-4 p-6">
-          <picture className="border-2 border-border w-fit rounded-full overflow-hidden">
-            <img
-              draggable={false}
-              className="aspect-square size-24 object-cover"
-              src={getImage()}
-              alt="" />
-          </picture>
-          <footer className="flex flex-col gap-2">
-            <div className="flex gap-4 items-center justify-between">
-              <p className="text-sm text-border">Username:</p>
-              <p className="px-2 text-secondary text-sm">{username}</p>
-            </div>
-            <div className="flex gap-4 items-center justify-between">
-              <p className="text-sm text-border">Rol:</p>
-              <p className="px-2 text-secondary text-sm">{role}</p>
-            </div>
-          </footer>
-        </section>
+        <ProfileLeftSide pfp={getImage()} role={role} username={username} />
         <section className="col-span-4 divide-y">
-          <article className="p-6 flex items-center justify-between">
-            <p>Change your profile picture</p>
-            <form className="flex items-center gap-4" method="POST" encType="multipart/form-data" onSubmit={form.handleSubmit(handleSubmit)}>
-              <label
-                className="flex items-center gap-2 bg-muted border border-border rounded-lg px-4 py-2  cursor-pointer group">
-                <span className="group-hover:translate-y-[-2px] transition">
-                  <UploadMicroIcon />
-                </span>
-                <p className="text-xs text-primary/60 group-hover:text-primary  transition">upload picture</p>
-                {form.formState.errors.image && <p className="text-red-400 text-xs">{form.formState.errors.image.message}</p>}
-                <input hidden type="file" {...form.register("image")} />
-              </label>
-              <Button disabled={form.watch("image") === null} type="submit">
-                {
-                  form.formState.isLoading
-                    ? "loading..."
-                    : "update!"
-                }
-              </Button>
-            </form>
-          </article>
-          <article className="p-6 flex items-center justify-between">
-            <p>Toggle theme</p>
-            <Button onClick={() => toggleTheme()}>
-              toggle
-            </Button>
-          </article>
-          <article className="p-6 flex items-center justify-between">
-            <p>Finish session</p>
-            <Button onClick={() => logoutUser()}>
-              log out
-            </Button>
-          </article>
+          <ProfileSettingSection
+            name="Change your profile picture"
+            action={
+              <form className="flex items-center gap-4" method="POST" encType="multipart/form-data" onSubmit={form.handleSubmit(handleSubmit)}>
+                <label
+                  className="flex items-center gap-2 bg-muted border border-border rounded-lg px-4 py-2  cursor-pointer group">
+                  <span className="group-hover:translate-y-[-2px] transition">
+                    <UploadMicroIcon />
+                  </span>
+                  <p className="text-xs text-primary/60 group-hover:text-primary  transition">upload picture</p>
+                  {form.formState.errors.image && <p className="text-red-400 text-xs">{form.formState.errors.image.message}</p>}
+                  <input hidden type="file" {...form.register("image")} />
+                </label>
+                <Button disabled={form.watch("image") === null} type="submit">
+                  {
+                    form.formState.isLoading
+                      ? "loading..."
+                      : "update!"
+                  }
+                </Button>
+              </form>
+            } />
+          <ProfileSettingSection
+            name="Toggle theme"
+            action={<Button onClick={() => toggleTheme()}>toggle</Button>} />
+          <ProfileSettingSection
+            name="Finish session"
+            action={<Button onClick={() => logoutUser()}>log out</Button>} />
         </section>
       </div>
-    </div>
+    </div >
   )
 }
