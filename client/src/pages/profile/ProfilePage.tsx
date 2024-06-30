@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { DEFAULT_USER_PFP } from "@/data/constants";
 import { useSession } from "@/hooks/useSession";
 import { useTheme } from "@/hooks/useTheme";
-import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from 'zod';
 import userAPI from '@/services/users'
+import { toast } from "@/components/ui/use-toast";
 
 const updateProfilePictureSchema = z.object({
   image: z.instanceof(FileList)
@@ -37,23 +37,15 @@ export function ProfilePage() {
     const images = form.getValues("image") as any as FileList
     const image = images.item(0)!
     const imageName = `avatars/avatar-${new Date()}-${username}`
-
-    await supabase.storage.from("snippetbox-profiles-pictures").upload(imageName, image, {
-      cacheControl: '3600',
-      upsert: false,
-      contentType: image.type
-    }).then(() => {
-      const { data: { publicUrl } } = supabase.storage.from("snippetbox-profiles-pictures").getPublicUrl(imageName)
-      userAPI.updateProfilePicture(getToken(), publicUrl).then(() => {
-        localStorage.setItem("pfp", publicUrl)
-      })
-    })
+    userAPI.updateProfilePicture(image, imageName, getToken())
+      .then(() => toast({ title: "Profile picture succesfully changed!" }))
+      .catch((err) => toast({ title: err }))
   }
 
   const getImage = () => {
-    const userPicture = pfp.length > 0 ? pfp : DEFAULT_USER_PFP
+    const profilePicture = pfp.length > 0 ? pfp : DEFAULT_USER_PFP
     const image = form.getValues("image") as any as FileList
-    return image !== null ? URL.createObjectURL(image.item(0)!) : userPicture
+    return image !== null ? URL.createObjectURL(image.item(0)!) : profilePicture
   }
 
   return (
@@ -96,7 +88,13 @@ export function ProfilePage() {
                 {form.formState.errors.image && <p className="text-red-400 text-xs">{form.formState.errors.image.message}</p>}
                 <input hidden type="file" {...form.register("image")} />
               </label>
-              <Button disabled={form.watch("image") === null} type="submit">update!</Button>
+              <Button disabled={form.watch("image") === null} type="submit">
+                {
+                  form.formState.isLoading
+                    ? "loading..."
+                    : "update!"
+                }
+              </Button>
             </form>
           </article>
           <article className="p-6 flex items-center justify-between">

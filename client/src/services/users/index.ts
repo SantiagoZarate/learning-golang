@@ -2,23 +2,38 @@ import { RawUserDTO, UserDTO } from "@/types/snippet";
 import { fetcher } from "../fetcher";
 import envs from "@/config/envs";
 import { mapUserDTOArr } from "@/helpers/mapSnippetsFromApi";
+import { supabase } from "@/lib/supabase";
+import { retrieveUserCredentials, storeUserCredentials } from "@/helpers/localStorage";
 
 interface UserAPI {
   getAll: () => Promise<UserDTO[]>,
-  updateProfilePicture: (url: string, token: string) => Promise<any>
+  updateProfilePicture: (image: File, imageName: string, token: string) => Promise<any>
 }
 
 const prodUserAPI: UserAPI = {
   getAll() {
     return fetcher<RawUserDTO[]>({ path: "/user" }).then(res => mapUserDTOArr(res));
   },
-  updateProfilePicture(url, token) {
-    return fetcher({
-      path: "/user",
-      payload: url,
-      token,
-      method: "PATCH"
-    })
+  async updateProfilePicture(image, imageName, token) {
+    await supabase.storage.from("snippetbox-profiles-pictures").upload(imageName, image, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: image.type
+    }).then(() => supabase.storage.from("snippetbox-profiles-pictures").getPublicUrl(imageName))
+      .then(({ data: { publicUrl } }) =>
+        fetcher({
+          path: "/user",
+          payload: { url: publicUrl },
+          token,
+          method: "PATCH"
+        }).then(() => {
+          const previousData = retrieveUserCredentials()!
+          storeUserCredentials({
+            ...previousData,
+            pfp: publicUrl
+          })
+        })
+      )
   },
 }
 
@@ -38,18 +53,10 @@ const devUserAPI: UserAPI = {
       }, 2000)
     })
   },
-  updateProfilePicture(url, token) {
-    return new Promise((resolve, reject) => {
+  updateProfilePicture(_image, _imageName, _token) {
+    return new Promise((_resolve, _reject) => {
       setTimeout(() => {
-        fetch("/src/data/users.json")
-          .then(res => {
-            if (!res.ok) {
-              throw new Error('Network response was not ok')
-            }
-            return res.json()
-          })
-          .then(data => resolve(data))
-          .catch(error => reject(error)) // Reject the promise on error
+        _resolve("Updated")
       }, 2000)
     })
   },
