@@ -1,15 +1,16 @@
+import { ExitMicroIcon } from "@/components/icons/ExitMicroIcon";
 import { UploadMicroIcon } from "@/components/icons/UploadMicroIcon";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { DEFAULT_USER_PFP } from "@/data/constants";
+import { UpdateProfilePictureForm, updateProfilePictureSchema } from "@/helpers/updateProfilePictureSchema";
 import { useSession } from "@/hooks/useSession";
 import { useTheme } from "@/hooks/useTheme";
+import userAPI from '@/services/users';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import userAPI from '@/services/users'
-import { toast } from "@/components/ui/use-toast";
-import { ProfileSettingSection } from "./ProfileSettingSection";
 import { ProfileLeftSide } from "./ProfileLeftSide";
-import { UpdateProfilePictureForm, updateProfilePictureSchema } from "@/helpers/updateProfilePictureSchema";
+import { ProfileSettingSection } from "./ProfileSettingSection";
 
 export function ProfilePage() {
   const { userCredentials } = useSession()
@@ -77,7 +78,12 @@ export function ProfilePage() {
             action={<Button onClick={() => toggleTheme()}>toggle</Button>} />
           <ProfileSettingSection
             name="Finish session"
-            action={<Button onClick={() => logoutUser()}>log out</Button>} />
+            action={
+              <Button variant={"destructive"} className="gap-2" onClick={() => logoutUser()}>
+                <ExitMicroIcon />
+                log out
+              </Button>
+            } />
         </section>
       </div>
     </div >

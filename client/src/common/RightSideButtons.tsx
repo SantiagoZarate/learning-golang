@@ -6,7 +6,7 @@ export function RightSideButtons() {
   const { userCredentials, userIsLogged } = useSession()
 
   return (
-    <div className="px-2 flex gap-2 items-center">
+    <div className="px-2 flex gap-2 items-center border-l">
       {
         userIsLogged
           ?

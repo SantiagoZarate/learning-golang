@@ -24,7 +24,7 @@ export function Header() {
             </Link>
           </nav>
         </section>
-        <section className="flex items-center divide-x">
+        <section className="flex items-center">
           <AppMenuPopover />
           <RightSideButtons />
         </section>
