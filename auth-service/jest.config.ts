@@ -9,8 +9,14 @@ const config: Config = {
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   cacheDirectory: ".tmp/jestCache",
-  collectCoverage: true,
-  collectCoverageFrom: ["src/**/*.ts"],
+  extensionsToTreatAsEsm: [".ts"],
+  // collectCoverage: true,
+  // collectCoverageFrom: ["src/**/*.ts"],
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { useESM: true }]
+  },
+  testPathIgnorePatterns: ['./dist'],
+  transformIgnorePatterns: ["/node_modules/(?!(drizzle-orm|@electric-sql/pglite)/)"],
 };
 
 export default config;

@@ -7,7 +7,6 @@ import authRouter from '@/resources/auth/router'
 import adminRouter from '@/resources/admin/router'
 import { homeView } from '@/utils/homeView';
 import { errorMiddleware } from '@/middlewares/errorMiddleware';
-import db from '@/db/db';
 
 export const app = express();
 
@@ -24,6 +23,5 @@ export function start() {
   const server = app.listen(envs.PORT, () => {
     console.log(`Server listening on http://localhost:${envs.PORT}`)
   })
-  console.log(db._.tableNamesMap)
   return server
 }

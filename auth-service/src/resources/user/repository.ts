@@ -8,12 +8,12 @@ import db from "@/db/db";
 
 export class UserRepository {
   static async findAll(): Promise<InferSelectModel<typeof user>[]> {
-    const users = await db.query.user.findMany();
+    const users = await (await db)!.query.user.findMany();
     return users
   }
 
   static async login({ password, username }: LoginType): Promise<InferSelectModel<typeof user>> {
-    const foundUser = await db.select().from(user).where(eq(user.username, username));
+    const foundUser = await (await db)!.select().from(user).where(eq(user.username, username));
 
     if (foundUser.length === 0) {
       throw new ValidationError("User not found")
@@ -29,7 +29,7 @@ export class UserRepository {
   }
 
   static async register({ email, password, username }: RegisterType): Promise<number> {
-    const foundUser = await db.select().from(user).where(or(eq(user.username, username), eq(user.email, email)));
+    const foundUser = await (await db)!.select().from(user).where(or(eq(user.username, username), eq(user.email, email)));
 
     if (foundUser.length !== 0) {
       throw new ValidationError("Duplicated credentials")
@@ -37,7 +37,7 @@ export class UserRepository {
 
     const hashedPass = await hash(password, envs.SALT_ROUNDS)
 
-    const result = await db.insert(user).values({
+    const result = await (await db)!.insert(user).values({
       email,
       username,
       password: hashedPass
@@ -47,7 +47,7 @@ export class UserRepository {
   }
 
   static async promoteRole(id: number): Promise<number> {
-    const foundUser = await db.select().from(user).where(eq(user.id, id));
+    const foundUser = await (await db)!.select().from(user).where(eq(user.id, id));
 
     if (foundUser.length === 0) {
       throw new ValidationError("user not found")
@@ -57,7 +57,7 @@ export class UserRepository {
       throw new BadRequestError("user had already gotten admin priviliges")
     }
 
-    const result = await db.update(user)
+    const result = await (await db)!.update(user)
       .set({ role: 'admin' })
       .where(eq(user.id, id))
       .returning();

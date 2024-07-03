@@ -1,11 +1,10 @@
 import { start } from '@/server/server'
 import { StatusCodes } from 'http-status-codes'
-import supertest, { agent } from 'supertest'
+import supertest from 'supertest'
 import jwt from 'jsonwebtoken'
 
 const server = start()
-
-const api = supertest(server)
+export const api = supertest(server)
 
 afterAll(() => {
   server.close()
