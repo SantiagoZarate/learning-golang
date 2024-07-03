@@ -9,6 +9,12 @@ async function getUsers(req: ExtRequest, res: Response) {
   response({ res, data: results, message: "retrieving users" })
 }
 
+async function getUser(req: ExtRequest, res: Response) {
+  const { username } = req.params
+  const results = await UserRepository.findOne({ username });
+  response({ res, data: results, message: "user found" })
+}
+
 async function promoteUser(req: Request, res: Response) {
   const { id } = req.params
   const data = await UserRepository.promoteRole(Number(id));
@@ -17,5 +23,6 @@ async function promoteUser(req: Request, res: Response) {
 
 export default {
   getUsers,
+  getUser,
   promoteUser
 }

@@ -74,14 +74,30 @@ describe("Testing /admin/users endpoint", () => {
 
 describe("testing /api/v1/admin/promote endpoint", () => {
   test("create a user and promote his role", async () => {
-    await api.post(urls.register).send({ username: "user", password: "password", email: "user@gmail.com" })
+    const newUser = { username: "user", password: "password", email: "user@gmail.com" }
 
-    return await api
-      .post(urls.promote + "/1")
+    await api
+      .post(urls.register)
+      .send(newUser)
+
+    const res = await api.get(urls.users + "/" + newUser.username).set("god_mode_secret", envs.GOD_MODE_SECRET)
+
+    const id = res.body.results.id
+
+    await api
+      .post(urls.promote + "/" + id)
       .set("god_mode_secret", envs.GOD_MODE_SECRET)
       .expect(StatusCodes.CREATED)
       .then((response) => {
         expect(response.body.message).toStrictEqual("User succesfully promoted")
+      })
+
+    return await api
+      .get(urls.users + "/" + newUser.username)
+      .set("god_mode_secret", envs.GOD_MODE_SECRET)
+      .expect(StatusCodes.OK)
+      .then((response) => {
+        expect(response.body.results.role).toStrictEqual("admin")
       })
   })
 })
@@ -97,7 +113,7 @@ describe("testing /api/v1/auth/register endpoint", () => {
       .set("Content-Type", "application/json")
       .expect(StatusCodes.OK)
       .then(response => {
-        expect(response.body.results).toBe(1)
+        expect(response.body.results.id).toBeDefined()
         expect(response.body.message).toStrictEqual("Registered succesfully")
       })
   })
@@ -133,7 +149,7 @@ describe("testing /api/v1/auth/register endpoint", () => {
         .set("Content-Type", "application/json")
         .expect(StatusCodes.OK)
         .then(response => {
-          expect(response.body.results).toBeDefined();
+          expect(response.body.results.id).toBeDefined();
           expect(response.body.message).toStrictEqual("Registered succesfully");
         })
     );
