@@ -3,6 +3,7 @@ import user from '@/resources/user/schema';
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import path from 'path';
 
 async function connectDB() {
   try {
@@ -25,14 +26,20 @@ async function connectDB() {
 async function testDB() {
   const { PGlite } = await import("@electric-sql/pglite")
   const pglite = await import("drizzle-orm/pglite")
-  const sqlite = new PGlite()
+  const { migrate } = await import("drizzle-orm/pglite/migrator")
 
-  return pglite.drizzle(sqlite, {
+  const sqlite = new PGlite()
+  const db = pglite.drizzle(sqlite, {
     logger: true,
     schema: {
       user
     }
   });
+
+  const migrationPath = path.join(process.cwd(), "drizzle/");
+  await migrate(db, { migrationsFolder: migrationPath });
+
+  return db
 };
 
 export default envs.MODE === 'test' ? testDB()! : connectDB()!;

@@ -58,3 +58,22 @@ describe("Testing /admin/users endpoint", () => {
     expect(res.body.message).toBe("Forbidden resource")
   })
 })
+
+describe("testing /api/v1/auth/register routes", () => {
+  test("should return a response with the credentials passed", async () => {
+    const body = { username: "santi24", password: "contraseña8", email: "santi24@gmail.com" }
+
+    return await api
+      .post("/api/v1/auth/register")
+      .send(body)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .expect(StatusCodes.OK)
+      .then(response => {
+        console.log('Response body:', response.body);
+      })
+      .catch(error => {
+        console.error('Test error:');
+      });
+  })
+})

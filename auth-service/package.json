@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules pnpm exec jest",
+    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
     "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register ./src/index.ts",
     "build": "tsc && tsc-alias -p tsconfig.json && cp -r ./public ./dist/",
     "start": "node dist/src/index.js",
