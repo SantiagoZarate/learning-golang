@@ -13,13 +13,16 @@ if (!envs.SEEDING) {
 const users = usersJson as any[]
 
 // Remove all records and insert all users from json;
-db.delete(user).then(() => {
-  users.forEach((u: InferInsertModel<typeof user>) => {
-    UserRepository.register({
-      email: u.email,
-      password: u.password,
-      username: u.username
-    }).then(() => console.log(`seed user: ${u.id}`))
-  })
-});
+async function seedDB() {
+  (await db)!.delete(user).then(() => {
+    users.forEach((u: InferInsertModel<typeof user>) => {
+      UserRepository.register({
+        email: u.email,
+        password: u.password,
+        username: u.username
+      }).then(() => console.log(`seed user: ${u.id}`))
+    })
+  });
+}
 
+seedDB()

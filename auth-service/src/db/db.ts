@@ -30,7 +30,6 @@ async function testDB() {
 
   const sqlite = new PGlite()
   const db = pglite.drizzle(sqlite, {
-    logger: true,
     schema: {
       user
     }

@@ -2,6 +2,8 @@ import { start } from '@/server/server'
 import { StatusCodes } from 'http-status-codes'
 import supertest from 'supertest'
 import jwt from 'jsonwebtoken'
+import db from '@/db/db'
+import user from '@/resources/user/schema'
 
 const server = start()
 export const api = supertest(server)
@@ -59,21 +61,63 @@ describe("Testing /admin/users endpoint", () => {
   })
 })
 
-describe("testing /api/v1/auth/register routes", () => {
-  test("should return a response with the credentials passed", async () => {
-    const body = { username: "santi24", password: "contraseña8", email: "santi24@gmail.com" }
+describe("testing /api/v1/auth/register endpoint", () => {
+  afterEach(async () => {
+    await (await db)!.delete(user)
+  })
 
+  const url = "/api/v1/auth/register"
+  const body = { username: "santi24", password: "contraseña8", email: "santi24@gmail.com" }
+
+  test("should return a response with the credentials passed", async () => {
     return await api
-      .post("/api/v1/auth/register")
+      .post(url)
       .send(body)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .expect(StatusCodes.OK)
       .then(response => {
-        console.log('Response body:', response.body);
+        expect(response.body.results).toBe(1)
+        expect(response.body.message).toStrictEqual("Registered succesfully")
       })
-      .catch(error => {
-        console.error('Test error:');
-      });
+  })
+
+  test("should return error for duplicated credentials", async () => {
+    await api
+      .post(url)
+      .send(body)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .expect(StatusCodes.OK)
+
+    return await api
+      .post(url)
+      .send(body)
+      .set("Accept", "application/json")
+      .set("Content-Type", "application/json")
+      .expect(StatusCodes.UNAUTHORIZED)
+  })
+
+  test("should registers all 3 users", async () => {
+    const newUsers = [
+      { username: "user1", password: "password", email: "user1@gmail.com" },
+      { username: "user2", password: "password", email: "user2@gmail.com" },
+      { username: "user3", password: "password", email: "user3@gmail.com" }
+    ]
+
+    const promises = newUsers.map((user) =>
+      api
+        .post(url)
+        .send(user)
+        .set("Accept", "application/json")
+        .set("Content-Type", "application/json")
+        .expect(StatusCodes.OK)
+        .then(response => {
+          expect(response.body.results).toBeDefined();
+          expect(response.body.message).toStrictEqual("Registered succesfully");
+        })
+    );
+
+    await Promise.all(promises);
   })
 })
