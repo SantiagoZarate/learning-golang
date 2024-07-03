@@ -12,6 +12,10 @@ afterAll(() => {
   server.close()
 })
 
+afterEach(async () => {
+  await (await db)!.delete(user)
+})
+
 describe("Testing healthcheck endpoint", () => {
   test("healtcheck should return a 200 response", async () => {
     const res = await api.get("/api/v1/test")
@@ -62,9 +66,6 @@ describe("Testing /admin/users endpoint", () => {
 })
 
 describe("testing /api/v1/auth/register endpoint", () => {
-  afterEach(async () => {
-    await (await db)!.delete(user)
-  })
 
   const url = "/api/v1/auth/register"
   const body = { username: "santi24", password: "contraseña8", email: "santi24@gmail.com" }
@@ -119,5 +120,52 @@ describe("testing /api/v1/auth/register endpoint", () => {
     );
 
     await Promise.all(promises);
+  })
+})
+
+describe("testing /api/v1/auth/login endpoint", () => {
+  const url = "/api/v1/auth/login"
+  const credentials = { username: "user1", password: "password", email: "user1@gmail.com" }
+
+  test("login with correct credentials should return access token through header", async () => {
+    await api
+      .post("/api/v1/auth/register")
+      .send(credentials)
+
+    return await api
+      .post(url)
+      .send({ username: credentials.username, password: credentials.password })
+      .expect(StatusCodes.OK)
+      .then(response => {
+        expect(response.headers["set-cookie"]).toHaveLength(1)
+        expect(response.body.token).toBeDefined();
+        expect(response.body.username).toStrictEqual(credentials.username);
+        expect(response.body.role).toStrictEqual("user");
+        expect(response.body.pfp).toBeNull()
+      })
+  })
+
+  test("login with inexistent user returns 401 status", async () => {
+    return await api
+      .post(url)
+      .send({ username: "invalid-user", password: "password" })
+      .expect(StatusCodes.UNAUTHORIZED)
+      .then(response => {
+        expect(response.body.message).toStrictEqual("User not found");
+      })
+  })
+
+  test("login with incorrect password returns 401 status", async () => {
+    await api
+      .post("/api/v1/auth/register")
+      .send(credentials)
+
+    return await api
+      .post(url)
+      .send({ username: credentials.username, password: "password1" })
+      .expect(StatusCodes.UNAUTHORIZED)
+      .then(response => {
+        expect(response.body.message).toStrictEqual("Incorrect password");
+      })
   })
 })
