@@ -4,9 +4,18 @@ import supertest from 'supertest'
 import jwt from 'jsonwebtoken'
 import db from '@/db/db'
 import user from '@/resources/user/schema'
+import envs from '@/config/envs'
 
 const server = start()
 export const api = supertest(server)
+
+const urls = {
+  promote: "/api/v1/admin/promote",
+  login: "/api/v1/auth/login",
+  register: "/api/v1/auth/register",
+  healtcheck: "/api/v1/test",
+  users: "/api/v1/admin/users"
+}
 
 afterAll(() => {
   server.close()
@@ -18,23 +27,21 @@ afterEach(async () => {
 
 describe("Testing healthcheck endpoint", () => {
   test("healtcheck should return a 200 response", async () => {
-    const res = await api.get("/api/v1/test")
+    const res = await api.get(urls.healtcheck)
     expect(res.statusCode).toBe(StatusCodes.OK)
   })
 
   test("healtcheck should return default message", async () => {
-    const res = await api.get("/api/v1/test")
+    const res = await api.get(urls.healtcheck)
     expect(res.body.message).toBe<string>("Api working perfectly fine")
     expect(res.body.ok).toBe<boolean>(true)
   })
 })
 
 describe("Testing /admin/users endpoint", () => {
-  const url = "/api/v1/admin/users"
-
   test("should returns error if there is no token", async () => {
     const res = await api
-      .get(url)
+      .get(urls.users)
       .expect(StatusCodes.UNAUTHORIZED)
 
     expect(res.body.message).toBe<string>("Access denied")
@@ -42,7 +49,7 @@ describe("Testing /admin/users endpoint", () => {
 
   test("should returns error if token is invalid", async () => {
     const res = await api
-      .get(url)
+      .get(urls.users)
       .set("Cookie", ['access_token=foo'])
       .expect(StatusCodes.UNAUTHORIZED)
 
@@ -57,7 +64,7 @@ describe("Testing /admin/users endpoint", () => {
     (jwt.verify as jest.Mock) = mockVerify
 
     const res = await api
-      .get(url)
+      .get(urls.users)
       .set("Cookie", ['access_token=foo'])
       .expect(StatusCodes.FORBIDDEN)
 
@@ -65,14 +72,26 @@ describe("Testing /admin/users endpoint", () => {
   })
 })
 
-describe("testing /api/v1/auth/register endpoint", () => {
+describe("testing /api/v1/admin/promote endpoint", () => {
+  test("create a user and promote his role", async () => {
+    await api.post(urls.register).send({ username: "user", password: "password", email: "user@gmail.com" })
 
-  const url = "/api/v1/auth/register"
+    return await api
+      .post(urls.promote + "/1")
+      .set("god_mode_secret", envs.GOD_MODE_SECRET)
+      .expect(StatusCodes.CREATED)
+      .then((response) => {
+        expect(response.body.message).toStrictEqual("User succesfully promoted")
+      })
+  })
+})
+
+describe("testing /api/v1/auth/register endpoint", () => {
   const body = { username: "santi24", password: "contraseña8", email: "santi24@gmail.com" }
 
   test("should return a response with the credentials passed", async () => {
     return await api
-      .post(url)
+      .post(urls.register)
       .send(body)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
@@ -85,14 +104,14 @@ describe("testing /api/v1/auth/register endpoint", () => {
 
   test("should return error for duplicated credentials", async () => {
     await api
-      .post(url)
+      .post(urls.register)
       .send(body)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .expect(StatusCodes.OK)
 
     return await api
-      .post(url)
+      .post(urls.register)
       .send(body)
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
@@ -108,7 +127,7 @@ describe("testing /api/v1/auth/register endpoint", () => {
 
     const promises = newUsers.map((user) =>
       api
-        .post(url)
+        .post(urls.register)
         .send(user)
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
@@ -124,16 +143,15 @@ describe("testing /api/v1/auth/register endpoint", () => {
 })
 
 describe("testing /api/v1/auth/login endpoint", () => {
-  const url = "/api/v1/auth/login"
   const credentials = { username: "user1", password: "password", email: "user1@gmail.com" }
 
   test("login with correct credentials should return access token through header", async () => {
     await api
-      .post("/api/v1/auth/register")
+      .post(urls.register)
       .send(credentials)
 
     return await api
-      .post(url)
+      .post(urls.login)
       .send({ username: credentials.username, password: credentials.password })
       .expect(StatusCodes.OK)
       .then(response => {
@@ -147,7 +165,7 @@ describe("testing /api/v1/auth/login endpoint", () => {
 
   test("login with inexistent user returns 401 status", async () => {
     return await api
-      .post(url)
+      .post(urls.login)
       .send({ username: "invalid-user", password: "password" })
       .expect(StatusCodes.UNAUTHORIZED)
       .then(response => {
@@ -157,11 +175,11 @@ describe("testing /api/v1/auth/login endpoint", () => {
 
   test("login with incorrect password returns 401 status", async () => {
     await api
-      .post("/api/v1/auth/register")
+      .post(urls.register)
       .send(credentials)
 
     return await api
-      .post(url)
+      .post(urls.login)
       .send({ username: credentials.username, password: "password1" })
       .expect(StatusCodes.UNAUTHORIZED)
       .then(response => {
