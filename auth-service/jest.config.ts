@@ -10,8 +10,13 @@ const config: Config = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   cacheDirectory: ".tmp/jestCache",
   extensionsToTreatAsEsm: [".ts"],
-  // collectCoverage: true,
-  // collectCoverageFrom: ["src/**/*.ts"],
+  collectCoverage: true,
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/types/**/*.ts",
+    "!src/db/**/*.ts",
+    "!src/index.ts"
+  ],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { useESM: true }]
   },
