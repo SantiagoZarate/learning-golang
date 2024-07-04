@@ -48,7 +48,7 @@ export function AuthPage() {
       <AnimatePresence mode="popLayout">
         <article className="relative rounded-xl w-full bg-gradient-to-t from-transparent to-muted  flex py-10 px-6 flex-col gap-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 mx-auto flex flex-col">
+            <form data-testid="auth-form" onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 mx-auto flex flex-col">
               <InputField
                 key={"username"}
                 disabled={isPending}
