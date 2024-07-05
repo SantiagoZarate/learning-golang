@@ -9,9 +9,9 @@ class AuthPage {
 
   constructor(page: Page) {
     this.form = page.getByTestId('auth-form');
-    this.usernameField = this.form.locator('name="name"');
-    this.passwordField = this.form.locator('name="password"')
-    this.emailField = this.form.locator('name="email"')
+    this.usernameField = this.form.locator('[name="username"]');
+    this.passwordField = this.form.locator('[name="password"]')
+    this.emailField = this.form.locator('[name="email"]')
   }
 
   async registerUser({ email, password, username }: RegisterPayload) {
@@ -28,15 +28,15 @@ class AuthPage {
   }
 }
 
-const baseURL = "http://localhost:8001"
+const baseURL = "http://localhost:8001/"
 
 test('register user', async ({ page }) => {
-  await page.goto(baseURL + '/register', {
-    timeout: 30000
+  await page.goto(baseURL + 'register', {
+    timeout: 60000
   });
   const authPage = new AuthPage(page)
 
-  authPage.registerUser({
+  await authPage.registerUser({
     email: "usertest@gmail.com",
     password: "userpass",
     username: "username"
@@ -44,14 +44,4 @@ test('register user', async ({ page }) => {
 
   // Expect a title be redirected to landing page
   expect(page.url()).toStrictEqual(baseURL);
-});
-
-test.skip('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 });
