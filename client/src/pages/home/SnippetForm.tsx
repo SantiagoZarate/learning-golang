@@ -28,6 +28,8 @@ export function SnippetForm() {
           description="Up to 140 chars!" />
         <FormProvider {...form}>
           <form
+            aria-disabled={isPending}
+            data-testid="snippet-form"
             onSubmit={form.handleSubmit((data) => handleSubmit(
               {
                 ...data,
@@ -46,7 +48,9 @@ export function SnippetForm() {
               }
               <ExpiresDayField onDecrementDay={decrementExpireDay} onIncrementDay={incrementExpireDay} />
             </footer>
-            <Button disabled={isPending} variant={"primary"}>
+            <Button
+              disabled={isPending}
+              variant={"primary"}>
               {isPending ? "sending" : "post"}
             </Button>
           </form>

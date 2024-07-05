@@ -14,6 +14,8 @@ export function SnippetTitleField() {
           <FormControl>
             <Input
               {...field}
+              disabled={form.formState.isSubmitting}
+              data-testid="snippet-title-field"
               className="border-none bg-input rounded-none rounded-tl-xl rounded-tr-xl "
               placeholder="Howdy" />
           </FormControl>

@@ -15,6 +15,7 @@ export function ExpiresDayField({ onDecrementDay, onIncrementDay }: Props) {
       <div className="flex bg-muted rounded-xl overflow-hidden">
         <ExpireDayButton onClick={onDecrementDay}>-</ExpireDayButton>
         <input
+          data-testid="snippet-expires-day-input"
           value={form.watch("expires")}
           className="max-w-10 bg-input p-0 m-0 w-full text-center"
           type="number"
