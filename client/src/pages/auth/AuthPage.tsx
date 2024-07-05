@@ -73,6 +73,7 @@ export function AuthPage() {
                   description="it must be a valid email"
                   control={form.control} />}
               <motion.button
+                data-testid="auth-button"
                 key={"button"}
                 className="mx-auto uppercase text-sm px-4 py-2 w-fit rounded-full font-bold bg-card text-secondary hover:bg-secondary/80"
                 disabled={isPending}

@@ -1,5 +1,4 @@
-import { login } from "@/services/auth/login";
-import { register } from "@/services/auth/register";
+import authAPI from "@/services/auth/index";
 import { LoginPayload, RegisterPayload } from "@/types/auth";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +26,7 @@ export function useSession() {
 
   const signUp = (data: RegisterPayload) => {
     setIsPending(true)
-    return register(data)
+    return authAPI.register(data)
       .finally(() => setIsPending(false))
       .then(res => {
         if (res.status === 200) {
@@ -39,7 +38,7 @@ export function useSession() {
 
   const logOn = (data: LoginPayload, fn: (msg: string) => any): Promise<any> => {
     setIsPending(true)
-    return login(data)
+    return authAPI.login(data)
       .then(res => {
         if (res.status === 200) {
           res.json()
