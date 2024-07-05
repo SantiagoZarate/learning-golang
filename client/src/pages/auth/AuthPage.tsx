@@ -32,6 +32,9 @@ export function AuthPage() {
   function onSubmit(data: RegisterFormType) {
     isRegisterPath
       ? signUp(data)
+        .then(() => {
+          toast({ title: "Registered succesfully" })
+        })
         .catch(() => {
           toast({ title: "Internal error" })
           form.reset()

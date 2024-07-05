@@ -12,7 +12,7 @@ export function RightSideButtons() {
           ?
           <Link to={"/profile"}>
             <Button variant={"link"}>
-              <p className="text-xs text-card capitalize">{userCredentials!.username}</p>
+              <p data-testid="header-username" className="text-xs text-card capitalize">{userCredentials!.username}</p>
             </Button>
           </Link>
           :
