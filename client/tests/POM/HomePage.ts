@@ -1,5 +1,6 @@
 import { SnippetFormType } from "@/helpers/createSnippetSchema"
 import { Locator, Page } from "@playwright/test"
+import { type Snippet as SnippetType } from "@/types/snippet"
 
 export class HomePage {
   snippetForm: Locator
@@ -7,20 +8,36 @@ export class HomePage {
   snippetContentField: Locator
   snippetExpiresDayField: Locator
   snippetCreateButton: Locator
+  page: Page
 
   constructor(page: Page) {
-    this.snippetForm = page.getByTestId("snippet-form")
-    this.snippetTitleField = page.getByTestId('snippet-title-field')
-    this.snippetContentField = page.getByTestId('snippet-content-field')
-    this.snippetExpiresDayField = page.getByTestId("snippet-expires-day-input")
-    this.snippetCreateButton = this.snippetForm.getByRole('button', { name: "post" })
+    this.page = page
+    this.snippetForm = this.page.getByTestId("snippet-form")
+    this.snippetTitleField = this.page.getByTestId('snippet-title-field')
+    this.snippetContentField = this.page.getByTestId('snippet-content-field')
+    this.snippetExpiresDayField = this.page.getByTestId("snippet-expires-day-input")
+    this.snippetCreateButton = this.page.getByTestId('snippet-form-button')
   }
 
-  async createSnippet({ content, title, expires }: Partial<SnippetFormType>) {
+  async fillSnippetForm({ content, title, expires }: Partial<SnippetFormType>) {
     await this.snippetTitleField.fill(title!);
     await this.snippetContentField.fill(content!);
     await this.snippetExpiresDayField.fill(String(expires!));
-    // await this.snippetForm.press("Enter")
-    await this.snippetCreateButton.click()
+  }
+
+  getSnippet({ id }: Pick<SnippetType, "id">) {
+    return new Snippet(this.page, id)
+  }
+}
+
+class Snippet {
+  title: Locator
+  content: Locator
+  author: Locator
+
+  constructor(page: Page, id: number) {
+    this.title = page.getByTestId(`snippet-id-${id}-title`)
+    this.content = page.getByTestId(`snippet-id-${id}-content`)
+    this.author = page.getByTestId(`snippet-id-${id}-author`)
   }
 }

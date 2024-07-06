@@ -20,8 +20,12 @@ export function useSnippets() {
 
   const createSnippet = useMutation({
     mutationKey: ["snippets"],
-    mutationFn: (data: SnippetFormType) => snippetAPI.createSnippet(data, getToken()),
+    mutationFn: (data: SnippetFormType) => {
+      console.log("Creando snippet")
+      return snippetAPI.createSnippet(data, getToken())
+    },
     onMutate: async (newSnippet: SnippetFormType) => {
+      console.log("Creando un nuevo snippet", newSnippet)
       await queryClient.cancelQueries({ queryKey: ["snippets"] })
       const previousSnippets = queryClient.getQueryData(["snippets"])
       queryClient.setQueryData(["snippets"], (oldData: Snippet[]) => {

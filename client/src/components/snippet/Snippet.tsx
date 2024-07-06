@@ -22,6 +22,7 @@ export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, id, ti
   const profilePicture = author?.pfp ?? DEFAULT_USER_PFP
   return (
     <motion.li
+      data-testid={`snippet-id-${id}`}
       ref={ref}
       layout
       initial={isRecentlyAdded && {
@@ -51,10 +52,10 @@ export const Snippet = React.forwardRef<HTMLLIElement, Props>(({ content, id, ti
           </button>
         </div>
       }
-      <p className="text-2xl uppercase">{title}</p>
-      <p className="text-sm">{content}</p>
+      <p data-testid={`snippet-id-${id}-title`} className="text-2xl uppercase">{title}</p>
+      <p data-testid={`snippet-id-${id}-content`} className="text-sm">{content}</p>
       <footer className="flex justify-between items-center">
-        <SnippetAuthorInfo expireTime={expires!} pfp={profilePicture} username={author?.username!} />
+        <SnippetAuthorInfo data-testid={`snippet-id-${id}-author`} expireTime={expires!} pfp={profilePicture} username={author?.username!} />
         <TooltipProvider delayDuration={50}>
           <Tooltip>
             <TooltipTrigger>

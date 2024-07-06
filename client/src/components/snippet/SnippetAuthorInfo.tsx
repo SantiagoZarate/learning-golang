@@ -13,7 +13,7 @@ export function SnippetAuthorInfo({ expireTime, pfp, username }: Props) {
         <li className={`w-5 aspect-square rounded-full border border-background bg-card overflow-hidden`}>
           <img className="object-cover" src={pfp} alt="" />
         </li>
-        <p className="text-xs text-white/40">{username}</p>
+        <p data-testid="snippet-id-" className="text-xs text-white/40">{username}</p>
       </div>
       <p className="text-xs text-white/20 pl-2">Expires in {getTimeUntilExpiration(expireTime)}</p>
     </div>

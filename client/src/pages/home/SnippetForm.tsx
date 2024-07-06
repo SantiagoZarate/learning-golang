@@ -49,6 +49,7 @@ export function SnippetForm() {
               <ExpiresDayField onDecrementDay={decrementExpireDay} onIncrementDay={incrementExpireDay} />
             </footer>
             <Button
+              data-testid="snippet-form-button"
               disabled={isPending}
               variant={"primary"}>
               {isPending ? "sending" : "post"}

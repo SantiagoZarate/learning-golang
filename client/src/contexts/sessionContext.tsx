@@ -33,6 +33,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   const userCredentials = retrieveUserCredentials()
 
   const getToken = () => {
+    console.log("Obteniendo cookie", cookies["access_token"])
     return cookies["access_token"]
   }
 
